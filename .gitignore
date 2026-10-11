@@ -1,0 +1,36 @@
+# LaTeX auxiliary build files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.fls
+*.fdb_latexmk
+*.glg
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.ist
+*.lof
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex*
+*.toc
+*.vrb
+*.log
+
+# Temporary and lock files
+.~lock.*
+*.tmp
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE and Editor directories
+.vscode/
+.idea/
