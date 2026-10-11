@@ -27,6 +27,9 @@
 # Temporary and lock files
 .~lock.*
 *.tmp
+UniExpert_Capstone_Proposal.pdf
+UniExpert_Project_Proposal.pdf
+uniexpert_proposal.pdf
 Thumbs.db
 Desktop.ini
 .DS_Store
