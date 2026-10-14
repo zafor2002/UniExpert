@@ -43,7 +43,7 @@ UniExpert replaces rigid keyword directories with a **problem-first discovery en
 - **Course:** `SE 331 — Software Engineering Design Capstone Project`
 - **Department:** Department of Software Engineering, Faculty of Science & Information Technology
 - **Academic Term:** Fall 2026 (October — December 2026, 12 Weeks)
-- **Date of Submission:** October 12, 2026
+- **Date of Submission:** October 14, 2026
 
 ### 👨‍💻 Student Engineering Team
 - **Abu Zafor** — Student ID: `232-35-331` — [@zafor2002](https://github.com/zafor2002)
@@ -56,10 +56,12 @@ UniExpert replaces rigid keyword directories with a **problem-first discovery en
 
 ## 📄 Formal Deliverables
 
-| Document | Source File | Compiled Deliverable | Description |
-| :--- | :--- | :--- | :--- |
-| **Capstone Proposal** | [`uniexpert_proposal.tex`](./uniexpert_proposal.tex) | [**UniExpert_Proposal_Fall2026.pdf**](./UniExpert_Proposal_Fall2026.pdf) | Complete 11-section capstone proposal with mathematical models and architecture. |
-| **Software Requirements Specification (SRS)** | [`uniexpert_srs.tex`](./uniexpert_srs.tex) | [**UniExpert_SRS.pdf**](./UniExpert_SRS.pdf) | Formal 24-page IEEE 830 / ISO 29148 specification with 20 requirement cards and RTM. |
+| Document | Source File | Compiled Deliverable | Edition | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **Capstone Proposal (Full)** | [`uniexpert_proposal.tex`](./uniexpert_proposal.tex) | [**UniExpert_Proposal_Fall2026.pdf**](./UniExpert_Proposal_Fall2026.pdf) | Comprehensive (17 Pages) | Complete 11-section capstone proposal with comprehensive models, work breakdown, and architecture. |
+| **Capstone Proposal (Minimalist)** | [`uniexpert_proposal_minimal.tex`](./uniexpert_proposal_minimal.tex) | [**UniExpert_Proposal_Minimal.pdf**](./UniExpert_Proposal_Minimal.pdf) | Minimalist (5 Pages) | High-density 5-page executive proposal with mathematical models, TikZ architecture, tech stack, MoSCoW matrix, and timeline. |
+| **Software Requirements Specification (Full)** | [`uniexpert_srs.tex`](./uniexpert_srs.tex) | [**UniExpert_SRS.pdf**](./UniExpert_SRS.pdf) | Comprehensive (24 Pages) | Formal IEEE 830 / ISO 29148 specification with 20 requirement cards, context diagram, ER models, and RTM. |
+| **Software Requirements Specification (Minimalist)** | [`uniexpert_srs_minimal.tex`](./uniexpert_srs_minimal.tex) | [**UniExpert_SRS_Minimal.pdf**](./UniExpert_SRS_Minimal.pdf) | Minimalist (8 Pages) | Streamlined 8-page IEEE 830 baseline with minimalist title page, context diagram, consolidated 20-FR matrix, NFR benchmarks, data dictionary, RTM, and committee sign-off. |
 
 ---
 
@@ -118,13 +120,27 @@ When assembling multi-member advisory panels, the engine minimizes $|\Delta \mat
 To compile the LaTeX deliverables locally:
 
 ```powershell
-# Compile the Capstone Proposal
+# ==========================================
+# Comprehensive Editions
+# ==========================================
+# Capstone Proposal (Comprehensive, 17 Pages)
 pdflatex -interaction=nonstopmode -jobname=UniExpert_Proposal_Fall2026 uniexpert_proposal.tex
 pdflatex -interaction=nonstopmode -jobname=UniExpert_Proposal_Fall2026 uniexpert_proposal.tex
 
-# Compile the Software Requirements Specification (SRS)
+# Software Requirements Specification (SRS) (Comprehensive, 24 Pages)
 pdflatex -interaction=nonstopmode -jobname=UniExpert_SRS uniexpert_srs.tex
 pdflatex -interaction=nonstopmode -jobname=UniExpert_SRS uniexpert_srs.tex
+
+# ==========================================
+# Minimalist Editions
+# ==========================================
+# Capstone Proposal (Minimalist, 5 Pages)
+pdflatex -interaction=nonstopmode -jobname=UniExpert_Proposal_Minimal uniexpert_proposal_minimal.tex
+pdflatex -interaction=nonstopmode -jobname=UniExpert_Proposal_Minimal uniexpert_proposal_minimal.tex
+
+# Software Requirements Specification (SRS) (Minimalist, 8 Pages)
+pdflatex -interaction=nonstopmode -jobname=UniExpert_SRS_Minimal uniexpert_srs_minimal.tex
+pdflatex -interaction=nonstopmode -jobname=UniExpert_SRS_Minimal uniexpert_srs_minimal.tex
 ```
 
 ---
