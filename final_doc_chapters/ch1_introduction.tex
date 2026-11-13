@@ -1,0 +1,40 @@
+\chapter{INTRODUCTION}
+\label{ch:introduction}
+
+In higher education institutions, final-year capstone projects, undergraduate dissertations, and postgraduate research represent the capstone of academic development. At institutions such as Daffodil International University, thousands of engineering and computing students embark on ambitious technical projects each semester. However, the foundational phase of these projects—identifying, evaluating, and securing qualified faculty supervisors, subject-matter experts, and industry mentors—is characterized by friction, informational asymmetry, and administrative inefficiencies.
+
+Existing university faculty directories are static, departmentally siloed staff rosters. These traditional repositories catalog professors solely by department, generic academic rank, and coarse keyword tags such as ``Computer Networks'' or ``Artificial Intelligence''. When students formulate capstone ideas around emerging, specialized, or interdisciplinary challenges—such as privacy-preserving federated learning, bioinformatics pipelines, or edge IoT optimization—static keyword searches fail. Consequently, students resort to blind email solicitations and informal word-of-mouth. This dynamic imposes severe cognitive fatigue on senior faculty who receive dozens of misaligned advisory requests, while specialized junior faculty and industry practitioners remain underutilized. Furthermore, departmental coordinators lack centralized visibility into real-time supervisory loads, leaving advisory allocations susceptible to quota imbalances and accreditation compliance gaps.
+
+\textbf{UniExpert: An AI-Powered Expert Discovery and Academic Collaboration Platform} is engineered to eliminate this institutional bottleneck. UniExpert replaces static directories with an intelligent, problem-first discovery infrastructure. Rather than guessing abstract taxonomies, student teams submit unstructured, natural-language project statements. An integrated Natural Language Processing (NLP) inference pipeline extracts domain classifications and prerequisite skill entities, evaluating them against indexed faculty publications and mentor credentials using dense semantic vector search (Qdrant HNSW). Matches are scored and ranked via a transparent, multi-criteria hybrid engine with Explainable AI (XAI) justifications. Collaboration solicitations are governed through an auditable Finite State Machine (FSM) backed by configurable anti-burnout supervisory quotas, automated team skill gap optimization ($\Delta\mathcal{K}$), and an append-only institutional audit ledger.
+
+\section{Objective}
+\label{sec:objective}
+
+The principal objective of this capstone project is to design, develop, and evaluate an enterprise-grade, AI-driven academic expert discovery and collaborative matchmaking software platform for higher education institutions. The system enables students to submit unstructured natural-language project proposals and automatically extracts domain classifications and prerequisite technical skills using zero-shot classification and named entity recognition. It performs high-throughput semantic vector retrieval over indexed faculty publication corpora using Qdrant HNSW vector graphs, combining dense similarity with multi-criteria academic ranking signals (skill overlap, publication recency, and real-time supervisory capacity). Furthermore, the platform provides Explainable AI (XAI) attribution breakdowns for all recommendations, algorithmically identifies multidisciplinary team skill deficits ($\Delta\mathcal{K}$) via set-cover optimization, governs advisory solicitations through an auditable Finite State Machine (FSM) with anti-burnout faculty quotas, and maintains a cryptographically verifiable audit trail for institutional accreditation and governance.
+
+\section{Key Features}
+\label{sec:key_features}
+
+The UniExpert platform delivers a comprehensive suite of capabilities engineered specifically for university capstone and research ecosystems:
+
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item \textbf{User Accounts and Role-Based Access Control (RBAC):} Provides secure multi-tier user registration and session management for Students, Faculty Advisors, Industry Mentors, Department Coordinators, and System Administrators, enforcing permissions via cryptographically signed JWTs and institutional email domain verification (\texttt{.edu}).
+    
+    \item \textbf{Natural Language Problem Ingestion and Entity Parsing:} Allows student teams to submit raw, unstructured project descriptions. An automated NLP inference pipeline extracts core domain classifications, technical toolchains, and research methodologies using zero-shot transformers and token classifiers.
+    
+    \item \textbf{Dense Semantic Vector Embedding and HNSW Indexing:} Encodes project statements and faculty publication abstracts into 384-dimensional dense vectors, indexing them in a Qdrant vector database with Hierarchical Navigable Small World (HNSW) graphs to deliver sub-50ms cosine similarity searches across thousands of profiles.
+    
+    \item \textbf{Multi-Criteria Hybrid Scoring and Explainable AI (XAI):} Combines semantic vector similarity with deterministic academic signals—skill overlap ratio, publication recency, credential verification tier, and active advisory capacity—while providing transparent visual XAI percentage attributions for every recommendation.
+    
+    \item \textbf{Multidisciplinary Team Skill Gap Optimization ($\Delta \mathcal{K}$):} Computes unaddressed technical competencies by comparing project requirements against current team proficiencies, utilizing a combinatorial set-cover algorithm to discover optimal co-advisors or peers across complementary departments.
+    
+    \item \textbf{Collaboration Request Lifecycle State Machine (FSM):} Mediates all student-to-advisor proposals through an auditable, deterministic lifecycle (\textit{Draft}, \textit{Submitted}, \textit{Under Review}, \textit{Negotiation}, \textit{Accepted}, \textit{Declined}, \textit{Expired}), preventing ghosting and enforcing formal milestone alignment.
+    
+    \item \textbf{Faculty Anti-Burnout Quotas and Availability Scheduling:} Protects faculty from supervisory overload by enforcing configurable per-term active student caps, automatically updating availability indicators in search results, and integrating calendar slot booking for consultations.
+    
+    \item \textbf{Multi-Tier Credential Verification and Peer Endorsements:} Implements a three-tier trust model (Tier-1: Domain Verified, Tier-2: ORCID/Scholar Synced, Tier-3: Department Validated) complemented by post-project mutual evaluations and skill endorsements.
+    
+    \item \textbf{Contextual Collaboration Workspace:} Facilitates structured capstone execution through milestone tracking, consultation note archiving, shared document repositories, and real-time event notifications.
+    
+    \item \textbf{Immutable Audit Trail and Accreditation Reporting:} Persists every system action in an append-only audit ledger with cryptographic SHA-256 event chaining, enabling coordinators and accreditation bodies to generate certified PDF/CSV supervisory distribution reports.
+\end{itemize}

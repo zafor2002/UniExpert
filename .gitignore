@@ -37,3 +37,13 @@ Desktop.ini
 # IDE and Editor directories
 .vscode/
 .idea/
+
+# Agent skills & configs
+.agents/
+skills-lock.json
+
+# Node & Build artifacts
+node_modules/
+dist/
+dist-ssr/
+*.local

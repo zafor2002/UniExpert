@@ -1,0 +1,1168 @@
+\chapter{USE CASE MODELLING}
+\label{ch:use_case_modelling}
+
+\section{Use Case Diagram}
+\label{sec:use_case_diagram}
+
+The high-level interactions between the system actors and the core functional use cases of the UniExpert platform are organized into five architectural subsystems in Figure~\ref{fig:use_case_diagram}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.71, every node/.style={transform shape},
+    font=\sffamily\scriptsize,
+    actor/.style={rectangle, draw=black!80, thick, fill=blue!6, align=center, minimum width=2.4cm, minimum height=0.95cm, rounded corners=3pt},
+    package/.style={rectangle, draw=black!40, dashed, fill=gray!2, rounded corners=4pt, inner sep=5pt},
+    pkgtitle/.style={font=\sffamily\bfseries\scriptsize, text=black!70, anchor=north west},
+    uc/.style={ellipse, draw=black!80, thick, fill=white, align=center, minimum width=3.3cm, minimum height=0.70cm, font=\sffamily\tiny},
+    link/.style={thick, draw=black!70},
+    inc/.style={dashed, -{Stealth[scale=0.8]}, draw=black!60}
+]
+
+% System Boundary
+\draw[thick, rounded corners=8pt, fill=blue!1] (-3.6, -20.7) rectangle (7.6, 1.2);
+\node[font=\sffamily\bfseries\small] at (2.0, 0.8) {UniExpert Platform System Boundary};
+
+% Package 1: Identity & Verification (y: 0.3 to -3.2)
+\draw[package] (-3.3, -3.2) rectangle (7.3, 0.3);
+\node[pkgtitle] at (-3.2, 0.1) {Subsystem 1: Identity \& Verification};
+\node[uc] (uc01) at (-1.3, -1.2) {UC01: Register \& Verify Domain};
+\node[uc] (uc02) at (4.6, -1.2) {UC02: Log In \& Session Auth};
+\node[uc] (uc05) at (4.6, -2.4) {UC05: Verify Academic Tier};
+
+% Package 2: Ingestion & AI Matching (y: -3.5 to -8.0)
+\draw[package] (-3.3, -8.0) rectangle (7.3, -3.5);
+\node[pkgtitle] at (-3.2, -3.7) {Subsystem 2: NLP Problem Ingestion \& Hybrid Matching};
+\node[uc] (uc06) at (-1.3, -4.7) {UC06: Ingest Problem Statement};
+\node[uc] (uc07) at (4.6, -4.7) {UC07: Extract Domain \& Skills};
+\node[uc] (uc08) at (-1.3, -6.0) {UC08: Refine Skill Weights};
+\node[uc] (uc09) at (4.6, -6.0) {UC09: Dense Vector Search};
+\node[uc] (uc10) at (-1.3, -7.2) {UC10: Hybrid Match Ranking};
+\node[uc] (uc11) at (4.6, -7.2) {UC11: Generate XAI Breakdown};
+
+% Package 3: Profiles & Team Gap Optimization (y: -8.3 to -11.9)
+\draw[package] (-3.3, -11.9) rectangle (7.3, -8.3);
+\node[pkgtitle] at (-3.2, -8.5) {Subsystem 3: Profile Management \& Team Gap Optimization};
+\node[uc] (uc03) at (-1.3, -9.4) {UC03: Manage Student Profile};
+\node[uc] (uc04) at (-1.3, -10.8) {UC04: Ingest Expert Profile};
+\node[uc] (uc13) at (4.6, -9.4) {UC13: Candidate Comparison Matrix};
+\node[uc] (uc14) at (4.6, -10.8) {UC14: Multidisciplinary Gap ($\Delta\mathcal{K}$)};
+
+% Package 4: Collaboration FSM (y: -12.2 to -16.0)
+\draw[package] (-3.3, -16.0) rectangle (7.3, -12.2);
+\node[pkgtitle] at (-3.2, -12.4) {Subsystem 4: Advisory FSM \& Consultation Workspace};
+\node[uc] (uc16) at (-1.3, -13.3) {UC16: Submit Advisory Request};
+\node[uc] (uc17) at (4.6, -13.3) {UC17: Advisory FSM Lifecycle};
+\node[uc] (uc18) at (-1.3, -14.8) {UC18: Enforce Advisory Quotas};
+\node[uc] (uc19) at (4.6, -14.8) {UC19: Schedule Consultation};
+
+% Package 5: Governance & Audit (y: -16.3 to -20.4)
+\draw[package] (-3.3, -20.4) rectangle (7.3, -16.3);
+\node[pkgtitle] at (-3.2, -16.5) {Subsystem 5: Governance, Audit \& Analytics Reporting};
+\node[uc] (uc21) at (-1.3, -17.6) {UC21: Post-Collab Endorsement};
+\node[uc] (uc20) at (-1.3, -19.3) {UC20: Workspace Interaction};
+\node[uc] (uc22) at (4.6, -17.6) {UC22: Moderate Taxonomy Catalog};
+\node[uc] (uc24) at (4.6, -18.7) {UC24: Audit Trail Search \& Export};
+\node[uc] (uc25) at (4.6, -19.8) {UC25: Generate Accreditation Report};
+
+% External Actors
+% Left Actors:
+\node[actor] (student) at (-6.3, -5.3)  {\textbf{Student}\\Project Lead};
+\node[actor] (faculty) at (-6.3, -12.8) {\textbf{Faculty}\\Advisor};
+\node[actor] (mentor)  at (-6.3, -18.4) {\textbf{Industry}\\Mentor};
+
+% Right Actors:
+\node[actor] (admin)   at (9.9, -1.8)   {\textbf{System}\\Administrator};
+\node[actor] (coord)   at (9.9, -10.1)  {\textbf{Department}\\Coordinator};
+\node[actor] (auditor) at (9.9, -19.2)  {\textbf{Institutional}\\Auditor};
+
+% Direct Connections: Left Actors to Left Column Use Cases (Completely Horizontal / Straight)
+\draw[link] (student.east) -- (uc01.west);
+\draw[link] (student.east) -- (uc06.west);
+\draw[link] (student.east) -- (uc08.west);
+\draw[link] (student.east) -- (uc03.west);
+
+\draw[link] (faculty.east) -- (uc04.west);
+\draw[link] (faculty.east) -- (uc16.west);
+\draw[link] (faculty.east) -- (uc18.west);
+
+\draw[link] (mentor.east) -- (uc21.west);
+\draw[link] (mentor.east) -- (uc20.west);
+
+% Direct Connections: Right Actors to Right Column Use Cases (Completely Horizontal / Straight)
+\draw[link] (admin.west)   -- (uc02.east);
+\draw[link] (admin.west)   -- (uc05.east);
+
+\draw[link] (coord.west)   -- (uc13.east);
+\draw[link] (coord.west)   -- (uc14.east);
+
+\draw[link] (auditor.west) -- (uc24.east);
+\draw[link] (auditor.west) -- (uc25.east);
+
+% Internal Horizontal Includes (strictly within their subsystem row)
+\draw[inc] (uc06) -- node[above, font=\tiny] {$\ll$include$\gg$} (uc07);
+\draw[inc] (uc08) -- node[above, font=\tiny] {$\ll$include$\gg$} (uc09);
+\draw[inc] (uc10) -- node[above, font=\tiny] {$\ll$include$\gg$} (uc11);
+\draw[inc] (uc16) -- node[above, font=\tiny] {$\ll$include$\gg$} (uc17);
+\draw[inc] (uc16) -- node[above, font=\tiny, sloped] {$\ll$include$\gg$} (uc19);
+
+\end{tikzpicture}
+\caption{System Use Case Diagram for UniExpert Platform}
+\label{fig:use_case_diagram}
+\end{figure}
+\clearpage
+
+\section{Use Case Description}
+\label{sec:use_case_descriptions}
+
+The 25 use case descriptions below specify formal behavioral contracts including goals, preconditions, success and failure end conditions, actor roles, triggers, step-by-step main success scenarios, alternative branches, and non-functional quality requirements.
+
+\subsection{Use Case Description-01: Register Account \& Verify Academic Domain}
+\label{subsec:uc01}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC01: Register Account \& Verify Academic Domain} \\ \hline
+\textbf{Goal} & A new student, faculty expert, or industry mentor creates an authenticated account with verified institutional credentials. \\ \hline
+\textbf{Preconditions} & The user possesses a valid university email address (\texttt{.edu} or affiliated domain); the registration service is online. \\ \hline
+\textbf{Success End Condition} & Account record saved in database; cryptographic verification email dispatched; status \texttt{PENDING\_VERIFICATION}. Message: \textit{``Account registered successfully. Please verify your institutional email.''} \\ \hline
+\textbf{Failed End Condition} & No user record created. Message: \textit{``Registration failed: Email address already registered or invalid institutional domain.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead, Faculty Advisor, Industry Mentor \\
+\textbf{Secondary Actors:} & System Administrator \\ \hline
+\textbf{Trigger} & User accesses the web portal and clicks ``Register Institutional Account''. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*, nosep]
+    \item User opens the registration portal and selects their designated institutional role.
+    \item User enters full legal name, institutional email, department affiliation, and strong password.
+    \item System validates email format against approved university domain whitelist.
+    \item System verifies that the email address is not already registered.
+    \item System computes Argon2id salted password hash and creates a user record with status \texttt{PENDING\_VERIFICATION}.
+    \item System generates a cryptographically signed HMAC token (24-hour TTL) and dispatches an activation link.
+    \item User clicks the activation link in their university inbox.
+    \item System verifies token authenticity, updates user status to \texttt{ACTIVE}, and redirects to role onboarding.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*, nosep]
+    \item[\textbf{3.a.}] \textbf{Email domain is not in university whitelist:} System prompts for valid institutional domain.
+    \item[\textbf{4.a.}] \textbf{Email already exists in system:} System displays duplicate notice and provides reset link.
+    \item[\textbf{7.a.}] \textbf{Verification token expired (>24 hours):} System offers to resend fresh activation token.
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Store passwords using salted Argon2id hashes (memory: 64MB, iterations: 3, parallelism: 4). \newline
+2. Complete end-to-end registration validation and token generation within 500 milliseconds. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-02: Log In \& Session Authentication}
+\label{subsec:uc02}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC02: Log In \& Session Authentication} \\ \hline
+\textbf{Goal} & An approved, verified user authenticates credentials and establishes a secure, role-scoped session. \\ \hline
+\textbf{Preconditions} & User account is verified and active; account is not currently locked out due to excessive failed attempts. \\ \hline
+\textbf{Success End Condition} & User session established; short-lived JWT access token issued; secure HTTP-only refresh token set. Message: \textit{``Authentication successful.''} \\ \hline
+\textbf{Failed End Condition} & Access denied; session rejected. Message: \textit{``Invalid email or password. Please try again.''} \\ \hline
+\textbf{Primary Actors:} & All Users (Student, Faculty, Mentor, Coordinator, Admin, Auditor) \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & User navigates to the login screen and submits credentials. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item User inputs registered email address and password.
+    \item System verifies that the account is active and not locked.
+    \item System verifies submitted password against stored Argon2id hash.
+    \item System checks if multi-factor authentication (MFA) is mandated for user role.
+    \item System generates a signed JWT access token containing user UUID, role scopes, and department ID.
+    \item System issues an HTTP-only, secure, SameSite refresh token cookie (7-day TTL).
+    \item System logs successful authentication event with client IP and User-Agent in the audit trail.
+    \item System redirects user to their personalized role dashboard.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{2.a.}] \textbf{Account locked due to 5 consecutive failed attempts:}
+    \begin{itemize}[leftmargin=*]
+        \item[2.a.1.] System rejects login attempt and enforces a 15-minute lockout timer.
+    \end{itemize}
+    \item[\textbf{3.a.}] \textbf{Password hash mismatch:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System increments failed attempt counter in Redis and displays invalid credentials error.
+    \end{itemize}
+    \item[\textbf{4.a.}] \textbf{MFA challenge required (Admin / Coordinator):}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System prompts for 6-digit TOTP code; user submits code; system validates before issuing tokens.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Access token expiration enforced at 15 minutes; refresh tokens stored in HttpOnly cookies. \newline
+2. Enforce 15-minute account lockout after 5 consecutive failed login attempts. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-03: Manage Student Research Profile \& Portfolio}
+\label{subsec:uc03}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC03: Manage Student Research Profile \& Portfolio} \\ \hline
+\textbf{Goal} & A student project lead updates team profile details, academic records, CV attachments, and GitHub repositories. \\ \hline
+\textbf{Preconditions} & User is signed in with authenticated \texttt{STUDENT} role scopes. \\ \hline
+\textbf{Success End Condition} & Profile metadata updated in PostgreSQL; searchable profile card refreshed. Message: \textit{``Student profile updated successfully.''} \\ \hline
+\textbf{Failed End Condition} & Profile update rejected. Message: \textit{``Unable to update profile: Invalid input format or file size exceeded.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Student selects ``Edit Profile'' on their dashboard. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student opens the profile management dashboard.
+    \item Student inputs degree program, batch number, student ID, bio, and technical competencies.
+    \item Student links external portfolio artifacts (GitHub repository URL, LinkedIn profile).
+    \item Student uploads an optional PDF resume/CV (max 5 MB).
+    \item System validates file integrity, scans for malicious MIME types, and stores PDF in secure object storage.
+    \item System persists updated profile entity to PostgreSQL.
+    \item System updates profile completion index and notifies student of updated profile score.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{4.a.}] \textbf{Uploaded CV exceeds 5 MB or is non-PDF:}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System rejects file upload and prompts student to attach a valid PDF under 5 MB.
+    \end{itemize}
+    \item[\textbf{6.a.}] \textbf{Database connection timeout during save:}
+    \begin{itemize}[leftmargin=*]
+        \item[6.a.1.] System rolls back transaction, alerts student, and preserves draft entries in local storage.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Restrict CV uploads to authenticated students with maximum file size of 5 MB. \newline
+2. Update and re-render profile card in under 1 second. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-04: Ingest and Manage Faculty Expert Profile}
+\label{subsec:uc04}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC04: Ingest and Manage Faculty Expert Profile} \\ \hline
+\textbf{Goal} & A faculty advisor establishes or synchronizes their research portfolio, publication corpus, and research domains. \\ \hline
+\textbf{Preconditions} & User is signed in with \texttt{EXPERT} or \texttt{MENTOR} role scopes. \\ \hline
+\textbf{Success End Condition} & Profile synced; publications parsed and indexed; embeddings queued. Message: \textit{``Expert profile and publications updated.''} \\ \hline
+\textbf{Failed End Condition} & Synchronization incomplete. Message: \textit{``Publication synchronization failed: External API unreachable.''} \\ \hline
+\textbf{Primary Actors:} & Faculty Advisor, Industry Mentor \\
+\textbf{Secondary Actors:} & System Administrator \\ \hline
+\textbf{Trigger} & Faculty advisor clicks ``Sync Google Scholar / ORCID'' or manually edits research interests. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Faculty advisor navigates to the Research Portfolio settings.
+    \item Advisor enters their public ORCID iD or Google Scholar profile identifier.
+    \item System initiates asynchronous background worker to fetch publication metadata, abstracts, and citations.
+    \item Background worker parses ingested papers, computes h-index, and filters top research topics.
+    \item System compiles a consolidated academic bio-corpus for the advisor.
+    \item System updates advisor record in PostgreSQL and triggers vector re-indexing worker.
+    \item System notifies faculty advisor upon completion of publication ingestion.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{External Scholar API rate limit or network timeout:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System retries request with exponential backoff (up to 3 retries).
+        \item[3.a.2.] If unsuccessful, system allows manual CSV publication upload.
+    \end{itemize}
+    \item[\textbf{4.a.}] \textbf{No publications detected for entered profile ID:}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System prompts advisor to verify ID or manually input published paper titles.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Ingest up to 50 publication abstracts within 10 seconds of background job trigger. \newline
+2. Preserve existing verified publications if external sync job fails. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-05: Verify Faculty Academic Credentials \& Tier Assignment}
+\label{subsec:uc05}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC05: Verify Faculty Academic Credentials \& Tier Assignment} \\ \hline
+\textbf{Goal} & System or administrator validates faculty academic credentials and assigns hierarchical trust badges (Tier 1--3). \\ \hline
+\textbf{Preconditions} & Faculty account is registered and email verified; coordinator or admin has review privileges. \\ \hline
+\textbf{Success End Condition} & Credential tier updated; verification badge displayed on expert profile. Message: \textit{``Expert verification tier updated to Tier-2.''} \\ \hline
+\textbf{Failed End Condition} & Verification tier unchanged. Message: \textit{``Verification rejected: Inconclusive academic credentials.''} \\ \hline
+\textbf{Primary Actors:} & Department Capstone Coordinator, System Administrator \\
+\textbf{Secondary Actors:} & Faculty Advisor \\ \hline
+\textbf{Trigger} & Faculty requests credential tier upgrade or coordinator reviews pending departmental faculty list. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Coordinator opens the Faculty Verification queue on the administrative console.
+    \item System displays faculty profile, department, institutional email domain, and synced publications.
+    \item Coordinator inspects academic credentials and departmental appointment records.
+    \item Coordinator selects verification tier: Tier-1 (Email Verified), Tier-2 (Scholar Verified), or Tier-3 (Department Head Validated).
+    \item System persists updated tier in database and logs approval in audit trail.
+    \item System sends in-app and email notification to faculty advisor confirming tier activation.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{Credentials unverifiable or fraudulent:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] Coordinator rejects tier upgrade and inputs formal justification note.
+        \item[3.a.2.] System marks account as unverified and notifies faculty member to provide proof.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Restrict credential tier modification strictly to Coordinator and Administrator roles. \newline
+2. Record reviewer identity, timestamp, and justification in immutable audit trail. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-06: Ingest Problem Statement \& Natural Language Parsing}
+\label{subsec:uc06}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC06: Ingest Problem Statement \& Natural Language Parsing} \\ \hline
+\textbf{Goal} & A student team inputs an unstructured project problem statement and initiates automated NLP processing. \\ \hline
+\textbf{Preconditions} & Student lead has an active authenticated session; project proposal form is accessible. \\ \hline
+\textbf{Success End Condition} & Problem statement stored; preliminary text tokens parsed and dispatched to entity extractor. Message: \textit{``Problem formulation ingested. Processing NLP extraction.''} \\ \hline
+\textbf{Failed End Condition} & Ingestion rejected. Message: \textit{``Submission rejected: Problem statement must contain between 50 and 5,000 characters.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Student inputs problem text and clicks ``Analyze Proposal''. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student navigates to the ``Propose Capstone Problem'' portal.
+    \item Student enters project title, target problem description, and envisioned methodology.
+    \item System validates character count ($\ge 50$ and $\le 5,000$ characters).
+    \item System cleanses input text, strips malicious scripts, and normalizes UTF-8 punctuation.
+    \item System saves draft project entity in PostgreSQL.
+    \item System automatically triggers Use Case UC07 (Extract Domain Taxonomy \& Skill Entities).
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{Text is under 50 characters (insufficient semantic context):}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System warns student: \textit{``Please provide a more detailed problem description to enable accurate AI matching.''}
+    \end{itemize}
+    \item[\textbf{3.b.}] \textbf{Text exceeds 5,000 characters:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.b.1.] System displays character overflow warning and prevents submission until trimmed.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Sanitize text against cross-site scripting (XSS) and SQL injection payloads. \newline
+2. Ingest and save text within 200 milliseconds. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-07: Extract Domain Taxonomy \& Prerequisite Skill Entities}
+\label{subsec:uc07}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC07: Extract Domain Taxonomy \& Prerequisite Skill Entities} \\ \hline
+\textbf{Goal} & The AI inference pipeline automatically parses raw project text into macro academic domains and micro technical skill entities. \\ \hline
+\textbf{Preconditions} & Problem statement successfully ingested via UC06; NLP microservice is operational. \\ \hline
+\textbf{Success End Condition} & Domain tags and skill entity list generated with confidence scores. Message: \textit{``Taxonomy and skill entities extracted.''} \\ \hline
+\textbf{Failed End Condition} & Extraction fails. Message: \textit{``NLP processing error: Unable to extract skills. Switching to keyword mode.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Automatically triggered following UC06 submission. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item NLP service receives normalized problem statement text.
+    \item Service executes zero-shot transformer classification against academic discipline taxonomy.
+    \item Service identifies top 3 academic domains (e.g., \texttt{Embedded Systems}, \texttt{Machine Learning}) with confidence $\ge 0.65$.
+    \item Service executes Named Entity Recognition (NER) pipeline to extract technical competencies, libraries, and hardware platforms.
+    \item Service maps extracted entities to canonical taxonomy terms (e.g., mapping ``Tensorflow 2'' $\rightarrow$ \texttt{TensorFlow}).
+    \item System structures extracted attributes into JSON payload and transitions to UC08.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{No domain meets 0.65 confidence threshold:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System selects top 2 nearest domains and flags them as tentative for student confirmation.
+    \end{itemize}
+    \item[\textbf{4.a.}] \textbf{NLP model timeout or container crash:}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System falls back to regex-based keyword matching against academic skill catalog.
+        \item[4.a.2.] System logs fallback event in administrative monitoring console.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Achieve $\ge 85\%$ precision on domain classification across academic benchmark datasets. \newline
+2. Complete zero-shot classification and entity extraction within 1.5 seconds. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-08: Refine Extracted Requirements \& Skill Weights}
+\label{subsec:uc08}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC08: Refine Extracted Requirements \& Skill Weights} \\ \hline
+\textbf{Goal} & The student team reviews, adjusts, adds, removes, or re-weights AI-extracted domains and technical skill prerequisites. \\ \hline
+\textbf{Preconditions} & Entities extracted via UC07; review card displayed on student screen. \\ \hline
+\textbf{Success End Condition} & Validated project requirement vector saved and ready for vector search. Message: \textit{``Requirements confirmed. Searching expert database.''} \\ \hline
+\textbf{Failed End Condition} & Refinement cancelled. Message: \textit{``Changes discarded.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Student reviews the interactive entity tags generated by the NLP pipeline. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student inspects extracted academic domains and technical skill tags.
+    \item Student adjusts importance sliders for specific skills (e.g., setting \texttt{PyTorch} to High [1.0] and \texttt{Docker} to Low [0.3]).
+    \item Student types to add missing specialized skill tags using autocomplete suggestions.
+    \item Student clicks ``Dismiss'' on any irrelevant entities extracted by the NLP model.
+    \item Student clicks ``Confirm Requirements \& Find Advisors''.
+    \item System persists finalized requirement weights and triggers vector matchmaking (UC09).
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{Student enters custom skill not in system taxonomy:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System accepts custom entity, flags it for administrator taxonomy review, and indexes it.
+    \end{itemize}
+    \item[\textbf{5.a.}] \textbf{All extracted skills removed by student:}
+    \begin{itemize}[leftmargin=*]
+        \item[5.a.1.] System prompts student: \textit{``At least one technical skill is required for matching. Please retain or add skills.''}
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Autocomplete response time under 100 milliseconds across 2,000+ taxonomy terms. \newline
+2. Immediate reactive UI updates when toggling skill sliders. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-09: Execute Dense Semantic Vector Search}
+\label{subsec:uc09}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC09: Execute Dense Semantic Vector Search} \\ \hline
+\textbf{Goal} & Retrieve nearest candidate faculty and mentor profiles from high-dimensional vector space using cosine distance. \\ \hline
+\textbf{Preconditions} & Project requirements confirmed; Qdrant vector database is reachable and populated. \\ \hline
+\textbf{Success End Condition} & Top-50 nearest candidate vectors retrieved with cosine similarity scores. Message: \textit{``Candidate vector retrieval completed.''} \\ \hline
+\textbf{Failed End Condition} & Search fails. Message: \textit{``Vector search unavailable: Reverting to exact-match database retrieval.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & System Administrator \\ \hline
+\textbf{Trigger} & Student triggers advisor discovery following requirement confirmation. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Search service takes confirmed problem text and weighted skill tokens.
+    \item Service encodes input text into a 384-dimensional dense vector using transformer embedding worker.
+    \item Service connects to Qdrant vector store and initiates approximate nearest neighbor (ANN) search.
+    \item HNSW index evaluates cosine distance against indexed faculty research corpora:
+    $$\cos(\vec{q}, \vec{d}_i) = \frac{\vec{q} \cdot \vec{d}_i}{\|\vec{q}\| \|\vec{d}_i\|}$$
+    \item Qdrant returns top-50 candidate expert IDs with vector similarity scores ($S_{\text{dense}} \in [0, 1]$).
+    \item Service passes candidate IDs and scores to Hybrid Match Ranking Engine (UC10).
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{Qdrant cluster connection timeout:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System catches network timeout and initiates fallback to PostgreSQL trigram keyword search.
+        \item[3.a.2.] System delivers fallback results with notification: \textit{``Displaying keyword-matched results.''}
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Sub-200ms p95 latency for ANN vector search across 10,000 indexed faculty profiles. \newline
+2. Seamless graceful degradation to keyword fallback if vector cluster is offline. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-10: Multi-Criteria Hybrid Match Ranking \& Scoring}
+\label{subsec:uc10}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC10: Multi-Criteria Hybrid Match Ranking \& Scoring} \\ \hline
+\textbf{Goal} & Compute composite matching scores combining semantic similarity, skill overlap, publication recency, and availability. \\ \hline
+\textbf{Preconditions} & Candidate vector scores returned from UC09; relational profile attributes loaded from PostgreSQL. \\ \hline
+\textbf{Success End Condition} & Ranked list of candidate experts generated with composite score $S_{\text{hybrid}} \in [0, 100]$. Message: \textit{``Match ranking completed.''} \\ \hline
+\textbf{Failed End Condition} & Scoring failed. Message: \textit{``Unable to compute rankings; please retry.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & Faculty Advisor \\ \hline
+\textbf{Trigger} & Candidate vector retrieval completes. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Ranking engine fetches full metadata for top-50 candidate IDs from PostgreSQL.
+    \item Engine calculates normalized skill overlap ratio:
+    $$S_{\text{skill}} = \frac{|\mathcal{K}_{\text{req}} \cap \mathcal{K}_{\text{expert}}|}{|\mathcal{K}_{\text{req}}|}$$
+    \item Engine calculates publication recency and domain citation weight ($S_{\text{pub}}$).
+    \item Engine applies verification tier multiplier ($S_{\text{tier}} \in \{1.0, 1.15, 1.25\}$).
+    \item Engine evaluates active advisory quota capacity multiplier ($S_{\text{avail}}$).
+    \item Engine computes overall hybrid composite score:
+    $$S_{\text{hybrid}} = \left(\omega_1 S_{\text{dense}} + \omega_2 S_{\text{skill}} + \omega_3 S_{\text{pub}} + \omega_4 S_{\text{tier}}\right) \times S_{\text{avail}}$$
+    \item Engine sorts candidates in descending score order and delivers results to client.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{5.a.}] \textbf{Advisor has 0 remaining supervisory slots ($S_{\text{avail}} = 0$ for primary supervision):}
+    \begin{itemize}[leftmargin=*]
+        \item[5.a.1.] System adjusts profile status to ``Quota Full'' and flags candidate for co-advisory only.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Calculate composite scores and rank 50 candidates in under 300 milliseconds. \newline
+2. Composite score formulation normalized strictly between 0 and 100. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-11: Generate Explainable AI (XAI) Recommendation Breakdown}
+\label{subsec:uc11}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC11: Generate Explainable AI (XAI) Recommendation Breakdown} \\ \hline
+\textbf{Goal} & Provide transparent, human-interpretable justifications for each recommended candidate expert. \\ \hline
+\textbf{Preconditions} & Candidate expert list ranked via UC10; student selects a candidate card. \\ \hline
+\textbf{Success End Condition} & Detailed XAI justification card and percentage attribution breakdown rendered. Message: \textit{``Match justification loaded.''} \\ \hline
+\textbf{Failed End Condition} & Justification unavailable. Message: \textit{``Detailed explanation could not be generated.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & Faculty Advisor, Department Coordinator \\ \hline
+\textbf{Trigger} & Student clicks ``Why this match?'' on a candidate expert profile card. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student clicks ``Why this match?'' on Dr. Farhana Rahman's profile card.
+    \item System retrieves score component vectors computed during UC10.
+    \item System formats component percentage contributions into an interactive breakdown modal:
+    \begin{itemize}[leftmargin=*]
+        \item 45\% Semantic Vector Similarity (highlighting 3 matched publication abstracts).
+        \item 30\% Prerequisite Skill Overlap (displaying matched skills in green).
+        \item 15\% Verified Academic Credential Tier (Tier-2 Scholar Verified).
+        \item 10\% Supervisory Bandwidth (2 active slots available).
+    \end{itemize}
+    \item System renders a radar chart comparing student project requirements against expert proficiencies.
+    \item Student inspects justification and gains confidence in candidate suitability.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{Match is driven almost exclusively by keyword overlap rather than semantic papers:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System displays an advisory hint: \textit{``Strong practical toolchain overlap; limited recent publication history in this exact domain.''}
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Render XAI visual drawer and radar chart within 200 milliseconds of user click. \newline
+2. All percentage contributions must sum precisely to 100\%. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-12: Filter Candidates by Department, Quota \& Availability}
+\label{subsec:uc12}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC12: Filter Candidates by Department, Quota \& Availability} \\ \hline
+\textbf{Goal} & Allow students to dynamically refine candidate results using faceted academic criteria. \\ \hline
+\textbf{Preconditions} & Candidate recommendation results active on the search screen. \\ \hline
+\textbf{Success End Condition} & Filtered candidate list updated in real time. Message: \textit{``Filters applied.''} \\ \hline
+\textbf{Failed End Condition} & No candidates match filter criteria. Message: \textit{``No experts match the selected filters. Try broadening your criteria.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Student selects filter checkboxes on the search sidebar. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student opens the faceted search filter panel.
+    \item Student selects filter criteria: Department = ``Software Engineering'', Quota Status = ``Available Now'', Credential Tier = ``Tier-2+''.
+    \item Client dispatches filter parameters to backend API.
+    \item System applies filter predicates against cached recommendation candidate set.
+    \item System updates UI with filtered candidate list and displays matching count.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{4.a.}] \textbf{Filter results in 0 matches:}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System displays ``Zero Matches Found'' empty state card.
+        \item[4.a.2.] System provides a 1-click ``Reset All Filters'' action to restore recommendations.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Apply faceted filters and update client view in under 150 milliseconds. \newline
+2. Maintain active filter state across browser tab refreshes. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-13: Perform Side-by-Side Expert Comparison}
+\label{subsec:uc13}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC13: Perform Side-by-Side Expert Comparison} \\ \hline
+\textbf{Goal} & Compare up to three candidate advisors across standardized academic and availability metrics. \\ \hline
+\textbf{Preconditions} & Student has identified multiple candidate experts in search results. \\ \hline
+\textbf{Success End Condition} & Side-by-side comparison matrix rendered with differential metric highlights. Message: \textit{``Comparison matrix ready.''} \\ \hline
+\textbf{Failed End Condition} & Comparison failed. Message: \textit{``Unable to load comparison: Select between 2 and 3 candidates.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Student checks ``Compare'' on two or three candidate cards and clicks ``Compare Selected''. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student selects two or three candidate experts from search results.
+    \item Student clicks ``Compare Selected Experts''.
+    \item System loads full profile attributes for chosen experts from database.
+    \item System renders a tabular comparative matrix aligning:
+    \begin{itemize}[leftmargin=*]
+        \item Overall Match Score and Domain Similarity.
+        \item Matched vs. Missing Technical Skills.
+        \item Total Citations, h-index, and Recent Publication Count (last 3 years).
+        \item Available Supervisory Capacity and Office Hour Availability.
+        \item Average Post-Collaboration Student Rating.
+    \end{itemize}
+    \item Student analyzes relative strengths and selects preferred primary supervisor.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{1.a.}] \textbf{Student attempts to select more than 3 candidates:}
+    \begin{itemize}[leftmargin=*]
+        \item[1.a.1.] System displays notification: \textit{``You can compare a maximum of 3 candidates simultaneously.''}
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Render comparison matrix in under 300 milliseconds. \newline
+2. Highlight differential metrics clearly with color-coded comparison badges. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-14: Analyze Multidisciplinary Team Skill Gap ($\Delta \mathcal{K}$)}
+\label{subsec:uc14}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC14: Analyze Multidisciplinary Team Skill Gap ($\Delta \mathcal{K}$)} \\ \hline
+\textbf{Goal} & Detect unaddressed prerequisite technical skills in a student project team and evaluate project viability. \\ \hline
+\textbf{Preconditions} & Project proposal requirements defined; student team member profiles linked to project. \\ \hline
+\textbf{Success End Condition} & Skill gap report generated showing addressed vs. missing prerequisite competencies. Message: \textit{``Skill gap analysis complete.''} \\ \hline
+\textbf{Failed End Condition} & Analysis failed. Message: \textit{``Unable to compute skill gaps: Team roster missing.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead, Department Capstone Coordinator \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Student lead or coordinator clicks ``Analyze Team Skill Gaps''. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item System retrieves project prerequisite skill set $\mathcal{K}_{\text{req}}$ from project record.
+    \item System queries profiles of all confirmed team members to compute collective skill union:
+    $$\mathcal{K}_{\text{team}} = \bigcup_{m \in \text{Members}} \mathcal{K}_m$$
+    \item System calculates the unaddressed deficit set: $\Delta \mathcal{K} = \mathcal{K}_{\text{req}} \setminus \mathcal{K}_{\text{team}}$.
+    \item System computes team readiness score:
+    $$R_{\text{team}} = 1 - \frac{|\Delta \mathcal{K}|}{|\mathcal{K}_{\text{req}}|}$$
+    \item System displays visual breakdown highlighting covered skills (green) and critical deficits (red).
+    \item System displays prompt: \textit{``Would you like to discover co-advisors or peers to resolve missing skills?''}
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{Deficit set is empty ($\Delta \mathcal{K} = \emptyset$):}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System displays ``100\% Team Skill Coverage'' green banner and bypasses co-advisor prompt.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Compute skill set union and set difference in under 50 milliseconds. \newline
+2. Accurately flag interdisciplinary skill deficits across department boundaries. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-15: Run Set-Cover Optimization for Co-Advisor Selection}
+\label{subsec:uc15}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC15: Run Set-Cover Optimization for Co-Advisor Selection} \\ \hline
+\textbf{Goal} & Formulate and solve a combinatorial set-cover problem to recommend the minimal set of co-advisors to cover team gaps. \\ \hline
+\textbf{Preconditions} & Skill deficit set $\Delta \mathcal{K} \ne \emptyset$ identified via UC14; faculty pool indexed. \\ \hline
+\textbf{Success End Condition} & Optimal co-advisor recommendations presented with simulated post-addition coverage. Message: \textit{``Optimal co-advisor candidates identified.''} \\ \hline
+\textbf{Failed End Condition} & Optimization failed. Message: \textit{``No co-advisors found covering the specified skill gaps.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead, Department Capstone Coordinator \\
+\textbf{Secondary Actors:} & Faculty Advisor \\ \hline
+\textbf{Trigger} & User selects ``Find Co-Advisors to Bridge Skill Gaps''. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item System loads unaddressed skill set $\Delta \mathcal{K}$.
+    \item System queries candidate faculty members outside the primary supervisor's department.
+    \item System executes a greedy approximation algorithm for weighted set-cover to select candidates that maximize:
+    $$\arg\max_{e \in \text{Experts}} \frac{|\mathcal{K}_e \cap \Delta \mathcal{K}|}{\text{Cost}(e)}$$
+    \item System ranks candidate co-advisors based on marginal skill contribution and quota availability.
+    \item System presents top co-advisor recommendations with a simulation card: \textit{``Adding Dr. Tanvir Ahmed (Bioinformatics) increases team coverage from 40\% to 92\%.''}
+    \item Student lead clicks ``Propose Co-Advisory Collaboration''.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{No single faculty covers all deficits:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System recommends a paired combination of one co-advisor and one external industry mentor.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Execute greedy set-cover algorithm in under 200 milliseconds. \newline
+2. Guarantee that recommended set strictly reduces cardinality of $\Delta \mathcal{K}$. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-16: Submit Collaboration Advisory Request}
+\label{subsec:uc16}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC16: Submit Collaboration Advisory Request} \\ \hline
+\textbf{Goal} & A student project team submits a formal, structured capstone advisory proposal to a selected faculty expert. \\ \hline
+\textbf{Preconditions} & Student lead has active project draft; selected faculty has available quota ($>0$ active slots). \\ \hline
+\textbf{Success End Condition} & Advisory proposal record created; FSM transitions to \texttt{SUBMITTED}; notification sent. Message: \textit{``Advisory request submitted successfully.''} \\ \hline
+\textbf{Failed End Condition} & Submission blocked. Message: \textit{``Unable to submit request: Faculty quota full or pending request already exists.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & Faculty Advisor \\ \hline
+\textbf{Trigger} & Student clicks ``Send Advisory Proposal'' on expert profile page. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student opens the advisory proposal modal.
+    \item Student reviews pre-populated project synopsis and AI alignment score.
+    \item Student enters structured proposal items: envisioned milestones, expected meeting frequency, and personal motivation statement.
+    \item Student selects advisory scope: Primary Supervisor or Co-Advisor.
+    \item System validates that the student team has no other pending requests to the same professor.
+    \item System verifies that the target faculty member's available quota is $\ge 1$.
+    \item System creates an \texttt{AdvisoryRequest} record in PostgreSQL with status \texttt{SUBMITTED}.
+    \item System starts a 7-day auto-response countdown timer.
+    \item System delivers dashboard notification and email digest to the faculty advisor.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{6.a.}] \textbf{Faculty quota reached while student was editing form:}
+    \begin{itemize}[leftmargin=*]
+        \item[6.a.1.] System blocks submission: \textit{``Professor's quota was filled by another group. Proposal cannot be submitted.''}
+        \item[6.a.2.] System prompts student to select an alternative recommended advisor.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Enforce atomic database transaction to prevent race conditions on quota capacity. \newline
+2. Dispatch confirmation notification within 5 seconds of submission. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-17: Manage Advisory Request Lifecycle (Accept / Decline / Negotiate)}
+\label{subsec:uc17}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC17: Manage Advisory Request Lifecycle (Accept / Decline / Negotiate)} \\ \hline
+\textbf{Goal} & A faculty advisor evaluates an incoming student collaboration proposal and executes an FSM state transition. \\ \hline
+\textbf{Preconditions} & Faculty advisor is signed in; advisory proposal in \texttt{SUBMITTED} or \texttt{UNDER\_REVIEW} state. \\ \hline
+\textbf{Success End Condition} & FSM state updated to \texttt{ACCEPTED}, \texttt{DECLINED}, or \texttt{NEGOTIATION}. Message: \textit{``Advisory request status updated.''} \\ \hline
+\textbf{Failed End Condition} & State transition rejected. Message: \textit{``Invalid state transition or proposal expired.''} \\ \hline
+\textbf{Primary Actors:} & Faculty Advisor \\
+\textbf{Secondary Actors:} & Student Project Lead, Department Capstone Coordinator \\ \hline
+\textbf{Trigger} & Faculty advisor opens a pending request from their ``Incoming Solicitations'' queue. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Faculty advisor opens pending proposal in the advisory portal.
+    \item System updates proposal state to \texttt{UNDER\_REVIEW}.
+    \item Advisor reviews student project statement, proposed milestones, and XAI match score.
+    \item Advisor selects action:
+    \begin{itemize}[leftmargin=*]
+        \item \textbf{Accept:} FSM transitions to \texttt{ACCEPTED}; advisor quota decremented; active workspace created.
+        \item \textbf{Negotiate:} Advisor enters milestone modification feedback; FSM transitions to \texttt{NEGOTIATION}.
+        \item \textbf{Decline:} Advisor inputs polite declination reason; FSM transitions to \texttt{DECLINED}.
+    \end{itemize}
+    \item System persists state transition with timestamp and user ID in audit trail.
+    \item System triggers real-time notification to student project team.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{4.a.}] \textbf{7-day response timer expires without advisor action:}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System background cron job automatically transitions status to \texttt{EXPIRED}.
+        \item[4.a.2.] System releases student team from waiting lock and suggests next-best ranked advisors.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Enforce strict mathematical state transition rules with no illegal skips. \newline
+2. Log every transition and feedback comment in immutable audit ledger. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-18: Enforce Faculty Advisory Quotas \& Blackout Windows}
+\label{subsec:uc18}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC18: Enforce Faculty Advisory Quotas \& Blackout Windows} \\ \hline
+\textbf{Goal} & Maintain balanced faculty supervision loads and prevent inbox burnout by enforcing hard quota caps and blackout dates. \\ \hline
+\textbf{Preconditions} & Faculty member has active profile; department capstone quota policies defined. \\ \hline
+\textbf{Success End Condition} & Quota settings updated; availability status dynamically toggled. Message: \textit{``Supervisory quota settings saved.''} \\ \hline
+\textbf{Failed End Condition} & Settings rejected. Message: \textit{``Invalid quota value: Must be between 1 and 10 groups.''} \\ \hline
+\textbf{Primary Actors:} & Faculty Advisor, Department Capstone Coordinator \\
+\textbf{Secondary Actors:} & System Administrator \\ \hline
+\textbf{Trigger} & Faculty advisor configures settings or an advisory proposal is accepted. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Faculty advisor accesses the ``Advisory Capacity \& Quotas'' settings tab.
+    \item Advisor sets maximum active capstone supervision groups (e.g., 4 groups).
+    \item Advisor designates blackout calendar windows (e.g., sabbatical dates or conference travel).
+    \item System validates settings against departmental statutory policy limits.
+    \item System recalculates current active count: $\text{ActiveGroups} = \text{Count}(\text{AcceptedProposals})$.
+    \item If $\text{ActiveGroups} \ge \text{MaxQuota}$, system automatically transitions status to \texttt{QUOTA\_REACHED}.
+    \item System updates expert availability index in vector store to depress primary supervisor ranking.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{4.a.}] \textbf{Coordinator enacts departmental quota override:}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] Coordinator elevates faculty cap by +1 group due to special research necessity.
+        \item[4.a.2.] System records coordinator override rationale in audit log.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Real-time quota enforcement with atomic database locking on acceptance. \newline
+2. Asynchronous status update to vector search index within 2 seconds. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-19: Schedule Mentorship Consultation Session}
+\label{subsec:uc19}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC19: Schedule Mentorship Consultation Session} \\ \hline
+\textbf{Goal} & An approved student team schedules an office-hour consultation session with their assigned advisor. \\ \hline
+\textbf{Preconditions} & Active accepted advisory relationship exists; advisor has published open consultation slots. \\ \hline
+\textbf{Success End Condition} & Consultation booked; calendar invite generated; status \texttt{SCHEDULED}. Message: \textit{``Consultation booked successfully.''} \\ \hline
+\textbf{Failed End Condition} & Booking rejected. Message: \textit{``Slot no longer available or agenda missing.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead \\
+\textbf{Secondary Actors:} & Faculty Advisor, Industry Mentor \\ \hline
+\textbf{Trigger} & Student opens the ``Schedule Consultation'' view in active project workspace. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Student opens the advisor's consultation calendar.
+    \item System displays open 30-minute office-hour slots for the upcoming two weeks.
+    \item Student selects an open slot (e.g., Thursday 3:00 PM -- 3:30 PM).
+    \item Student enters mandatory session agenda and attaches discussion documents.
+    \item System verifies that the slot has not been concurrently reserved.
+    \item System creates consultation record in database and marks slot as \texttt{BOOKED}.
+    \item System generates an iCalendar (.ics) invite and sends email confirmation to both parties.
+    \item System logs scheduled session in the project workspace milestone tracker.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{5.a.}] \textbf{Concurrent booking conflict (another student books slot simultaneously):}
+    \begin{itemize}[leftmargin=*]
+        \item[5.a.1.] System detects database slot lock collision.
+        \item[5.a.2.] System alerts student: \textit{``Slot was just booked by another team. Please choose another time.''}
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Prevent double-booking using strict PostgreSQL row-level locks on calendar slots. \newline
+2. Dispatch calendar invitations and notifications within 3 seconds of booking. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-20: Exchange Contextual Messages \& Project Milestones}
+\label{subsec:uc20}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC20: Exchange Contextual Messages \& Project Milestones} \\ \hline
+\textbf{Goal} & Students and advisors communicate, share milestone reports, and log technical feedback inside project workspace. \\ \hline
+\textbf{Preconditions} & User belongs to an active \texttt{ACCEPTED} project workspace. \\ \hline
+\textbf{Success End Condition} & Message/file persisted; conversation stream updated in real time. Message: \textit{``Message posted.''} \\ \hline
+\textbf{Failed End Condition} & Transmission failed. Message: \textit{``Failed to send message: File type not permitted or network offline.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead, Faculty Advisor, Industry Mentor \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & User inputs text or attaches a document in the workspace discussion channel. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item User opens the workspace discussion channel for their capstone project.
+    \item User enters message text or selects a milestone artifact (e.g., \texttt{Architecture\_v1.pdf}).
+    \item System validates file attachment format (PDF, DOCX, ZIP; max 25 MB).
+    \item System scans file for malicious payloads and stores it in encrypted object storage.
+    \item System saves message record to database linked to the project and author ID.
+    \item System broadcasts new message via WebSocket connection to active workspace participants.
+    \item System updates unread message badge count for offline team members.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{Attachment exceeds 25 MB limit:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] System rejects file and suggests providing an external repository link (e.g., GitHub/Drive).
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. WebSocket message delivery latency under 100 milliseconds for connected clients. \newline
+2. All messages encrypted at rest using AES-256-GCM. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-21: Submit Post-Collaboration Evaluation \& Endorsement}
+\label{subsec:uc21}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC21: Submit Post-Collaboration Evaluation \& Endorsement} \\ \hline
+\textbf{Goal} & Record mutual structured evaluations, quantitative ratings, and verified skill endorsements upon capstone completion. \\ \hline
+\textbf{Preconditions} & Capstone project marked as completed by coordinator; advisory relationship closed. \\ \hline
+\textbf{Success End Condition} & Mutual evaluation saved; reputation scores updated; skill attestations verified. Message: \textit{``Evaluation submitted successfully.''} \\ \hline
+\textbf{Failed End Condition} & Submission rejected. Message: \textit{``Evaluation submission incomplete: Required rubric items missing.''} \\ \hline
+\textbf{Primary Actors:} & Student Project Lead, Faculty Advisor, Industry Mentor \\
+\textbf{Secondary Actors:} & Department Capstone Coordinator \\ \hline
+\textbf{Trigger} & System prompts user for post-project review upon semester conclusion. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item User accesses the ``Project Completion Review'' portal.
+    \item User completes a structured quantitative rubric (responsiveness, technical depth, milestone adherence).
+    \item User inputs qualitative feedback comments.
+    \item Advisor endorses specific skills demonstrated by students during the project.
+    \item System validates that all mandatory evaluation fields are completed.
+    \item System records evaluation in PostgreSQL with status \texttt{COMMITTED}.
+    \item System updates the recipient's aggregate reputation score and attaches skill badges.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{3.a.}] \textbf{User submits derogatory or non-academic commentary:}
+    \begin{itemize}[leftmargin=*]
+        \item[3.a.1.] Automated content moderation filter flags text and routes review to Department Coordinator.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Maintain confidentiality of student reviews until both parties submit or deadline passes. \newline
+2. Update aggregated reputation metric immediately upon submission commit. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-22: Moderate Content \& Re-Index Ontology Taxonomy}
+\label{subsec:uc22}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC22: Moderate Content \& Re-Index Ontology Taxonomy} \\ \hline
+\textbf{Goal} & Administrator updates academic skill taxonomy, moderates custom tags, and triggers vector re-indexing. \\ \hline
+\textbf{Preconditions} & Administrator is signed in with \texttt{ADMIN} superuser privileges. \\ \hline
+\textbf{Success End Condition} & Taxonomy nodes updated; vector index refresh queued. Message: \textit{``Taxonomy updated and re-indexing initiated.''} \\ \hline
+\textbf{Failed End Condition} & Operation failed. Message: \textit{``Unable to update taxonomy: Cyclic hierarchy detected.''} \\ \hline
+\textbf{Primary Actors:} & System Administrator, Department Capstone Coordinator \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Administrator opens the Taxonomy \& Content Moderation Console. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Administrator opens the Academic Taxonomy Tree view.
+    \item Administrator adds new technical skill entities (e.g., \texttt{LangChain}, \texttt{TinyML}) under parent domain nodes.
+    \item Administrator reviews and approves or merges user-submitted custom skill tags.
+    \item System verifies that the taxonomy remains an acyclic directed graph (DAG).
+    \item Administrator clicks ``Re-Index Academic Embeddings''.
+    \item System triggers background Celery worker to regenerate taxonomy vectors in Qdrant.
+    \item System logs taxonomy modification event in administrative audit ledger.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{4.a.}] \textbf{Administrator attempts to create circular relationship:}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System rejects operation: \textit{``Circular dependency detected between domain nodes.''}
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Validate taxonomy DAG integrity within 100 milliseconds. \newline
+2. Execute vector collection re-indexing asynchronously without interrupting search queries. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-23: Monitor Departmental Supervisory Allocation Dashboard}
+\label{subsec:uc23}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC23: Monitor Departmental Supervisory Allocation Dashboard} \\ \hline
+\textbf{Goal} & Coordinator monitors real-time faculty supervisory distribution, unserved student teams, and quota health. \\ \hline
+\textbf{Preconditions} & Coordinator or auditor is signed in with administrative view permissions. \\ \hline
+\textbf{Success End Condition} & Supervisory heatmap and unallocated student queues rendered. Message: \textit{``Departmental dashboard loaded.''} \\ \hline
+\textbf{Failed End Condition} & Dashboard failed to load. Message: \textit{``Analytics data unavailable.''} \\ \hline
+\textbf{Primary Actors:} & Department Capstone Coordinator, Institutional Auditor \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Coordinator navigates to ``Departmental Allocation Console''. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Coordinator opens the Department Allocation Dashboard.
+    \item System aggregates real-time data across all active capstone teams and faculty rosters.
+    \item System renders an interactive allocation heatmap showing active student load per faculty member.
+    \item System highlights faculty members who are overloaded or have reached maximum quota.
+    \item System displays a dedicated list of ``Unallocated Student Teams'' who have no confirmed advisor.
+    \item Coordinator filters data by academic semester, program, or specialization track.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{5.a.}] \textbf{Coordinator identifies an unallocated team whose requests all expired:}
+    \begin{itemize}[leftmargin=*]
+        \item[5.a.1.] Coordinator uses administrative action to assign an available co-advisor directly.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Load aggregate dashboard views for 200+ faculty and 500+ teams in under 1.5 seconds. \newline
+2. Refresh data automatically every 60 seconds or on manual refresh click. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-24: Search and Export Institutional Compliance Audit Trail}
+\label{subsec:uc24}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC24: Search and Export Institutional Compliance Audit Trail} \\ \hline
+\textbf{Goal} & Trace system activities, review cryptographic transaction logs, and export verifiable audit records. \\ \hline
+\textbf{Preconditions} & Administrator or institutional auditor has verified administrative credentials. \\ \hline
+\textbf{Success End Condition} & Filtered audit records displayed; encrypted CSV/JSON audit file exported. Message: \textit{``Audit trail exported successfully.''} \\ \hline
+\textbf{Failed End Condition} & Search or export failed. Message: \textit{``Audit search query failed: Invalid parameters.''} \\ \hline
+\textbf{Primary Actors:} & System Administrator, Institutional Auditor, Department Coordinator \\
+\textbf{Secondary Actors:} & None \\ \hline
+\textbf{Trigger} & Auditor accesses the ``Audit Trail \& Governance'' portal. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Auditor navigates to the Audit Trail interface.
+    \item Auditor defines search criteria: Date Range, Actor Role, Event Type (e.g., \texttt{FSM\_STATE\_TRANSITION}), and User UUID.
+    \item System queries the append-only audit database table.
+    \item System validates cryptographic hash chaining across selected log records.
+    \item System renders matching audit events with timestamp, user ID, IP address, and payload diff.
+    \item Auditor clicks ``Export Signed Audit CSV''.
+    \item System compiles audit dataset, attaches SHA-256 integrity signature, and serves download.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{4.a.}] \textbf{Cryptographic log chain mismatch detected (tampering attempt):}
+    \begin{itemize}[leftmargin=*]
+        \item[4.a.1.] System displays high-severity security alert and isolates affected record range.
+        \item[4.a.2.] System dispatches immediate emergency security alert to System Administrators.
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Enforce append-only integrity; reject any UPDATE or DELETE operations on audit log tables. \newline
+2. Export 10,000 audit log records to CSV in under 2 seconds. \\ \hline
+\end{tabularx}
+\end{table}
+
+\clearpage
+\subsection{Use Case Description-25: Generate Departmental Capstone Analytics \& Accreditation Report}
+\label{subsec:uc25}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{Use Case} & \textbf{UC25: Generate Departmental Capstone Analytics \& Accreditation Report} \\ \hline
+\textbf{Goal} & Generate certified PDF and CSV institutional summary reports for accreditation boards (e.g., BAETE/IEB). \\ \hline
+\textbf{Preconditions} & Authorized coordinator or auditor session active; semester capstone records synchronized. \\ \hline
+\textbf{Success End Condition} & Certified institutional report generated and downloaded. Message: \textit{``Accreditation report ready for download.''} \\ \hline
+\textbf{Failed End Condition} & Generation failed. Message: \textit{``Unable to compile report: Incomplete data for selected semester.''} \\ \hline
+\textbf{Primary Actors:} & Department Capstone Coordinator, Institutional Auditor \\
+\textbf{Secondary Actors:} & System Administrator \\ \hline
+\textbf{Trigger} & Coordinator navigates to ``Reports \& Accreditation'' and clicks ``Generate Report''. \\ \hline
+\textbf{Description / Main Success Scenario} &
+\begin{enumerate}[leftmargin=*]
+    \item Coordinator opens the Reports console.
+    \item Coordinator selects report type: ``Semester Supervisory Allocation Summary'' or ``Interdisciplinary Research Velocity''.
+    \item Coordinator selects academic term (e.g., ``Fall 2026'') and target department.
+    \item Coordinator selects output format: PDF (formal executive report) or CSV (raw data).
+    \item System aggregates metrics: total projects, supervisor-to-student ratios, multidisciplinary co-advisory percentage, and milestone adherence rates.
+    \item System compiles the report document with institutional header, summary tables, and charts.
+    \item System generates downloadable file and logs report generation in audit trail.
+\end{enumerate} \\ \hline
+\textbf{Alternative Flows} &
+\begin{itemize}[leftmargin=*]
+    \item[\textbf{5.a.}] \textbf{No finalized projects exist for selected term:}
+    \begin{itemize}[leftmargin=*]
+        \item[5.a.1.] System displays notice: \textit{``No completed records found for the selected semester.''}
+    \end{itemize}
+\end{itemize} \\ \hline
+\textbf{Quality Requirements} & 
+1. Render and compile multi-page PDF accreditation report within 3 seconds. \newline
+2. Exclude private student contact details from aggregate institutional reports. \\ \hline
+\end{tabularx}
+\end{table}

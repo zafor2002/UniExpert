@@ -1,0 +1,535 @@
+\chapter{SYSTEM ANALYSIS}
+\label{ch:system_analysis}
+
+\section{Scenario Writing}
+\label{sec:scenario_writing}
+
+The operational realities of modern academic institutions demand intuitive, highly responsive, and reliable software interactions. The following six real-world operational scenarios illustrate how diverse university stakeholders engage with the UniExpert platform across the end-to-end project lifecycle.
+
+\subsection{Scenario 1: Formulating an Unstructured Capstone Problem and Extracting Skill Entities}
+\label{subsec:scenario1}
+
+\noindent\textbf{Scenario Description:}
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item A final-year Software Engineering student group logs into UniExpert and opens the ``New Capstone Proposal'' workspace.
+    \item The group lead inputs a raw, three-paragraph project statement: \textit{``We are designing an edge-computing healthcare monitoring system that collects ECG telemetry over Bluetooth Low Energy, aggregates it on microcontrollers, and runs local convolutional neural networks to detect arrhythmias before synchronizing encrypted anomalies to a cloud backend via MQTT.''}
+    \item The student clicks ``Analyze Problem Formulation''.
+    \item The system's background NLP pipeline tokenizes the text, performs zero-shot transformer classification, and identifies primary domains: \texttt{Embedded Systems}, \texttt{Machine Learning}, and \texttt{Healthcare Informatics}.
+    \item The entity extractor tags prerequisite technical competencies: \texttt{BLE (Bluetooth Low Energy)}, \texttt{C/C++ Embedded}, \texttt{CNN (Convolutional Neural Networks)}, \texttt{MQTT}, and \texttt{Data Encryption (AES-GCM)}.
+    \item The system displays the extracted domains and skills on an interactive review card, allowing the team lead to adjust importance sliders (e.g., setting \texttt{CNN} to high importance and \texttt{MQTT} to medium).
+    \item The student confirms the extracted entity set, saving the parsed project vector to the repository and initiating candidate expert matching.
+\end{itemize}
+
+\subsection{Scenario 2: Semantic Hybrid Expert Discovery and Reviewing XAI Explanations}
+\label{subsec:scenario2}
+
+\noindent\textbf{Scenario Description:}
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item Following entity extraction, the student triggers the ``Discover Advisors'' query.
+    \item The matchmaking engine converts the project statement into a 384-dimensional dense semantic embedding and queries the Qdrant HNSW vector store across indexed faculty profiles.
+    \item The hybrid ranking algorithm calculates multi-criteria composite scores across semantic closeness, verified skill overlap, publication recency, and current supervisor quota capacity.
+    \item The search interface presents a ranked list of recommended professors and industry practitioners, each displaying an overall match score (e.g., ``94\% Match'').
+    \item The student expands the top-ranked candidate profile (Dr. Farhana Rahman, Associate Professor of Embedded AI).
+    \item The Explainable AI (XAI) drawer displays a detailed breakdown: 45\% contribution from direct semantic vector similarity with her recent IEEE papers on edge inference, 30\% from verified skill matches (\texttt{C/C++}, \texttt{Edge ML}), 15\% from Tier-2 verified credentials, and 10\% from active advisory quota availability (2 out of 5 slots remaining).
+    \item The student benchmarks Dr. Rahman side-by-side with a second candidate to compare available consultation hours, departmental affiliations, and active research grants before proceeding.
+\end{itemize}
+
+\subsection{Scenario 3: Detecting Multidisciplinary Skill Gaps and Recruiting Co-Advisors}
+\label{subsec:scenario3}
+
+\noindent\textbf{Scenario Description:}
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item A student team comprising three Computer Science majors inputs a capstone project involving bioinformatics: \textit{``Deep learning pipeline for single-cell RNA-seq clustering and genomic variant classification.''}
+    \item The team profile indicates member proficiencies in \texttt{Python}, \texttt{PyTorch}, and \texttt{Cloud Computing}.
+    \item The system's Skill Gap Detection Engine calculates the competency deficit set: $\Delta \mathcal{K} = \mathcal{K}_{\text{req}} \setminus \mathcal{K}_{\text{team}} = \{\texttt{Single-Cell RNA-seq}, \texttt{Genomic Annotation}, \texttt{Bioinformatics Pipelines}\}$.
+    \item The platform displays a prominent warning badge: \textit{``Critical Domain Deficit Detected: 60\% of biological prerequisites unaddressed by current team roster.''}
+    \item The system triggers a combinatorial set-cover optimization algorithm, evaluating faculty members in the Department of Pharmacy and Department of Public Health.
+    \item UniExpert recommends Dr. Tanvir Ahmed (Bioinformatics Researcher) as a prospective Co-Advisor, highlighting that adding Dr. Ahmed increases total project competency coverage to 92\%.
+    \item The student group clicks ``Propose Co-Advisory'', linking Dr. Ahmed alongside their primary software engineering supervisor.
+\end{itemize}
+
+\subsection{Scenario 4: Negotiating Collaboration Requests via Finite State Machine}
+\label{subsec:scenario4}
+
+\noindent\textbf{Scenario Description:}
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item After selecting Dr. Farhana Rahman, the student team clicks ``Request Advisory Collaboration''.
+    \item The team completes a structured proposal form specifying proposed project milestones, weekly expected time commitment, and a brief justification referencing Dr. Rahman's edge computing publications.
+    \item The system creates an advisory request record, transitions the state machine from \texttt{DRAFT} to \texttt{SUBMITTED}, and delivers an instant dashboard notification and email digest to Dr. Rahman.
+    \item Dr. Rahman logs into her Faculty Advisory Portal and inspects the incoming request in her ``Pending Solicitations'' queue.
+    \item Rather than an open-ended generic email, she reviews the structured milestones, project synopsis, and the system's XAI alignment score.
+    \item She selects ``Request Clarification / Negotiation'', submitting a condition: \textit{``Scope needs to benchmark TinyML on ARM Cortex-M4 hardware rather than simulated devices.''}
+    \item The FSM transitions to \texttt{NEGOTIATION}. The students receive the note, update their milestone roadmap, and re-submit.
+    \item Dr. Rahman reviews the revised roadmap and clicks ``Accept Advisory Request''. The FSM transitions to \texttt{ACCEPTED}, automatically decrementing her available quota from 2 to 1 and notifying the Department Coordinator.
+\end{itemize}
+
+\subsection{Scenario 5: Managing Faculty Quota Exhaustion and Scheduling Office Hours}
+\label{subsec:scenario5}
+
+\noindent\textbf{Scenario Description:}
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item A highly sought-after Machine Learning professor reaches his departmental supervisory quota of 5 concurrent capstone groups for the Fall 2026 term.
+    \item The system automatically transitions his availability status from \texttt{AVAILABLE} to \texttt{QUOTA\_REACHED}.
+    \item In general student search results, his profile card is greyed out with a badge indicating \textit{``Supervisory Quota Full for Current Semester (Co-Advisory or Consultation Only)''}, blocking new primary advisory submissions and preventing inbox flooding.
+    \item For his five active student groups, the professor opens his ``Advisory Calendar Settings'' and defines available weekly office hour slots (Tuesdays 2:00 PM -- 4:00 PM).
+    \item The student team lead opens the professor's shared scheduling view, selects an open 30-minute consultation window for next Tuesday, and inputs a session agenda: \textit{``Midterm architecture review and sensor calibration validation.''}
+    \item The system validates the booking against the professor's calendar, generates a calendar event with a secure meeting link, and logs the scheduled consultation in the team's capstone workspace.
+\end{itemize}
+
+\subsection{Scenario 6: Verifying Academic Credentials and Generating Compliance Audit Reports}
+\label{subsec:scenario6}
+
+\noindent\textbf{Scenario Description:}
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item A newly recruited adjunct faculty member registers on UniExpert with a university email address.
+    \item The system checks the email domain, verifies institutional ownership via a 24-hour cryptographic token, and promotes the profile to Tier-1 (Email Verified).
+    \item The faculty member connects their ORCID and Google Scholar ID. The system's background ingestion worker queries academic APIs, parses 18 indexed publications, computes an h-index of 7, and upgrades the account to Tier-2 (Scholar Verified).
+    \item At the end of the academic semester, the Department Capstone Coordinator accesses the Administrative Compliance Console.
+    \item The coordinator reviews department-wide supervisory distribution heatmaps, verifying that no faculty member exceeded their statutory quota and that all 142 registered capstone groups were paired with verified advisors.
+    \item The coordinator applies filters for the ``Department of Software Engineering, Fall 2026'', verifies all cryptographic audit log hashes, and generates a signed PDF/CSV Accreditation Compliance Report for the University Academic Council.
+\end{itemize}
+
+\section{Stakeholders}
+\label{sec:stakeholders}
+
+The UniExpert platform orchestrates collaborative interactions among six primary academic stakeholders:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Student Project Lead / Capstone Researcher:} Undergraduate or postgraduate students undertaking capstone projects, academic theses, or competitive innovation challenges. They utilize the platform to formulate problem statements, receive AI-driven expert recommendations, analyze team skill deficits, submit formal advisory requests, schedule consultations, and maintain milestone communication.
+    
+    \item \textbf{Faculty Advisor / Academic Expert:} University professors, associate professors, assistant professors, and departmental lecturers who supervise student research. They define their research taxonomies, sync publication archives, configure weekly advisory quotas and blackout dates, evaluate structured student proposals through the FSM lifecycle, and conduct supervised milestone reviews.
+    
+    \item \textbf{Industry Mentor / Technical Practitioner:} Verified external domain professionals, software architects, corporate research scientists, and alumni fellows who contribute specialized industry perspectives, code reviews, and architectural guidance to academic capstone teams.
+    
+    \item \textbf{Department Capstone Coordinator:} Academic faculty appointed to manage departmental capstone course modules. They oversee group registrations, establish supervisory quota limits, adjudicate interdisciplinary co-advisory agreements, monitor faculty workload equity, and resolve advisory disputes or unallocated student teams.
+    
+    \item \textbf{System Administrator:} Technical personnel (represented by the engineering development team during initial deployment) responsible for platform operations, database migrations, Qdrant vector store indexing, LLM inference pipeline tuning, role authorization governance, and security backups.
+    
+    \item \textbf{Institutional Auditor / Accreditation Observer:} University executive leadership, Dean's office personnel, Board of Studies evaluators, and external accreditation assessment committees (e.g., BAETE/IEB) who view aggregated supervisory metrics, track institutional research diversity, and audit compliance trails without modifying transactional data.
+\end{enumerate}
+
+\section{User Profiles}
+\label{sec:user_profiles}
+
+The structured profiles below define the operational characteristics, demographic assumptions, technical experience, and derived engineering requirements for the core user classes of UniExpert.
+
+\subsection{User Profile-01: Student Project Lead}
+\label{subsec:profile_student}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|p{4.2cm}|}
+\hline
+\rowcolor{lightgray!40} \textbf{User Class} & \textbf{Notes on Characteristic} & \textbf{Requirement Implied} \\ \hline
+\textbf{Type of User} & Undergraduate / Graduate student undertaking capstone project & Verification, Identity Management \\ \hline
+\textbf{Age Range} & Approximately 20 to 28 years & Interface, Accessibility \\ \hline
+\textbf{Frequency of Use} & Daily during proposal setup and weekly during capstone execution & Performance, Reliability, Operational \\ \hline
+\textbf{Mandatory / Discretionary} & Mandatory for capstone team leads; discretionary for general thesis exploration & Interface, Usability, Acceptance \\ \hline
+\textbf{Computer Experience / OS / Applications} & High digital fluency; familiar with Git, web browsers, IDEs, and mobile applications & Modern Web UI, Responsive Design, Portability \\ \hline
+\textbf{Education} & 3rd / 4th-year university undergraduate or Master's candidate & Technical Language Support, Documentation \\ \hline
+\textbf{Goals} & Find optimal supervisors, resolve skill deficits, and track advisory milestones & Reliability, Recommendation Accuracy, XAI \\ \hline
+\textbf{Language Skills} & English (primary academic medium) and Bangla (informal communication) & UTF-8 Text Support, English UI \\ \hline
+\textbf{Number of Users} & 500 to 2,500 active students per semester & Scalability, Concurrency, Resource Management \\ \hline
+\textbf{Training} & 10-minute briefing during capstone orientation lecture & Intuitive Onboarding, Contextual Tooltips \\ \hline
+\textbf{Other Systems Used} & Google Classroom, GitHub, Moodle, Overleaf, WhatsApp, Email & Import/Export, Calendar Integration \\ \hline
+\textbf{Ways of Working} & Collaborative laptop environments, campus Wi-Fi, home internet & Session Resiliency, Responsive Web \\ \hline
+\end{tabularx}
+\caption{User Profile for Student Project Lead}
+\label{tab:user_profile_student}
+\end{table}
+
+\subsection{User Profile-02: Faculty Advisor / Academic Expert}
+\label{subsec:profile_faculty}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|p{4.2cm}|}
+\hline
+\rowcolor{lightgray!40} \textbf{User Class} & \textbf{Notes on Characteristic} & \textbf{Requirement Implied} \\ \hline
+\textbf{Type of User} & Full-time university faculty, professors, and academic researchers & Role-Based Security, Institutional Domain Check \\ \hline
+\textbf{Age Range} & Approximately 28 to 65 years & Clean Typography, High Contrast UI \\ \hline
+\textbf{Frequency of Use} & 2 to 4 times weekly for reviewing proposals and consultation logs & Efficiency, Email Notification Digest \\ \hline
+\textbf{Mandatory / Discretionary} & Mandatory for assigned supervisors; discretionary for elective co-advisors & Quota Enforcement, Anti-Burnout Protection \\ \hline
+\textbf{Computer Experience / OS / Applications} & Advanced academic software proficiency, Google Scholar, LaTeX, ORCID & Automated Publication Scraping, ORCID OAuth \\ \hline
+\textbf{Education} & M.Sc., M.Phil., Ph.D. in engineering or allied academic fields & High-Level Academic Taxonomy Support \\ \hline
+\textbf{Goals} & Supervise aligned research, prevent inbox overload, and track group milestones & Finite State Machine, Structured Proposals \\ \hline
+\textbf{Language Skills} & Fluent academic English & Strict Technical English Formatting \\ \hline
+\textbf{Number of Users} & 80 to 300 faculty members per institution & Rapid Indexing, Database Optimization \\ \hline
+\textbf{Training} & 15-minute hands-on departmental orientation or self-guided manual & Quick-Start Guides, Low Friction UI \\ \hline
+\textbf{Other Systems Used} & University ERP, Microsoft Teams, Zoom, Google Calendar, ResearchGate & Calendar Sync, Webhook Integrations \\ \hline
+\textbf{Ways of Working} & Office desktop PCs, personal laptops, mobile browsers during transit & Cross-Browser Stability, Minimalist Dashboard \\ \hline
+\end{tabularx}
+\caption{User Profile for Faculty Advisor}
+\label{tab:user_profile_faculty}
+\end{table}
+
+\subsection{User Profile-03: Industry Mentor}
+\label{subsec:profile_mentor}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|p{4.2cm}|}
+\hline
+\rowcolor{lightgray!40} \textbf{User Class} & \textbf{Notes on Characteristic} & \textbf{Requirement Implied} \\ \hline
+\textbf{Type of User} & External industry technical leads, corporate researchers, and alumni & External Verification, LinkedIn Integration \\ \hline
+\textbf{Age Range} & Approximately 25 to 55 years & Modern Ergonomic Web Interface \\ \hline
+\textbf{Frequency of Use} & 1 to 2 times weekly during designated mentorship sprints & Rapid Async Workflows, Push Notifications \\ \hline
+\textbf{Mandatory / Discretionary} & Discretionary (voluntary industry-academia engagement) & Frictionless Sign-In, Flexible Availability \\ \hline
+\textbf{Computer Experience / OS / Applications} & Professional corporate software engineering environments & Security Standards, Clean RESTful APIs \\ \hline
+\textbf{Education} & B.Sc. / M.Sc. in Computer Science, Software Engineering, or related & Industry Skill Taxonomy (Cloud, DevOps, AI) \\ \hline
+\textbf{Goals} & Guide innovative student prototypes, identify hiring talent, and give back & Structured Advisory Scopes, Direct Booking \\ \hline
+\textbf{Language Skills} & English and Bangla professional fluency & Bi-Lingual Form Inputs \\ \hline
+\textbf{Number of Users} & 30 to 150 registered industry mentors & Controlled External Access, Privacy \\ \hline
+\textbf{Training} & Self-guided digital onboarding walkthrough (<5 minutes) & Intuitive UX, Self-Explanatory Forms \\ \hline
+\textbf{Other Systems Used} & Slack, GitHub, Jira, LinkedIn, Google Meet & GitHub Profile Sync, Meeting Integrations \\ \hline
+\textbf{Ways of Working} & Work laptops, mobile devices during business hours & Responsive UI, Session Token Persistence \\ \hline
+\end{tabularx}
+\caption{User Profile for Industry Mentor}
+\label{tab:user_profile_mentor}
+\end{table}
+
+\subsection{User Profile-04: Department Capstone Coordinator}
+\label{subsec:profile_coordinator}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|p{4.2cm}|}
+\hline
+\rowcolor{lightgray!40} \textbf{User Class} & \textbf{Notes on Characteristic} & \textbf{Requirement Implied} \\ \hline
+\textbf{Type of User} & Senior faculty member appointed as Capstone Course Convener & Elevated Administrative RBAC Scopes \\ \hline
+\textbf{Age Range} & Approximately 32 to 55 years & High-Density Data Tables, Visual Charts \\ \hline
+\textbf{Frequency of Use} & Heavy daily use at semester start; 2 to 3 times weekly thereafter & High Data Throughput, Batch Operations \\ \hline
+\textbf{Mandatory / Discretionary} & Mandatory departmental governance responsibility & Strict Auditability, Data Validation \\ \hline
+\textbf{Computer Experience / OS / Applications} & Highly experienced with spreadsheets, university portals, and CSV exports & Robust CSV/Excel Batch Importer, PDF Reports \\ \hline
+\textbf{Education} & Ph.D. or Senior Assistant / Associate Professor & Formal Departmental Workflow Modeling \\ \hline
+\textbf{Goals} & Ensure 100\% student team supervisor coverage, balance faculty loads, audit ethics & Quota Monitoring Dashboards, Allocation Heatmaps \\ \hline
+\textbf{Language Skills} & Fluent academic and administrative English & Formal Academic Reporting \\ \hline
+\textbf{Number of Users} & 2 to 6 coordinators per department & Granular Authorization, State Overrides \\ \hline
+\textbf{Training} & Dedicated administrative briefing and technical handover session & Comprehensive Administrative Manual \\ \hline
+\textbf{Other Systems Used} & University Examination System, Institutional Spreadsheets & Data Interoperability, Secure Export \\ \hline
+\textbf{Ways of Working} & Office desktop with high-resolution monitors, campus LAN & Wide Table Views, Multi-Column Layouts \\ \hline
+\end{tabularx}
+\caption{User Profile for Department Capstone Coordinator}
+\label{tab:user_profile_coordinator}
+\end{table}
+
+\subsection{User Profile-05: System Administrator}
+\label{subsec:profile_admin}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|p{4.2cm}|}
+\hline
+\rowcolor{lightgray!40} \textbf{User Class} & \textbf{Notes on Characteristic} & \textbf{Requirement Implied} \\ \hline
+\textbf{Type of User} & Core software engineering team and university IT administrators & Superuser Privileges, System Logs Access \\ \hline
+\textbf{Age Range} & Approximately 22 to 45 years & CLI Tools, Configuration Consoles \\ \hline
+\textbf{Frequency of Use} & Continuous background monitoring; intensive during deployment & Health Telemetry, Automated Alerts \\ \hline
+\textbf{Mandatory / Discretionary} & Mandatory platform maintenance responsibility & High Availability, Disaster Recovery \\ \hline
+\textbf{Computer Experience / OS / Applications} & Expert; Linux servers, Docker containers, PostgreSQL, Qdrant, Redis & Containerization, CI/CD, Infrastructure as Code \\ \hline
+\textbf{Education} & B.Sc. / M.Sc. in Software Engineering or Computer Science & Deep Software Architecture Mastery \\ \hline
+\textbf{Goals} & Maintain 99.5\% system uptime, optimize vector query latencies, secure data & Log Auditing, Metric Dashboards, DB Backups \\ \hline
+\textbf{Language Skills} & English (Technical) & Structured Logging, Standard Error Codes \\ \hline
+\textbf{Number of Users} & 1 to 3 primary administrators & Multi-Factor Auth, Cryptographic Key Management \\ \hline
+\textbf{Training} & Architectural blueprints, API documentation, runbooks & Technical Documentation Integrity \\ \hline
+\textbf{Other Systems Used} & Docker, Kubernetes, Grafana, PostgreSQL CLI, Qdrant Web UI & Metrics Exporters, System Health Endpoints \\ \hline
+\textbf{Ways of Working} & Secure terminal sessions, administrative web consoles & Strict HTTPS, IP Whitelisting, CORS \\ \hline
+\end{tabularx}
+\caption{User Profile for System Administrator}
+\label{tab:user_profile_admin}
+\end{table}
+
+\section{Scope}
+\label{sec:scope}
+
+The UniExpert platform encompasses ten core operational modules designed to automate, optimize, and govern the academic matchmaking and collaboration lifecycle:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{User Registration, Role-Based Access Control, and Institutional Identity Verification:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Establish an authentic, role-restricted user registry ensuring academic integrity across students, faculty, and industry practitioners.
+        \item \textit{Functionality:} Users register with university email addresses, full legal names, departmental affiliations, and secure passwords. Faculty accounts automatically trigger cryptographic institutional token challenges to verify \texttt{.edu} domains. Strict RBAC assigns permissions across six designated scopes. All web traffic is protected via short-lived JWTs and encrypted refresh tokens.
+    \end{enumerate}
+    
+    \item \textbf{Faculty Profile Ingestion, Semantic Indexing, and Publication Sync:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Maintain comprehensive, dynamic academic expert profiles without requiring repetitive manual data entry from professors.
+        \item \textit{Functionality:} Ingests curriculum vitae data, research areas, and publication archives from Google Scholar and ORCID APIs. Automatically aggregates paper abstracts, citation indices, and co-author graphs into structured JSON representations and prepares text corpora for dense vector embedding.
+    \end{enumerate}
+
+    \item \textbf{Problem-First Natural Language Project Parsing and Skill Extraction:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Enable student teams to express research objectives naturally without being constrained by predetermined keyword checklists.
+        \item \textit{Functionality:} Accepts multi-paragraph problem statements, abstracts, or methodology outlines. Deploys zero-shot transformer classifiers and Named Entity Recognition (NER) models to extract macro research domains, technical toolchains, algorithms, and methodological paradigms, generating editable entity tags with user-adjustable relevance weights.
+    \end{enumerate}
+
+    \item \textbf{Dense Semantic Vector Search and Multi-Criteria Hybrid Matchmaking:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Discover the most qualified supervisors and mentors through deep semantic understanding combined with objective academic signals.
+        \item \textit{Functionality:} Encodes project descriptions into 384-dimensional dense vectors using transformer embeddings. Executes approximate nearest neighbor (ANN) vector search across Qdrant HNSW graph collections using cosine similarity. Combines cosine scores with skill overlap ratios, citation recency weights, credential tier multipliers, and advisor availability into a normalized composite score ($S_{\text{hybrid}} \in [0, 100]$).
+    \end{enumerate}
+
+    \item \textbf{Explainable AI (XAI) Justifications and Match Decomposition:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Foster trust and transparency by explaining exactly why an expert was recommended.
+        \item \textit{Functionality:} Displays interactive visual breakdown cards for every recommendation. Shows percentage contributions of domain alignment, exact keyword intersections, matching past publication titles, and current advisory bandwidth.
+    \end{enumerate}
+
+    \item \textbf{Multidisciplinary Gap Detection and Set-Cover Team Optimization:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Identify missing technical proficiencies in student groups and recommend cross-departmental co-advisors or peer members.
+        \item \textit{Functionality:} Compares project prerequisite competencies ($\mathcal{K}_{\text{req}}$) with student team proficiencies ($\mathcal{K}_{\text{team}}$) to derive the competency deficit set ($\Delta \mathcal{K}$). Solves a combinatorial set-cover optimization problem to identify the minimal set of co-advisors or student peers required to cover 100\% of project prerequisites.
+    \end{enumerate}
+
+    \item \textbf{Collaboration Advisory Request Lifecycle State Machine (FSM):}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Replace chaotic email solicitations with a formal, trackable advisory negotiation workflow.
+        \item \textit{Functionality:} Enforces a formal state machine governing proposals: \texttt{DRAFT} $\rightarrow$ \texttt{SUBMITTED} $\rightarrow$ \texttt{UNDER\_REVIEW} $\rightarrow$ \texttt{NEGOTIATION} $\rightarrow$ \texttt{ACCEPTED} / \texttt{DECLINED} / \texttt{EXPIRED}. Requests carry structured milestone proposals, enforce 7-day auto-response timers, and prevent duplicate concurrent applications.
+    \end{enumerate}
+
+    \item \textbf{Smart Consultation Scheduling and Contextual Workspace Channels:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Streamline faculty-student consultation bookings and centralize capstone progress communications.
+        \item \textit{Functionality:} Enables advisors to publish weekly availability windows and maximum daily consultation limits. Students book 30-minute consultation slots with pre-attached discussion agendas. Provides an integrated, audit-logged message channel for milestone document exchanges.
+    \end{enumerate}
+
+    \item \textbf{Mutual Peer Endorsement, Credential Attestation, and Reputation Scoring:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Maintain qualitative accountability and recognize exceptional mentorship across the institution.
+        \item \textit{Functionality:} Prompts students and advisors to submit structured qualitative evaluations and quantitative rubric ratings upon capstone milestone completion. Attests verified skill proficiencies to student portfolios and updates faculty mentorship reputation scores.
+    \end{enumerate}
+
+    \item \textbf{System Audit Logging, Administrative Moderation, and Institutional Analytics Reporting:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Objective:} Provide department heads and accreditation evaluators with full visibility, security governance, and compliance reporting.
+        \item \textit{Functionality:} Appends all system events to an immutable audit log. Generates real-time supervisory allocation heatmaps, department load distributions, and downloadable PDF/CSV accreditation reports compliant with university committee standards.
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{Scope Boundaries}
+\label{subsec:scope_boundaries}
+
+To maintain strict architectural feasibility and focus on core software engineering deliverables within the capstone timeframe, the following boundaries are formally established:
+
+\begin{itemize}[label=\textbf{\tiny\ensuremath{\blacksquare}}]
+    \item \textbf{No Automated Thesis Grading:} UniExpert facilitates expert discovery, advisory allocation, and milestone scheduling; it does not perform automated grading, plagiarism detection, or academic evaluation of submitted thesis reports.
+    \item \textbf{No Financial Transactions or Honorarium Processing:} The platform manages academic mentorship engagements and does not incorporate payment gateways, honorarium disbursements, or sponsorship billing.
+    \item \textbf{No Replacement of Official University LMS/ERP:} UniExpert operates as a specialized matchmaking and supervisory allocation sidecar; it does not replace official institutional gradebook registers, student admission portals, or university fee collection systems.
+    \item \textbf{No Unmoderated Social Chatting:} Messaging channels are strictly tied to formal active advisory workspaces and milestone submissions to preserve professional academic decorum.
+    \item \textbf{English Language Domain Focus:} While user interfaces accommodate standard UTF-8 characters and Bengali naming conventions, the core NLP transformer pipelines for taxonomy extraction and semantic vector embeddings are optimized for English academic literature.
+\end{itemize}
+
+\section{Feasibility Study}
+\label{sec:feasibility}
+
+A rigorous multi-dimensional feasibility study was conducted to verify that the UniExpert platform can be successfully architected, developed, evaluated, and deployed within university capstone constraints.
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Technical Feasibility:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Hardware and Infrastructure:} The development and execution environments utilize standard, accessible consumer and academic computing hardware. Client frontends operate smoothly on standard web browsers (Chrome, Firefox, Safari, Edge) across laptops and mobile devices. Backend microservices, the PostgreSQL relational database, Redis caching layers, and the Qdrant vector database require only 4 CPU cores and 8 GB RAM on cloud virtual private servers or local university lab machines.
+        \item \textit{Software and Technical Approach:} The system leverages robust, industry-standard open-source technologies: Next.js and TypeScript for the responsive reactive frontend, FastAPI (Python) for asynchronous REST endpoints, FastEmbed/HuggingFace transformers for localized high-efficiency vector embeddings, and Qdrant for vector indexing. Localized embedding inference avoids third-party API rate limits and external recurring costs.
+        \item \textit{Technical Expertise:} The project team possesses core software engineering proficiencies in full-stack web development, relational database modeling, containerization, and modern machine learning frameworks acquired through the Software Engineering curriculum.
+    \end{enumerate}
+
+    \item \textbf{Operational Feasibility:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{User Adoption:} Adoption is driven by addressing an acute, recognized institutional pain point—faculty email fatigue and student matchmaking friction. A streamlined onboarding workflow (institutional email verification), automated publication scraping (eliminating manual profile entry), and clean XAI justifications ensure high usability across students, faculty, and administrators.
+        \item \textit{Impact on Current Academic Practice:} The platform replaces informal, unmonitored email threads and static spreadsheets with an auditable, transparent advisory state machine. It introduces no disruptive bureaucratic overhead, significantly reduces supervisor inbox clutter, and balances department workloads.
+    \end{enumerate}
+
+    \item \textbf{Economic Feasibility:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Development Cost:} The platform is constructed entirely using open-source frameworks, free academic tiers, and permissive MIT/Apache-2.0 licensed software. No commercial proprietary licenses are required.
+        \item \textit{Operating Cost and Sustainability:} Running the localized embedding pipeline (FastEmbed \texttt{all-MiniLM-L6-v2}) and self-hosted Qdrant container consumes minimal server resources, incurring nominal hosting fees (\$10--\$20/month on standard cloud VPS or \$0 on internal university server racks).
+    \end{enumerate}
+
+    \item \textbf{Scheduling Feasibility:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Project Timeline:} The 12-week Fall 2026 capstone schedule is structured across disciplined agile sprints: Requirements \& System Analysis (Weeks 1--3), System Architecture \& Database Modeling (Weeks 4--5), Core Engine \& Vector Search Development (Weeks 6--8), Collaboration FSM \& Admin Dashboards (Weeks 9--10), and Rigorous Verification, IR Benchmarking \& Documentation (Weeks 11--12).
+        \item \textit{Dependencies:} The project operates independently of external institutional approvals or commercial API paywalls by utilizing synthetic academic datasets, open-access publication metadata (ORCID/arXiv), and isolated containerized testbeds.
+    \end{enumerate}
+
+    \item \textbf{Security and Privacy Considerations:}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textit{Data Protection:} Student and faculty personal identifying information (PII) is protected via AES-256 database field encryption, salted Argon2 password hashing, and encrypted TLS 1.3 transport. Role-Based Access Control guarantees that student project drafts remain private to authorized team members and assigned mentors.
+        \item \textit{Legal and Ethical Considerations:} The architecture conforms to institutional academic integrity standards and data privacy principles (e.g., GDPR data minimization). Users retain explicit control over profile visibility, and comprehensive immutable audit logs track all data access events.
+    \end{enumerate}
+\end{enumerate}
+
+\noindent\textit{Feasibility Summary:} The UniExpert system is technically, economically, operationally, and legally feasible. The combination of localized open-source AI tooling, modular microservice architecture, and clear domain boundaries ensures high reliability and successful implementation within the academic capstone timeframe.
+
+\section{Project Block Diagram}
+\label{sec:block_diagrams}
+
+The high-level operational flows and functional boundaries for each primary user role are detailed in the five architectural block diagrams below.
+
+\subsection{Block Diagram-1: Student Project Lead}
+\label{subsec:block_diag_student}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.8cm and 0.5cm,
+    font=\footnotesize\sffamily,
+    box/.style={rectangle, draw=black, thick, fill=blue!8, align=center, minimum width=2.4cm, minimum height=1.1cm, rounded corners=3pt},
+    action/.style={rectangle, draw=black, thick, fill=gray!10, align=center, minimum width=2.2cm, minimum height=1.0cm, rounded corners=2pt},
+    startnode/.style={circle, draw=black, thick, fill=blue!30, align=center, inner sep=4pt},
+    arrow/.style={-{Stealth[scale=1.0]}, thick}
+]
+\node[startnode] (start) {Student};
+\node[box, right=0.8cm of start] (login) {Log In \& Auth\\(JWT / Session)};
+\node[action, right=0.8cm of login] (problem) {Input Unstructured\\Problem Statement};
+\node[box, right=0.8cm of problem] (nlp) {NLP Parsing \&\\Entity Extraction};
+\node[action, below=1.2cm of nlp] (search) {Execute Hybrid\\Vector Search};
+\node[box, left=0.8cm of search] (xai) {Inspect Candidates\\\& XAI Breakdown};
+\node[action, left=0.8cm of xai] (gap) {Analyze Skill Gap\\\& Co-Advisors};
+\node[box, left=0.8cm of gap] (fsm) {Submit Advisory\\Request (FSM)};
+\node[action, below=1.2cm of fsm] (collab) {Workspace Active\\\& Milestone Sync};
+
+\draw[arrow] (start) -- (login);
+\draw[arrow] (login) -- (problem);
+\draw[arrow] (problem) -- (nlp);
+\draw[arrow] (nlp) -- (search);
+\draw[arrow] (search) -- (xai);
+\draw[arrow] (xai) -- (gap);
+\draw[arrow] (gap) -- (fsm);
+\draw[arrow] (fsm) -- (collab);
+\end{tikzpicture}
+\caption{Block Diagram for Student Project Lead}
+\label{fig:block_student}
+\end{figure}
+
+\subsection{Block Diagram-2: Faculty Advisor}
+\label{subsec:block_diag_faculty}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.8cm and 0.5cm,
+    font=\footnotesize\sffamily,
+    box/.style={rectangle, draw=black, thick, fill=teal!10, align=center, minimum width=2.4cm, minimum height=1.1cm, rounded corners=3pt},
+    action/.style={rectangle, draw=black, thick, fill=gray!10, align=center, minimum width=2.2cm, minimum height=1.0cm, rounded corners=2pt},
+    startnode/.style={circle, draw=black, thick, fill=teal!30, align=center, inner sep=4pt},
+    arrow/.style={-{Stealth[scale=1.0]}, thick}
+]
+\node[startnode] (start) {Faculty};
+\node[box, right=0.8cm of start] (auth) {Verify Domain\\\& Sign In};
+\node[action, right=0.8cm of auth] (profile) {Sync Publications\\(ORCID/Scholar)};
+\node[box, right=0.8cm of profile] (quota) {Set Quotas \&\\Blackout Dates};
+\node[action, below=1.2cm of quota] (solicit) {Receive Structured\\Advisory Proposal};
+\node[box, left=0.8cm of solicit] (review) {Review Milestones\\\& XAI Fit};
+\node[action, left=0.8cm of review] (decision) {Accept / Negotiate\\/ Decline (FSM)};
+\node[box, left=0.8cm of decision] (office) {Conduct Office\\Hours \& Feedback};
+
+\draw[arrow] (start) -- (auth);
+\draw[arrow] (auth) -- (profile);
+\draw[arrow] (profile) -- (quota);
+\draw[arrow] (quota) -- (solicit);
+\draw[arrow] (solicit) -- (review);
+\draw[arrow] (review) -- (decision);
+\draw[arrow] (decision) -- (office);
+\end{tikzpicture}
+\caption{Block Diagram for Faculty Advisor}
+\label{fig:block_faculty}
+\end{figure}
+
+\subsection{Block Diagram-3: Industry Mentor}
+\label{subsec:block_diag_mentor}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.8cm and 0.5cm,
+    font=\footnotesize\sffamily,
+    box/.style={rectangle, draw=black, thick, fill=orange!10, align=center, minimum width=2.4cm, minimum height=1.1cm, rounded corners=3pt},
+    action/.style={rectangle, draw=black, thick, fill=gray!10, align=center, minimum width=2.2cm, minimum height=1.0cm, rounded corners=2pt},
+    startnode/.style={circle, draw=black, thick, fill=orange!30, align=center, inner sep=4pt},
+    arrow/.style={-{Stealth[scale=1.0]}, thick}
+]
+\node[startnode] (start) {Mentor};
+\node[box, right=0.8cm of start] (reg) {Register \& Submit\\Professional Credentials};
+\node[action, right=0.8cm of reg] (skills) {Define Industry Skills\\\& Practical Toolchains};
+\node[box, right=0.8cm of skills] (avail) {Publish Mentorship\\Hours \& Capacity};
+\node[action, below=1.2cm of avail] (invites) {Receive Practical\\Mentorship Requests};
+\node[box, left=0.8cm of invites] (code) {Review Architecture\\\& Sprint Progress};
+\node[action, left=0.8cm of code] (endorse) {Submit Skill\\Attestation / Review};
+
+\draw[arrow] (start) -- (reg);
+\draw[arrow] (reg) -- (skills);
+\draw[arrow] (skills) -- (avail);
+\draw[arrow] (avail) -- (invites);
+\draw[arrow] (invites) -- (code);
+\draw[arrow] (code) -- (endorse);
+\end{tikzpicture}
+\caption{Block Diagram for Industry Mentor}
+\label{fig:block_mentor}
+\end{figure}
+
+\subsection{Block Diagram-4: Department Capstone Coordinator}
+\label{subsec:block_diag_coordinator}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.8cm and 0.5cm,
+    font=\footnotesize\sffamily,
+    box/.style={rectangle, draw=black, thick, fill=purple!10, align=center, minimum width=2.4cm, minimum height=1.1cm, rounded corners=3pt},
+    action/.style={rectangle, draw=black, thick, fill=gray!10, align=center, minimum width=2.2cm, minimum height=1.0cm, rounded corners=2pt},
+    startnode/.style={circle, draw=black, thick, fill=purple!30, align=center, inner sep=4pt},
+    arrow/.style={-{Stealth[scale=1.0]}, thick}
+]
+\node[startnode] (start) {Coordinator};
+\node[box, right=0.8cm of start] (login) {Coordinator Log In\\(Admin Scopes)};
+\node[action, right=0.8cm of login] (taxonomy) {Configure Department\\Taxonomy \& Quotas};
+\node[box, right=0.8cm of taxonomy] (heatmap) {Monitor Real-Time\\Allocation Heatmaps};
+\node[action, below=1.2cm of heatmap] (unserved) {Identify Unpaired\\Capstone Teams};
+\node[box, left=0.8cm of unserved] (override) {Resolve Disputed /\\Expired Requests};
+\node[action, left=0.8cm of override] (report) {Export Accreditation\\Compliance Reports};
+
+\draw[arrow] (start) -- (login);
+\draw[arrow] (login) -- (taxonomy);
+\draw[arrow] (taxonomy) -- (heatmap);
+\draw[arrow] (heatmap) -- (unserved);
+\draw[arrow] (unserved) -- (override);
+\draw[arrow] (override) -- (report);
+\end{tikzpicture}
+\caption{Block Diagram for Department Capstone Coordinator}
+\label{fig:block_coordinator}
+\end{figure}
+
+\subsection{Block Diagram-5: System Administrator}
+\label{subsec:block_diag_admin}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.8cm and 0.5cm,
+    font=\footnotesize\sffamily,
+    box/.style={rectangle, draw=black, thick, fill=red!10, align=center, minimum width=2.4cm, minimum height=1.1cm, rounded corners=3pt},
+    action/.style={rectangle, draw=black, thick, fill=gray!10, align=center, minimum width=2.2cm, minimum height=1.0cm, rounded corners=2pt},
+    startnode/.style={circle, draw=black, thick, fill=red!30, align=center, inner sep=4pt},
+    arrow/.style={-{Stealth[scale=1.0]}, thick}
+]
+\node[startnode] (start) {SysAdmin};
+\node[box, right=0.8cm of start] (auth) {MFA Authenticate\\Root Access};
+\node[action, right=0.8cm of auth] (users) {Manage RBAC \&\\Account Approvals};
+\node[box, right=0.8cm of users] (vector) {Trigger Vector Re-index\\\& Model Cache Check};
+\node[action, below=1.2cm of vector] (audit) {Verify Cryptographic\\Audit Log Integrity};
+\node[box, left=0.8cm of audit] (health) {Monitor System\\Telemetry \& Up-time};
+\node[action, left=0.8cm of health] (backup) {Execute Encrypted\\Database Backups};
+
+\draw[arrow] (start) -- (auth);
+\draw[arrow] (auth) -- (users);
+\draw[arrow] (users) -- (vector);
+\draw[arrow] (vector) -- (audit);
+\draw[arrow] (audit) -- (health);
+\draw[arrow] (health) -- (backup);
+\end{tikzpicture}
+\caption{Block Diagram for System Administrator}
+\label{fig:block_admin}
+\end{figure}

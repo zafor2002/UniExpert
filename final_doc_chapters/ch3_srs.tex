@@ -1,0 +1,551 @@
+\chapter{SOFTWARE REQUIREMENTS SPECIFICATION}
+\label{ch:srs}
+
+\section{Functional Requirements}
+\label{sec:functional_requirements}
+
+The functional requirements (FRs) define the specific capabilities, user actions, system responses, and operational workflows implemented within the UniExpert platform.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR01} & \textbf{User Registration \& Institutional Verification} \\ \hline
+\textbf{Description} & The system SHALL allow users to register with full name, university email, department, role, and password. Faculty registering with institutional domains (\texttt{.edu}) trigger an automated cryptographic verification challenge token. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR02} & \textbf{Multi-Factor Authentication \& Session Management} \\ \hline
+\textbf{Description} & The system SHALL authenticate users using salted password hashing, issue short-lived JWT access tokens (15-min TTL) and HTTP-only refresh tokens (7-day TTL), and enforce multi-factor authentication (MFA) for administrative accounts. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor, Department Coordinator, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR03} & \textbf{Student Profile \& Repository Management} \\ \hline
+\textbf{Description} & The system SHALL enable students to manage personal profiles including degree program, student ID, technical skills, GitHub project links, curriculum vitae (CV) uploads, and portfolio descriptions. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Department Capstone Coordinator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR04} & \textbf{Faculty Expert Profile \& Publication Sync} \\ \hline
+\textbf{Description} & The system SHALL automatically ingest faculty publication archives, abstracts, citation counts, and h-indices by connecting to Google Scholar and ORCID APIs, compiling a comprehensive research corpus. \\ \hline
+\textbf{Stakeholder} & Faculty Advisor, Department Capstone Coordinator, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR05} & \textbf{Multi-Tier Academic Credential Verification} \\ \hline
+\textbf{Description} & The system SHALL assign hierarchical verification badges: Tier-1 (Institutional Email Domain Verified), Tier-2 (ORCID/Scholar Scraped \& Verified), and Tier-3 (Department Head / Committee Validated). \\ \hline
+\textbf{Stakeholder} & Faculty Advisor, Industry Mentor, Department Capstone Coordinator, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR06} & \textbf{Department \& Academic Taxonomy Management} \\ \hline
+\textbf{Description} & The system SHALL maintain a hierarchical tree of academic disciplines, departments, research specializations, and prerequisite technical skills, modifiable by authorized administrators without software redeployment. \\ \hline
+\textbf{Stakeholder} & Department Capstone Coordinator, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR07} & \textbf{Natural Language Problem Ingestion} \\ \hline
+\textbf{Description} & The system SHALL provide a multi-paragraph input interface accepting unstructured capstone problem statements, project abstracts, and proposed methodologies up to 5,000 characters in length. \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR08} & \textbf{Automated Domain \& Skill Entity Extraction} \\ \hline
+\textbf{Description} & The system SHALL process ingested problem statements via zero-shot transformer classification and NER to extract macro academic domains, specific technical skill entities, and methodological paradigms. \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR09} & \textbf{Interactive Requirement Refinement \& Weighting} \\ \hline
+\textbf{Description} & The system SHALL display extracted domain and skill entities in an interactive review card, allowing students to add missing entities, remove irrelevant tags, and adjust relative importance weights. \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR10} & \textbf{Dense Semantic Vector Embedding \& Indexing} \\ \hline
+\textbf{Description} & The system SHALL generate 384-dimensional dense semantic vector embeddings for problem statements and faculty profiles, indexing them inside the Qdrant HNSW vector store using cosine distance metrics. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR11} & \textbf{Multi-Criteria Hybrid Match Scoring} \\ \hline
+\textbf{Description} & The system SHALL rank candidate experts using a composite scoring function weighting vector semantic similarity ($\omega_1$), exact skill overlap ($\omega_2$), publication recency ($\omega_3$), credential tier ($\omega_4$), and quota capacity ($\omega_5$). \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR12} & \textbf{Explainable AI (XAI) Justification Generation} \\ \hline
+\textbf{Description} & The system SHALL provide an explainability breakdown for each match, displaying percentage attributions, matched publication titles, shared skill keywords, and supervisory quota status. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Department Capstone Coordinator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR13} & \textbf{Dynamic Faceted Filtering \& Availability Search} \\ \hline
+\textbf{Description} & The system SHALL permit students to dynamically filter candidate matches by faculty department, verification tier, available advisory capacity, and external industry status. \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR14} & \textbf{Side-by-Side Candidate Comparison Matrix} \\ \hline
+\textbf{Description} & The system SHALL allow users to select up to three candidate experts and display a side-by-side comparative matrix evaluating skills, citation counts, active advisory loads, and past student ratings. \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR15} & \textbf{Multidisciplinary Project Decomposition} \\ \hline
+\textbf{Description} & The system SHALL analyze complex project statements to detect multi-departmental requirements (e.g., Software Engineering + Biomedical Science) and categorize prerequisite skill clusters. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Department Capstone Coordinator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR16} & \textbf{Set-Cover Team Skill Gap Optimization} \\ \hline
+\textbf{Description} & The system SHALL compute unaddressed prerequisite skills ($\Delta \mathcal{K} = \mathcal{K}_{\text{req}} \setminus \mathcal{K}_{\text{team}}$) and execute a greedy set-cover algorithm to recommend complementary co-advisors or student peers. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Department Capstone Coordinator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR17} & \textbf{Collaboration Request Advisory FSM} \\ \hline
+\textbf{Description} & The system SHALL enforce an auditable state machine governing student proposals (\texttt{DRAFT} $\rightarrow$ \texttt{SUBMITTED} $\rightarrow$ \texttt{UNDER\_REVIEW} $\rightarrow$ \texttt{NEGOTIATION} $\rightarrow$ \texttt{ACCEPTED} / \texttt{DECLINED} / \texttt{EXPIRED}) with a 7-day timeout. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR18} & \textbf{Faculty Anti-Burnout Quota \& Blackout Management} \\ \hline
+\textbf{Description} & The system SHALL allow faculty to define maximum active capstone supervision quotas (default: 5 groups) and blackout dates, automatically blocking new proposals when capacity is exhausted. \\ \hline
+\textbf{Stakeholder} & Faculty Advisor, Department Capstone Coordinator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR19} & \textbf{Consultation Booking \& Calendar Synchronization} \\ \hline
+\textbf{Description} & The system SHALL provide an interactive office-hour scheduling calendar allowing approved student teams to book 30-minute advisory consultations with pre-attached agendas. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR20} & \textbf{Contextual Discussion \& Milestone Messaging} \\ \hline
+\textbf{Description} & The system SHALL provide dedicated, secure discussion threads for each active project workspace, enabling milestone document sharing, feedback logging, and version review. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR21} & \textbf{Mutual Post-Collaboration Peer Endorsement} \\ \hline
+\textbf{Description} & The system SHALL solicit structured quantitative ratings and qualitative rubric reviews from students and faculty upon project completion, updating public skill attestations and mentor reputation. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR22} & \textbf{Departmental Supervisory Allocation Dashboard} \\ \hline
+\textbf{Description} & The system SHALL provide coordinators with real-time supervisory allocation heatmaps, identifying unallocated student groups, overloaded professors, and quota distribution across departments. \\ \hline
+\textbf{Stakeholder} & Department Capstone Coordinator, Institutional Auditor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR23} & \textbf{In-App \& Email Event Notifications} \\ \hline
+\textbf{Description} & The system SHALL trigger real-time in-app badge alerts and transactional email digests for incoming proposals, state machine transitions, consultation reminders, and quota updates. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor, Department Coordinator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR24} & \textbf{Immutable System Audit Trail Recording} \\ \hline
+\textbf{Description} & The system SHALL log every user login, profile update, search query, proposal state transition, and quota change into an append-only audit ledger with user ID, timestamp, and IP address. \\ \hline
+\textbf{Stakeholder} & System Administrator, Institutional Auditor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR25} & \textbf{Audit Log Search \& Regulatory Data Export} \\ \hline
+\textbf{Description} & The system SHALL allow authorized administrators and auditors to filter the audit trail by date range, user ID, event type, and outcome, and export verified records as CSV or encrypted JSON. \\ \hline
+\textbf{Stakeholder} & Department Capstone Coordinator, System Administrator, Institutional Auditor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{FR26} & \textbf{Institutional Accreditation \& Analytics Reporting} \\ \hline
+\textbf{Description} & The system SHALL generate certified PDF and CSV summary reports detailing departmental supervision metrics, interdisciplinary collaboration frequency, and milestone completion velocity. \\ \hline
+\textbf{Stakeholder} & Department Capstone Coordinator, System Administrator, Institutional Auditor \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Non-Functional Requirements}
+\label{sec:non_functional_requirements}
+
+The non-functional requirements (NFRs) specify the qualitative constraints, performance thresholds, security baselines, and architectural standards enforced across the system.
+
+\subsection{Security}
+\label{subsec:nfr_security}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR01} & \textbf{Role-Based Access Control (RBAC)} \\ \hline
+\textbf{Description} & The system SHALL strictly enforce authorization boundaries across all 6 roles, verifying JWT bearer tokens and claims on every backend API invocation. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor, Department Coordinator, System Administrator, Institutional Auditor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR02} & \textbf{Token-Based Session Security \& Cryptographic Expiry} \\ \hline
+\textbf{Description} & Access tokens SHALL expire after 15 minutes of inactivity; refresh tokens SHALL be stored exclusively in secure, HttpOnly, SameSite cookies with a 7-day maximum lifespan. \\ \hline
+\textbf{Stakeholder} & All Stakeholders \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR03} & \textbf{Password Hashing \& Brute-Force Lockout} \\ \hline
+\textbf{Description} & User passwords SHALL be hashed using Argon2id with unique cryptographic salts. Accounts SHALL be temporarily locked for 15 minutes after 5 consecutive failed login attempts. \\ \hline
+\textbf{Stakeholder} & All Stakeholders \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR04} & \textbf{Transport and Storage Cryptography} \\ \hline
+\textbf{Description} & All communication across client and microservice boundaries SHALL mandate TLS 1.3 encryption. Sensitive database fields (tokens, CV attachments, private contact numbers) SHALL use AES-256-GCM. \\ \hline
+\textbf{Stakeholder} & System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Privacy}
+\label{subsec:nfr_privacy}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR05} & \textbf{Academic Data Minimization \& Consent} \\ \hline
+\textbf{Description} & The platform SHALL collect only academic metadata strictly necessary for matchmaking. Student proposals SHALL remain private until the team author explicitly submits for advisory review. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR06} & \textbf{Restricted Student/Faculty PII Visibility} \\ \hline
+\textbf{Description} & Personal contact details (phone numbers, private emails) SHALL be masked from public search results and revealed only between confirmed collaboration partners. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor, Industry Mentor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR07} & \textbf{Data Retention \& Automated Archival Purge} \\ \hline
+\textbf{Description} & Completed project workspace artifacts and temporary proposal attachments SHALL be archived 180 days following formal academic semester closure, with full audit trail metadata retained. \\ \hline
+\textbf{Stakeholder} & Department Capstone Coordinator, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Reliability}
+\label{subsec:nfr_reliability}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR08} & \textbf{Continuous System Availability \& Fault Tolerance} \\ \hline
+\textbf{Description} & The platform SHALL maintain 99.5\% service uptime during active academic semesters, supported by automated Docker health checks and container auto-restarts. \\ \hline
+\textbf{Stakeholder} & All Stakeholders \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR09} & \textbf{Idempotent Advisory Request Handling} \\ \hline
+\textbf{Description} & All collaboration state transitions SHALL be strictly idempotent using unique UUIDs, preventing double-acceptance or duplicate quota decrementing across network retries. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, Faculty Advisor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR10} & \textbf{Relational-Vector Eventual Consistency} \\ \hline
+\textbf{Description} & Profile modifications committed to PostgreSQL SHALL be asynchronously propagated and re-indexed inside Qdrant within 10 seconds under standard operating loads. \\ \hline
+\textbf{Stakeholder} & System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR11} & \textbf{Fault-Tolerant AI Engine Fallback} \\ \hline
+\textbf{Description} & In the event of dense vector embedding service unavailability, the system SHALL automatically degrade to exact-match keyword BM25 retrieval without throwing runtime exceptions. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR12} & \textbf{Data Integrity and Audit Traceability} \\ \hline
+\textbf{Description} & Audit logs SHALL be append-only and cryptographically chained; database constraints SHALL reject any UPDATE or DELETE queries executed against audit tables. \\ \hline
+\textbf{Stakeholder} & System Administrator, Institutional Auditor \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR13} & \textbf{Automated Backup \& Disaster Recovery} \\ \hline
+\textbf{Description} & PostgreSQL database snapshots and Qdrant collections SHALL undergo automated daily incremental backups, with full disaster recovery verification tested each semester. \\ \hline
+\textbf{Stakeholder} & System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Performance}
+\label{subsec:nfr_performance}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR14} & \textbf{Sub-Second Vector Retrieval Latency} \\ \hline
+\textbf{Description} & Semantic nearest-neighbor vector search queries across 10,000 indexed faculty profiles SHALL return top-20 candidate results within 200 milliseconds (p95). \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR15} & \textbf{Hybrid Match Scoring Throughput} \\ \hline
+\textbf{Description} & The multi-criteria ranking engine SHALL compute composite scores, XAI percentage breakdowns, and availability multipliers for 50 candidates in under 500 milliseconds. \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR16} & \textbf{Concurrent Dashboard Loading Throughput} \\ \hline
+\textbf{Description} & Administrative heatmaps and student search interfaces SHALL load initial views within 1.5 seconds under a concurrent simulated load of 100 active academic users. \\ \hline
+\textbf{Stakeholder} & Department Capstone Coordinator, Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Accuracy}
+\label{subsec:nfr_accuracy}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR17} & \textbf{NLP Entity Extraction Precision \& Recall} \\ \hline
+\textbf{Description} & The zero-shot classification and NER pipeline SHALL achieve at least 85\% precision and 80\% recall on domain classification across benchmarked academic project statements. \\ \hline
+\textbf{Stakeholder} & Student Project Lead, System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Usability}
+\label{subsec:nfr_usability}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR18} & \textbf{Responsive Multi-Device UI \& Accessibility} \\ \hline
+\textbf{Description} & The web client SHALL conform to WCAG 2.1 Level AA accessibility standards, render responsively across 320px to 4K resolutions, and support dark/light visual modes. \\ \hline
+\textbf{Stakeholder} & All Stakeholders \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR19} & \textbf{Task Completion Efficiency \& Intuitive Navigation} \\ \hline
+\textbf{Description} & A first-time student user SHALL be able to ingest a problem statement, review XAI recommendations, and submit an advisory request within 3 minutes without formal training. \\ \hline
+\textbf{Stakeholder} & Student Project Lead \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Operational}
+\label{subsec:nfr_operational}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR20} & \textbf{Cross-Platform Browser \& OS Compatibility} \\ \hline
+\textbf{Description} & The web application SHALL function flawlessly across current stable versions of Google Chrome, Mozilla Firefox, Microsoft Edge, and Apple Safari on Windows, macOS, Linux, iOS, and Android. \\ \hline
+\textbf{Stakeholder} & All Stakeholders \\ \hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\rowcolor{lightgray!40} \textbf{NFR21} & \textbf{Microservice Modularity \& Automated Test Coverage} \\ \hline
+\textbf{Description} & Core backend services SHALL be decoupled into Dockerized modules, and all algorithmic ranking, FSM transitions, and API endpoints SHALL maintain $\ge 85\%$ automated unit test coverage. \\ \hline
+\textbf{Stakeholder} & System Administrator \\ \hline
+\end{tabularx}
+\end{table}
+
