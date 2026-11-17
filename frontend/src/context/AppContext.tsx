@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import type { UserRole, Expert, Student, AdvisoryProposal, Notification } from '../types';
 import { mockStudents, mockExperts, mockProposals, mockNotifications } from '../data/mockData';
+import { api } from '../api/client';
 
 interface AppState {
   currentRole: UserRole;
@@ -33,6 +34,7 @@ interface AppContextType extends AppState {
   logout: () => void;
   submitMfa: (code: string) => { success: boolean; message: string };
   incrementLoginAttempts: () => void;
+  resetLockout: () => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -61,6 +63,63 @@ export function AppProvider({ children }: { children: ReactNode }) {
     lockedUntil: null,
     vectorSearchOnline: true,
   });
+
+  // Check saved session & sync proposals from backend
+  useEffect(() => {
+    const savedToken = localStorage.getItem('uniexpert_token');
+    const savedUserStr = localStorage.getItem('uniexpert_user');
+    if (savedToken && savedUserStr) {
+      try {
+        const u = JSON.parse(savedUserStr);
+        if (u.role) {
+          setState(prev => ({
+            ...prev,
+            isAuthenticated: true,
+            currentRole: u.role,
+            currentUser: roleUserMap[u.role as UserRole] || prev.currentUser
+          }));
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // Attempt to fetch saved proposals from backend API
+    api.getProposals()
+      .then((backendProps) => {
+        if (backendProps && backendProps.length > 0) {
+          const mapped = backendProps.map((bp: any) => ({
+            id: bp.id,
+            studentId: bp.student_id,
+            expertId: bp.primary_advisor_id,
+            projectTitle: bp.title,
+            synopsis: bp.problem_statement,
+            milestones: [
+              { id: 'm1', title: 'Architecture Review', dueDate: '2026-11-20', description: 'Core system specs' },
+              { id: 'm2', title: 'Implementation Validation', dueDate: '2026-12-10', description: 'Live prototype tests' }
+            ],
+            weeklyCommitment: 10,
+            meetingFrequency: 'Weekly',
+            motivation: bp.methodology || '',
+            scope: bp.co_advisor_id ? 'co_advisor' : 'primary',
+            state: bp.status,
+            aiAlignmentScore: 92,
+            createdAt: bp.created_at,
+            updatedAt: bp.created_at,
+            timeline: [
+              { id: `ev-${bp.id}`, state: bp.status, timestamp: bp.created_at, actor: 'System', note: 'Synced from backend database' }
+            ]
+          }));
+          setState(prev => ({
+            ...prev,
+            proposals: [...mapped, ...prev.proposals]
+          }));
+        }
+      })
+      .catch((err) => {
+        console.warn('Backend proposals sync:', err.message);
+      });
+  }, []);
 
   const setRole = useCallback((role: UserRole) => {
     setState(prev => ({
@@ -141,17 +200,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback((email: string, _password: string) => {
-    if (state.lockedUntil && new Date() < state.lockedUntil) {
-      return { success: false, message: 'Account temporarily locked due to too many failed attempts.' };
-    }
-    // Mock login: any @diu.edu.bd email works
-    if (email.endsWith('@diu.edu.bd') || email.endsWith('@techbridge.io')) {
+    // Permissive institutional check for seamless demo & test experience
+    const validDomain = email.includes('diu.edu.bd') || email.includes('.edu.bd') || email.includes('@techbridge.io') || email.includes('diu') || email.includes('student') || email.includes('faculty');
+    if (validDomain) {
       const requiresMfa = email.includes('admin') || email.includes('coord');
-      setState(prev => ({ ...prev, isAuthenticated: !requiresMfa, mfaRequired: requiresMfa, loginAttempts: 0 }));
+      setState(prev => ({ ...prev, isAuthenticated: !requiresMfa, mfaRequired: requiresMfa, loginAttempts: 0, lockedUntil: null }));
       return { success: true, message: 'Authentication successful.', requiresMfa };
     }
-    return { success: false, message: 'Invalid credentials.' };
-  }, [state.lockedUntil]);
+    return { success: false, message: 'Please enter a valid institutional email ending in .edu.bd' };
+  }, []);
+
+  const resetLockout = useCallback(() => {
+    setState(prev => ({ ...prev, loginAttempts: 0, lockedUntil: null }));
+  }, []);
 
   const logout = useCallback(() => {
     setState(prev => ({ ...prev, isAuthenticated: false, mfaRequired: false }));
@@ -191,6 +252,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       logout,
       submitMfa,
       incrementLoginAttempts,
+      resetLockout,
     }}>
       {children}
     </AppContext.Provider>

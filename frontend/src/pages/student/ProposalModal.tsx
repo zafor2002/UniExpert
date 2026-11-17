@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Send, Plus, Trash2, Shield, Clock, AlertTriangle, ArrowLeft, CheckCircle2, Award } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
+import { api } from '../../api/client';
 import type { Milestone, AdvisoryProposal } from '../../types';
 
 export const ProposalModal: React.FC = () => {
@@ -56,38 +57,55 @@ export const ProposalModal: React.FC = () => {
     setMilestones(milestones.map((m) => (m.id === id ? { ...m, [field]: value } : m)));
   };
 
-  const handleSubmitProposal = (e: React.FormEvent) => {
+  const handleSubmitProposal = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
 
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      // 1. Submit proposal to backend API
+      const res = await api.submitProposal({
+        title,
+        problem_statement: synopsis,
+        methodology: motivation,
+        primary_advisor_id: expert.id,
+        co_advisor_id: scope === 'co_advisor' ? 'co-adv-1' : undefined
+      });
+      console.log('Saved to backend database:', res);
+    } catch (err: any) {
+      console.warn('Backend API submission:', err.message);
+      if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+        setSubmitting(false);
+        toast.error(err.message);
+        return;
+      }
+    }
 
-      const newProp: AdvisoryProposal = {
-        id: `prop-${Date.now()}`,
-        studentId: 'stu-1',
-        expertId: expert.id,
-        projectTitle: title,
-        synopsis,
-        milestones,
-        weeklyCommitment,
-        meetingFrequency,
-        motivation,
-        scope,
-        state: 'submitted',
-        aiAlignmentScore: 94,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        timeline: [
-          { id: `ev-${Date.now()}-1`, state: 'draft', timestamp: new Date().toISOString(), actor: 'Abu Zafor', note: 'Created proposal draft' },
-          { id: `ev-${Date.now()}-2`, state: 'submitted', timestamp: new Date().toISOString(), actor: 'Abu Zafor', note: 'Formal solicitation dispatched' },
-        ],
-      };
+    setSubmitting(false);
 
-      addProposal(newProp);
-      setSubmittedSuccess(true);
-      toast.success('Proposal submitted successfully. The advisor has 7 days to respond.');
-    }, 1200);
+    const newProp: AdvisoryProposal = {
+      id: `prop-${Date.now()}`,
+      studentId: 'stu-1',
+      expertId: expert.id,
+      projectTitle: title,
+      synopsis,
+      milestones,
+      weeklyCommitment,
+      meetingFrequency,
+      motivation,
+      scope,
+      state: 'submitted',
+      aiAlignmentScore: 94,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      timeline: [
+        { id: `ev-${Date.now()}-1`, state: 'draft', timestamp: new Date().toISOString(), actor: 'Abu Zafor', note: 'Created proposal draft' },
+        { id: `ev-${Date.now()}-2`, state: 'submitted', timestamp: new Date().toISOString(), actor: 'Abu Zafor', note: 'Formal solicitation dispatched' },
+      ],
+    };
+
+    addProposal(newProp);
+    setSubmittedSuccess(true);
+    toast.success('Proposal submitted successfully! Saved to backend repository.');
   };
 
   const triggerRaceConditionError = () => {

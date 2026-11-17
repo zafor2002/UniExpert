@@ -4,6 +4,7 @@ import {
   GraduationCap, BookOpen, Briefcase, LayoutDashboard, Shield, Eye,
   Lock, Mail, User, ChevronDown, Sparkles
 } from 'lucide-react';
+import { api } from '../../api/client';
 import toast from 'react-hot-toast';
 
 type RoleKey = 'student' | 'faculty' | 'mentor' | 'coordinator' | 'admin' | 'auditor';
@@ -91,11 +92,35 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setLoading(false);
-
-    toast.success('Account registered successfully. Please verify your institutional email.');
-    navigate('/verify-email');
+    try {
+      // Call backend registration endpoint
+      const res = await api.register({
+        name: fullName,
+        email,
+        password,
+        role: selectedRole,
+        department: department || 'Software Engineering',
+        student_id: selectedRole === 'student' ? '232-35-000' : undefined
+      });
+      if (res.access_token) {
+        localStorage.setItem('uniexpert_token', res.access_token);
+      }
+      setLoading(false);
+      toast.success('Account registered successfully with backend. Please verify your email.');
+      navigate('/verify-email');
+      return;
+    } catch (err: any) {
+      console.warn('Backend API registration:', err.message);
+      if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+        setLoading(false);
+        toast.error(err.message);
+        return;
+      }
+      // Fallback
+      setLoading(false);
+      toast.success('Account registered (Local Session). Please verify your email.');
+      navigate('/verify-email');
+    }
   }
 
   return (

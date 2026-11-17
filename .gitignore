@@ -47,3 +47,14 @@ node_modules/
 dist/
 dist-ssr/
 *.local
+
+# Python artifacts & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+*.db
+*.sqlite3
+

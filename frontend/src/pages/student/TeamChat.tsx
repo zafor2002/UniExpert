@@ -5,6 +5,7 @@ import {
   ChevronDown, Plus, AtSign, Mic, ImageIcon,
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { api } from '@/api/client';
 import { toast } from 'react-hot-toast';
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
@@ -125,6 +126,70 @@ export const TeamChat: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Load chat history from backend if available
+  useEffect(() => {
+    api.getChatHistory(activeChannel)
+      .then((history) => {
+        if (history && history.length > 0) {
+          const backendMsgs = history.map((h: any) => ({
+            id: h.id,
+            senderId: h.sender_id,
+            senderName: h.sender_name,
+            senderInitials: h.sender_name ? h.sender_name.slice(0, 2).toUpperCase() : 'TM',
+            senderColor: h.sender_id === myId ? myMember.color : '#7C8FF5',
+            content: h.content,
+            timestamp: h.timestamp,
+            type: 'text',
+            pinned: h.pinned,
+          }));
+          setMessagesByChannel(prev => ({
+            ...prev,
+            [activeChannel]: backendMsgs
+          }));
+        }
+      })
+      .catch((err) => {
+        // Quiet fallback to mock data
+        console.warn('Backend chat history offline:', err.message);
+      });
+  }, [activeChannel, myId, myMember.color]);
+
+  // Live WebSocket connection for real-time team collaboration
+  useEffect(() => {
+    let ws: WebSocket | null = null;
+    try {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${protocol}//${window.location.host}/api/chat/ws/${activeChannel}`);
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data && data.content && data.sender_id !== myId) {
+            setMessagesByChannel(prev => ({
+              ...prev,
+              [activeChannel]: [...(prev[activeChannel] || []), {
+                id: data.id || `ws-${Date.now()}`,
+                senderId: data.sender_id,
+                senderName: data.sender_name || 'Team Member',
+                senderInitials: data.sender_name ? data.sender_name.slice(0, 2).toUpperCase() : 'TM',
+                senderColor: '#7C8FF5',
+                content: data.content,
+                timestamp: data.timestamp || new Date().toISOString(),
+                type: 'text'
+              }]
+            }));
+          }
+        } catch (e) {
+          // ignore
+        }
+      };
+    } catch (e) {
+      // ignore
+    }
+    return () => {
+      if (ws) ws.close();
+    };
+  }, [activeChannel, myId]);
+
   // Mark channel as read when switching
   useEffect(() => {
     setChannels(prev => prev.map(ch => ch.id === activeChannel ? { ...ch, unread: 0 } : ch));
@@ -132,13 +197,14 @@ export const TeamChat: React.FC = () => {
 
   const handleSend = () => {
     if (!input.trim()) return;
+    const content = input.trim();
     const msg: ChatMessage = {
       id: `msg-${Date.now()}`,
       senderId: myId,
       senderName: myMember.name,
       senderInitials: myMember.initials,
       senderColor: myMember.color,
-      content: input.trim(),
+      content,
       timestamp: new Date().toISOString(),
       type: 'text',
     };
@@ -148,6 +214,11 @@ export const TeamChat: React.FC = () => {
     }));
     setInput('');
     inputRef.current?.focus();
+
+    // Send to backend API
+    api.sendChatMessage(activeChannel, content).catch((err) => {
+      console.warn('Message saved locally (backend offline):', err.message);
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

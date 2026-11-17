@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, Shield, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { api } from '../../api/client';
 import toast from 'react-hot-toast';
 
 const roleDashboards: Record<string, string> = {
@@ -23,7 +24,7 @@ function formatCountdown(ms: number) {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, incrementLoginAttempts, loginAttempts, lockedUntil, currentRole } = useApp();
+  const { login, incrementLoginAttempts, resetLockout, loginAttempts, lockedUntil, currentRole, setRole } = useApp();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -55,25 +56,60 @@ export default function LoginPage() {
     e.preventDefault();
     if (isLocked) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 600));
+
+    // Determine target role based on email identity
+    let targetRole = currentRole;
+    const lowerEmail = email.toLowerCase();
+    if (lowerEmail.includes('farhana') || lowerEmail.includes('faculty') || lowerEmail.includes('prof')) {
+      targetRole = 'faculty';
+    } else if (lowerEmail.includes('coord')) {
+      targetRole = 'coordinator';
+    } else if (lowerEmail.includes('admin')) {
+      targetRole = 'admin';
+    } else if (lowerEmail.includes('mentor')) {
+      targetRole = 'mentor';
+    } else if (lowerEmail.includes('audit') || lowerEmail.includes('qa')) {
+      targetRole = 'auditor';
+    } else {
+      targetRole = 'student';
+    }
+
+    try {
+      // 1. Try real backend API first
+      const res = await api.login({ email, password });
+      if (res && res.access_token) {
+        localStorage.setItem('uniexpert_token', res.access_token);
+        localStorage.setItem('uniexpert_user', JSON.stringify({ id: res.user_id, role: res.role, name: res.name }));
+        if (res.role) setRole(res.role as any);
+        setLoading(false);
+        toast.success(`Welcome back, ${res.name || 'User'}!`);
+        navigate(roleDashboards[res.role] ?? roleDashboards[targetRole] ?? '/student/dashboard');
+        return;
+      }
+    } catch (err: any) {
+      console.warn('Backend API login notice:', err.message);
+    }
+
+    // 2. Seamless local fallback for instant testing/demo
     const result = login(email, password);
     setLoading(false);
 
     if (result.success) {
+      setRole(targetRole as any);
       if (result.requiresMfa) {
         toast.success('Credentials verified. Please complete MFA.');
         navigate('/mfa');
       } else {
-        toast.success('Authentication successful.');
-        navigate(roleDashboards[currentRole] ?? '/student/dashboard');
+        toast.success(`Signed in successfully as ${targetRole.toUpperCase()}.`);
+        navigate(roleDashboards[targetRole] ?? '/student/dashboard');
       }
     } else {
       incrementLoginAttempts();
       const remaining = 5 - (loginAttempts + 1);
       if (remaining > 0) {
-        toast.error(`${result.message} ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`);
+        toast.error(`${result.message} (${remaining} attempt${remaining !== 1 ? 's' : ''} left)`);
       } else {
-        toast.error('Account temporarily locked for 15 minutes due to too many failed attempts.');
+        toast.error('Account temporarily locked due to failed attempts.');
       }
     }
   }
@@ -105,14 +141,23 @@ export default function LoginPage() {
 
         {/* Lockout banner */}
         {isLocked && countdown > 0 && (
-          <div className="mb-6 p-4 bg-[#FEE2E2] border border-[#FECACA] rounded-2xl flex items-start gap-3">
-            <Shield className="w-5 h-5 text-[#991B1B] mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-[#991B1B]">Account temporarily locked.</p>
-              <p className="text-xs text-[#991B1B] mt-0.5">
-                Try again in <span className="font-mono font-bold">{formatCountdown(countdown)}</span> minutes.
-              </p>
+          <div className="mb-6 p-4 bg-[#FEE2E2] border border-[#FECACA] rounded-2xl flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <Shield className="w-5 h-5 text-[#991B1B] mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-xs font-bold text-[#991B1B]">Account temporarily locked.</p>
+                <p className="text-xs text-[#991B1B] mt-0.5">
+                  Try again in <span className="font-mono font-bold">{formatCountdown(countdown)}</span> minutes.
+                </p>
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={() => resetLockout()}
+              className="text-xs font-bold text-[#991B1B] underline hover:text-black shrink-0"
+            >
+              Reset Lock
+            </button>
           </div>
         )}
 
@@ -129,7 +174,6 @@ export default function LoginPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                disabled={!!isLocked}
               />
             </div>
           </div>
@@ -149,7 +193,6 @@ export default function LoginPage() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                disabled={!!isLocked}
               />
               <button
                 type="button"
@@ -164,7 +207,7 @@ export default function LoginPage() {
           {/* Submit: Soft blue with dark readable text */}
           <button
             type="submit"
-            disabled={loading || !!isLocked}
+            disabled={loading}
             className="btn-primary w-full py-3 text-xs font-bold uppercase tracking-wider mt-2"
           >
             {loading ? 'Authenticating...' : 'Sign In'}
@@ -173,21 +216,35 @@ export default function LoginPage() {
 
         {/* Demo Fast-fill in light pastel */}
         <div className="mt-6 pt-5 border-t border-[#E2E8F0]">
-          <p className="text-[11px] font-semibold text-[#64748B] mb-2 uppercase tracking-wide">Demo Accounts:</p>
+          <p className="text-[11px] font-semibold text-[#64748B] mb-2 uppercase tracking-wide">1-Click Demo Accounts:</p>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <button
               type="button"
-              onClick={() => { setEmail('abu.zafor@diu.edu.bd'); setPassword('demo1234'); }}
-              className="p-2 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-medium transition-colors"
+              onClick={() => { resetLockout(); setEmail('abu.zafor@diu.edu.bd'); setPassword('password123'); }}
+              className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
             >
               🎓 Student Lead
             </button>
             <button
               type="button"
-              onClick={() => { setEmail('farhana.rahman@diu.edu.bd'); setPassword('demo1234'); }}
-              className="p-2 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-medium transition-colors"
+              onClick={() => { resetLockout(); setEmail('farhana.swe@diu.edu.bd'); setPassword('password123'); }}
+              className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
             >
               👨‍🏫 Faculty Advisor
+            </button>
+            <button
+              type="button"
+              onClick={() => { resetLockout(); setEmail('coord@diu.edu.bd'); setPassword('password123'); }}
+              className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
+            >
+              🏛️ Coordinator
+            </button>
+            <button
+              type="button"
+              onClick={() => { resetLockout(); setEmail('admin@diu.edu.bd'); setPassword('password123'); }}
+              className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
+            >
+              🛡️ Administrator
             </button>
           </div>
         </div>

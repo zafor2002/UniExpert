@@ -66,28 +66,75 @@ UniExpert replaces rigid keyword directories with a **problem-first discovery en
 
 ---
 
-## 💻 Interactive High-Fidelity Web Prototype (React + TypeScript)
+## 🏗️ Full-Stack Project Architecture
 
-A publication-grade, interactive **React 18 + TypeScript + Tailwind CSS** prototype is included in the [`uniexpert-prototype/`](./uniexpert-prototype) directory.
+The project is structured into dedicated, decoupled directories:
+
+```
+SE 331 capstone project/
+├── frontend/                       # React 18 + TypeScript + Vite + Tailwind CSS (37 Screens)
+├── backend/                        # FastAPI Python 3.11 Backend (REST + WebSockets + AI)
+├── docker-compose.yml              # Multi-container orchestration (Postgres, Qdrant, Backend, Frontend)
+├── SCREENS_EXPLANATION.md          # Exhaustive 37-screen specification & workflow guide
+└── ...
+```
+
+---
+
+## 💻 Frontend Application (React + TypeScript)
+
+A publication-grade, interactive **React 18 + TypeScript + Tailwind CSS** frontend is located in the [`frontend/`](./frontend) directory.
 
 ### Quick Start
 ```bash
-# Navigate to prototype folder
-cd uniexpert-prototype
+# Navigate to frontend folder
+cd frontend
 
-# Start Vite dev server (runs on port 5173)
+# Install dependencies (if not already installed)
+npm install
+
+# Start Vite dev server (runs on port 5173 with backend proxy)
 npm run dev
 # -> Local: http://localhost:5173/
 ```
 
-### Full 34-Screen Implementation Matrix:
-1. **Public / Identity (Screens 1–4):** Landing Page with problem statement hero, DIU .edu.bd email registration with password strength meter, 24-hr token email verification with expired state, and lockout-protected login with TOTP MFA.
-2. **Student Project Lead (Screens 5–18):** Capstone problem formulation (50–5,000 char counter), NLP entity review with confidence bars & importance sliders, Qdrant vector discovery catalog with 38ms simulated latency, Explainable AI (XAI) drawer with 45/30/15/10% mathematical decomposition and radar chart, 3-expert side-by-side comparison matrix, Bioinformatics skill gap analysis ($\Delta\mathcal{K}$), set-cover co-advisor optimizer, FSM proposal modal with 7-day auto-SLA & race condition simulation, request lifecycle stepper with negotiation thread, atomic 30-min office hours consultation booking with `.ics` calendar generation, live WebSocket-style workspace with file attachments, and post-collaboration exit evaluation.
-3. **Faculty Advisor (Screens 19–24):** Faculty dashboard with 5-team anti-burnout quota meter, Google Scholar / ORCID automated scraper with multi-step progress & BibTeX/CSV fallback, Tier 1/2/3 progression card, proposal review with auto-status advance & quota decrement, capacity settings with blackout date range picker, and recurring weekly office-hour block manager.
-4. **Industry Mentor (Screens 25–26):** Mentor onboarding wizard (3 steps) and practitioner dashboard with evening consultation hours.
-5. **Department Coordinator (Screens 27–29):** Department allocation heatmap with 60-second live countdown, faculty verification queue with tier assignment and justification notes, individual quota override panel (+1 limit), and dispute resolution list.
-6. **System Administrator (Screens 30–32):** Hierarchical domain taxonomy DAG console with cycle detection, custom tag moderation queue, Qdrant vector embedding re-indexer, RBAC account privilege console, and cluster telemetry dashboard with hardware TOTP-protected admin zone.
-7. **Institutional Auditor (Screens 33–34):** Cryptographic SHA-256 Merkle chained audit ledger with live tamper simulator and signed CSV export, plus official BAETE Accreditation Dossier generator with PDF preview and load charts.
+---
+
+## ⚙️ Backend Application (FastAPI + PostgreSQL + Qdrant)
+
+The Python FastAPI backend is located in the [`backend/`](./backend) directory.
+
+### Quick Start (Local Python)
+```bash
+# Navigate to backend folder
+cd backend
+
+# Create virtual environment & install requirements
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+
+# Run FastAPI dev server
+uvicorn app.main:app --reload --port 8000
+# -> Interactive Swagger API Docs: http://localhost:8000/docs
+```
+
+### Quick Start (Docker Compose - Recommended)
+```bash
+# Start all 4 services (PostgreSQL, Qdrant, Backend API, Frontend)
+docker-compose up --build
+```
+
+### Full 37-Screen Implementation Matrix (Detailed in [`SCREENS_EXPLANATION.md`](./SCREENS_EXPLANATION.md)):
+1. **Public / Identity (Screens 1–5):** Landing Page with problem statement hero, DIU `.edu.bd` email registration with password strength meter, 24-hr token email verification with expired state, lockout-protected login, and hardware TOTP MFA.
+2. **Student Project Lead (Screens 6–21):** Capstone problem formulation (50–5,000 char counter), NLP entity review with confidence bars & importance sliders, Qdrant vector discovery catalog with 38ms simulated latency, Explainable AI (XAI) drawer with radar chart and 45/30/15/10% mathematical decomposition, 3-expert side-by-side comparison matrix, skill gap analysis ($\Delta\mathcal{K}$), set-cover co-advisor optimizer, FSM proposal modal with 7-day auto-SLA, request lifecycle stepper with negotiation thread, atomic 30-min office hours consultation booking with `.ics` calendar generation, live workspace with artifact repository, individual contribution tracker with 10-week activity heatmap (BAETE Criterion 4 & 5), in-app multi-channel team chat (`#general`, `#dev`, `#ml-models`, `#meetings`), and post-collaboration exit evaluation.
+3. **Faculty Advisor (Screens 22–26):** Faculty dashboard with active supervised groups meter, Google Scholar / ORCID automated scraper with multi-step progress & BibTeX/CSV fallback, Tier 1/2/3 progression card, proposal review with auto-status advance & quota decrement, capacity settings with blackout date range picker, and recurring weekly office-hour block manager.
+4. **Industry Mentor (Screens 27–28):** Mentor onboarding wizard (3 steps) and practitioner dashboard with evening consultation hours and technical review queue.
+5. **Department Coordinator (Screens 29–32):** Department allocation heatmap with 60-second live countdown, faculty verification queue with tier assignment and justification notes, individual quota override panel (+1 limit), and dispute resolution & student reassignment list.
+6. **System Administrator (Screens 33–35):** Hierarchical domain taxonomy DAG console with cycle detection, custom tag moderation queue, Qdrant vector embedding re-indexer, RBAC account privilege console, and cluster telemetry dashboard with hardware TOTP-protected admin zone.
+7. **Institutional Auditor (Screens 36–37):** Cryptographic SHA-256 Merkle chained audit ledger with live tamper simulator and signed CSV export, plus official BAETE Accreditation Dossier generator with PDF preview and load charts.
+
+> 📖 **Full Screen Documentation:** For an exhaustive role-by-role screen guide, route mappings, and architectural diagrams, see [**`SCREENS_EXPLANATION.md`**](./SCREENS_EXPLANATION.md).
 
 ---
 

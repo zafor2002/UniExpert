@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: uniexpert-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: uniexpert
+      POSTGRES_PASSWORD: uniexpert_secret
+      POSTGRES_DB: uniexpert_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  qdrant:
+    image: qdrant/qdrant:v1.8.2
+    container_name: uniexpert-qdrant
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: uniexpert-backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://uniexpert:uniexpert_secret@postgres:5432/uniexpert_db
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      SECRET_KEY: uniexpert-super-secret-jwt-key-2026-diu-swe
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - qdrant
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: uniexpert-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  qdrant_data:
