@@ -643,7 +643,7 @@ export const TeamChat: React.FC = () => {
           onClose={() => setIsMeetingOpen(false)}
           roomId="room-edgeshield"
           roomTitle={`EdgeShield Sync · #${activeChannelData?.name}`}
-          currentUser={currentUser}
+          currentUser={myMember ? { id: myMember.id, name: myMember.name, role: myMember.role } : currentUser}
         />
       </div>
     );

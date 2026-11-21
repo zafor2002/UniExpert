@@ -38,7 +38,14 @@ class ConnectionManager:
                     self.active_connections[channel_id].remove(dead)
 
     # ─── Meeting & Video Consultation Methods ────────────────────────────
-    async def join_meeting(self, room_id: str, peer_id: str, user_info: dict, websocket: WebSocket):
+    async def join_meeting(
+        self,
+        room_id: str,
+        peer_id: str,
+        user_info: dict,
+        websocket: WebSocket,
+        agenda: Optional[list] = None
+    ):
         await websocket.accept()
         if room_id not in self.meeting_rooms:
             self.meeting_rooms[room_id] = {}
@@ -61,7 +68,8 @@ class ConnectionManager:
                 "type": "room_state",
                 "room_id": room_id,
                 "your_peer_id": peer_id,
-                "participants": participants
+                "participants": participants,
+                "agenda": agenda or []
             })
         except Exception as e:
             logger.warning(f"Error sending room_state to {peer_id}: {e}")

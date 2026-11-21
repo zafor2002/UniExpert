@@ -49,11 +49,7 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
   const myName = currentUser?.name || 'Abu Zafor';
   const myRole = currentUser?.role || 'Team Lead';
 
-  const [participants, setParticipants] = useState<Participant[]>([
-    { peer_id: 'peer-adv-1', name: 'Dr. Farhana Rahman', role: 'Supervisor (Faculty)', audio_muted: false, video_off: false },
-    { peer_id: 'peer-stu-2', name: 'Rafi Ahmed', role: 'Backend Engineer', audio_muted: true, video_off: false },
-    { peer_id: 'peer-stu-3', name: 'Lamia Sultana', role: 'ML Researcher', audio_muted: false, video_off: true },
-  ]);
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
@@ -61,9 +57,7 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
   const [isHandRaised, setIsHandRaised] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<'agenda' | 'chat' | null>('agenda');
   
-  const [chatMessages, setChatMessages] = useState<InMeetingMessage[]>([
-    { id: '1', sender_name: 'Dr. Farhana Rahman', sender_role: 'Supervisor', content: 'Welcome team. Let us review the TinyML benchmark results first.', timestamp: '10:00 AM' }
-  ]);
+  const [chatMessages, setChatMessages] = useState<InMeetingMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
 
   const [agenda, setAgenda] = useState<AgendaItem[]>([
@@ -115,9 +109,12 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
             if (data.participants && data.participants.length > 0) {
               // Exclude myself from remote participants list
               const remotes = data.participants.filter((p: any) => p.peer_id !== sessionPeerId);
-              if (remotes.length > 0) {
-                setParticipants(remotes);
-              }
+              setParticipants(remotes);
+            } else {
+              setParticipants([]);
+            }
+            if (data.agenda && Array.isArray(data.agenda) && data.agenda.length > 0) {
+              setAgenda(data.agenda);
             }
           } else if (data.type === 'peer_joined') {
             if (data.peer_id !== sessionPeerId) {
@@ -331,6 +328,22 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
             </div>
 
             {/* Remote Participants */}
+            {participants.length === 0 && (
+              <div className="relative rounded-2xl bg-slate-900/60 border-2 border-dashed border-slate-700/80 flex flex-col items-center justify-center p-8 text-center min-h-[220px]">
+                <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 mb-3 animate-pulse">
+                  <Users size={28} className="text-[#8AB4F8]" />
+                </div>
+                <h4 className="text-sm font-bold text-slate-200">Waiting for others to join...</h4>
+                <p className="text-xs text-slate-400 max-w-xs mt-1">
+                  Open this meeting in a second tab or wait for your advisor/peer to enter.
+                </p>
+                <div className="mt-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-[11px] text-emerald-400 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  Live Room: {roomId}
+                </div>
+              </div>
+            )}
+
             {participants.map((p, idx) => (
               <div
                 key={p.peer_id}

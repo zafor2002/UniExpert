@@ -116,8 +116,27 @@ async def meeting_websocket_endpoint(
         "joined_at": datetime.utcnow().isoformat()
     }
 
+    # Look up or create room
+    if room_id not in MEETING_ROOMS:
+        MEETING_ROOMS[room_id] = {
+            "room_id": room_id,
+            "title": f"Meeting Room: {room_id.replace('-', ' ').title()}",
+            "topic": "Live Capstone Project Consultation",
+            "advisor_name": "Dr. Farhana Rahman",
+            "advisor_id": "exp-1",
+            "created_at": datetime.utcnow().isoformat(),
+            "is_active": True,
+            "agenda": [
+                {"id": "ag-1", "text": "Review project progress and deliverables", "completed": False},
+                {"id": "ag-2", "text": "Verify BLE 5.0 AES-GCM transport payload format", "completed": False},
+                {"id": "ag-3", "text": "Lock Milestone 2 deliverable submission date", "completed": False}
+            ]
+        }
+
+    agenda_items = MEETING_ROOMS[room_id].get("agenda", [])
+
     # Register in meeting manager and announce arrival
-    await ws_manager.join_meeting(room_id, assigned_peer_id, user_info, websocket)
+    await ws_manager.join_meeting(room_id, assigned_peer_id, user_info, websocket, agenda=agenda_items)
 
     try:
         while True:
