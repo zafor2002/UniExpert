@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { 
   FolderKanban, CheckSquare, MessageSquare, Paperclip, Send, Download, 
-  FileText, Clock, Users, Shield, Plus, Upload, BookOpen 
+  FileText, Clock, Users, Shield, Plus, Upload, BookOpen, Video 
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
 import { mockWorkspace } from '../../data/mockData';
+import { LiveMeetingModal } from '../../components/meeting/LiveMeetingModal';
 import type { WorkspaceMessage, WorkspaceFile } from '../../types';
 
 export const ProjectWorkspace: React.FC = () => {
@@ -15,6 +16,7 @@ export const ProjectWorkspace: React.FC = () => {
   const [newMessage, setNewMessage] = useState('');
   const [files, setFiles] = useState<WorkspaceFile[]>(mockWorkspace.files);
   const [milestones, setMilestones] = useState(mockWorkspace.milestones);
+  const [isMeetingOpen, setIsMeetingOpen] = useState(false);
 
   const unreadCount = messages.filter((m) => !m.read).length;
 
@@ -188,12 +190,20 @@ export const ProjectWorkspace: React.FC = () => {
         <div className="card p-6 md:p-8 space-y-4 flex flex-col h-[520px] bg-white border border-[#E2E8F0] rounded-3xl shadow-sm">
           <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#A7E8D0] animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-bold text-[#1E293B]">
-                Simulated WebSocket Channel (#edgeshield-supervision)
+                Live WebSocket Channel (#edgeshield-supervision)
               </span>
             </div>
-            <span className="text-[11px] text-[#64748B] font-mono">TLS 1.3 / AES-GCM Encrypted</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsMeetingOpen(true)}
+                className="btn-primary text-xs px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-1 font-semibold shadow-xs"
+              >
+                <Video size={13} /> Join Live Video Room
+              </button>
+              <span className="text-[11px] text-[#64748B] font-mono hidden sm:inline">TLS 1.3 / AES-GCM Encrypted</span>
+            </div>
           </div>
 
           {/* Messages list */}
@@ -314,6 +324,15 @@ export const ProjectWorkspace: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Live Video Meeting Modal */}
+      <LiveMeetingModal
+        isOpen={isMeetingOpen}
+        onClose={() => setIsMeetingOpen(false)}
+        roomId="room-edgeshield"
+        roomTitle="EdgeShield · Live Project Advisory Meeting"
+        currentUser={currentUser}
+      />
     </div>
   );
 };

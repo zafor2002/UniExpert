@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FileText, Zap, Lock, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { mockECGProblemStatement } from '../../data/mockData';
+import { api } from '../../api/client';
 
 const MAX_CHARS = 5000;
 const MIN_CHARS = 50;
@@ -57,12 +58,19 @@ const NewProposal: React.FC = () => {
   const handleAnalyze = async () => {
     if (!isValid) return;
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    // Store in sessionStorage for EntityReview to pick up
-    sessionStorage.setItem('uniexpert_problem', problem);
-    sessionStorage.setItem('uniexpert_title', title);
-    setLoading(false);
-    navigate('/student/entity-review');
+    try {
+      const extracted = await api.extractEntities(title, problem);
+      sessionStorage.setItem('uniexpert_problem', problem);
+      sessionStorage.setItem('uniexpert_title', title);
+      sessionStorage.setItem('uniexpert_extracted', JSON.stringify(extracted));
+    } catch (err) {
+      console.debug('Fallback to local mock parsing', err);
+      sessionStorage.setItem('uniexpert_problem', problem);
+      sessionStorage.setItem('uniexpert_title', title);
+    } finally {
+      setLoading(false);
+      navigate('/student/entity-review');
+    }
   };
 
   const handleLoadSample = () => {

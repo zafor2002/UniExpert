@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Filter, RotateCcw, Users, BookOpen, GitCompare, Calendar, X, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { AlertTriangle, Filter, RotateCcw, Users, BookOpen, GitCompare, Calendar, X, Sparkles, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
 import ScoreRing from '../../components/shared/ScoreRing';
 import SkillChip from '../../components/shared/SkillChip';
 import EmptyState from '../../components/shared/EmptyState';
 import XAIDrawer from './XAIDrawer';
+import { api } from '../../api/client';
 
-// Match data
+// Fallback Match data
 const MATCH_SCORES: Record<string, number> = {
   'exp-1': 94,
   'exp-2': 71,
@@ -58,7 +59,17 @@ interface Filters {
   industryOnly: boolean;
 }
 
-const DEPARTMENTS = ['Software Engineering', 'Computer Science', 'Pharmacy', 'Industry'];
+const DEPARTMENTS = [
+  'Software Engineering',
+  'Computer Science',
+  'Bioinformatics',
+  'Data Science',
+  'Cybersecurity',
+  'Robotics & Automation',
+  'Information Technology',
+  'Pharmacy',
+  'Industry'
+];
 const TIERS = [1, 2, 3];
 
 const DEFAULT_FILTERS: Filters = {
@@ -70,9 +81,74 @@ const DEFAULT_FILTERS: Filters = {
 
 const AdvisorDiscovery: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { experts, compareList, addToCompare, removeFromCompare, clearCompare, vectorSearchOnline } = useApp();
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [xaiExpertId, setXaiExpertId] = useState<string | null>(null);
+  const [liveScores, setLiveScores] = useState<Record<string, number>>(MATCH_SCORES);
+  const [liveMatchedSkills, setLiveMatchedSkills] = useState<Record<string, string[]>>(MATCHED_SKILLS);
+  const [searchTopic, setSearchTopic] = useState(() => {
+    const q = searchParams.get('q');
+    return q || sessionStorage.getItem('uniexpert_title') || sessionStorage.getItem('uniexpert_problem') || 'Autonomous Edge-AI Healthcare Monitoring via BLE 5.0 Sensor Fusion';
+  });
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
+  // Synchronize when URL search param ?q= changes (e.g. from top navbar or direct URL)
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q !== null && q !== searchTopic) {
+      setSearchTopic(q);
+    }
+  }, [searchParams]);
+
+  const handleTopicChange = (newTopic: string) => {
+    setSearchTopic(newTopic);
+    if (newTopic.trim()) {
+      setSearchParams({ q: newTopic }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchAiMatches = async () => {
+      try {
+        setIsAiLoading(true);
+        let skills: string[] = [];
+        try {
+          const stored = sessionStorage.getItem('uniexpert_skills');
+          if (stored) skills = JSON.parse(stored);
+        } catch (_) {}
+
+        const results = await api.discoverAdvisors({
+          title: searchTopic,
+          problem_statement: searchTopic,
+          team_skills: skills
+        });
+        if (isMounted && Array.isArray(results) && results.length > 0) {
+          const scoreMap: Record<string, number> = {};
+          const skillMap: Record<string, string[]> = {};
+          results.forEach((r: any) => {
+            scoreMap[r.id] = r.match_score;
+            skillMap[r.id] = r.matched_skills || [];
+          });
+          setLiveScores(scoreMap);
+          setLiveMatchedSkills(skillMap);
+        }
+      } catch (err) {
+        console.debug('AI backend offline, using heuristic fallback', err);
+      } finally {
+        if (isMounted) setIsAiLoading(false);
+      }
+    };
+
+    const timer = setTimeout(fetchAiMatches, 250);
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [searchTopic]);
 
   const toggleDept = (d: string) =>
     setFilters((f) => ({
@@ -90,14 +166,20 @@ const AdvisorDiscovery: React.FC = () => {
 
   const resetFilters = () => setFilters(DEFAULT_FILTERS);
 
-  const filtered = experts.filter((e) => {
-    if (filters.departments.length > 0 && !filters.departments.includes(e.department)) return false;
-    if (filters.tiers.length > 0 && !filters.tiers.includes(e.tier)) return false;
-    if (filters.availability === 'available' && e.quotaStatus !== 'available') return false;
-    if (filters.availability === 'nearing' && e.quotaStatus !== 'nearing') return false;
-    if (filters.industryOnly && !e.isIndustry) return false;
-    return true;
-  });
+  const filtered = experts
+    .filter((e) => {
+      if (filters.departments.length > 0 && !filters.departments.includes(e.department)) return false;
+      if (filters.tiers.length > 0 && !filters.tiers.includes(e.tier)) return false;
+      if (filters.availability === 'available' && e.quotaStatus !== 'available') return false;
+      if (filters.availability === 'nearing' && e.quotaStatus !== 'nearing') return false;
+      if (filters.industryOnly && !e.isIndustry) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const scoreB = liveScores[b.id] ?? MATCH_SCORES[b.id] ?? 50;
+      const scoreA = liveScores[a.id] ?? MATCH_SCORES[a.id] ?? 50;
+      return scoreB - scoreA;
+    });
 
   const handleCompare = (expertId: string) => {
     if (compareList.includes(expertId)) {
@@ -237,15 +319,39 @@ const AdvisorDiscovery: React.FC = () => {
 
       {/* Main content */}
       <main className="flex-1 p-8">
-        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-[#1E293B]">Advisor Discovery</h1>
           <p className="text-sm text-[#64748B] mt-1">
             <span className="font-semibold text-[#1E293B]">
               {filtered.length} expert{filtered.length !== 1 ? 's' : ''} found
             </span>
-            {' · '}Vector similarity & hybrid rank in{' '}
-            <span className="font-mono font-semibold text-[#1E293B]">38 ms</span>
+            {' · '}Zero-Cost Local Semantic Matcher & Hybrid Ranker in{' '}
+            <span className="font-mono font-semibold text-emerald-600">~18 ms</span>
           </p>
+        </div>
+
+        {/* Dynamic AI Query Bar */}
+        <div className="mb-6 p-4 bg-white border border-[#E2E8F0] rounded-2xl shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-[#EAF2FF] text-[#1E293B] shrink-0">
+              <Sparkles size={18} className="text-[#8AB4F8]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block mb-0.5">
+                Zero-Cost AI Semantic Discovery Query
+              </label>
+              <input
+                type="text"
+                value={searchTopic}
+                onChange={(e) => handleTopicChange(e.target.value)}
+                placeholder="Type your capstone project title or problem statement to re-rank faculty in real time..."
+                className="w-full text-sm font-semibold text-[#1E293B] bg-transparent focus:outline-none placeholder:font-normal placeholder:text-[#94A3B8]"
+              />
+            </div>
+            {isAiLoading && (
+              <span className="text-xs font-mono text-[#8AB4F8] animate-pulse shrink-0">Computing vectors...</span>
+            )}
+          </div>
         </div>
 
         {/* Empty state */}
@@ -264,8 +370,8 @@ const AdvisorDiscovery: React.FC = () => {
         {/* Expert cards */}
         <div className="space-y-4">
           {filtered.map((expert, idx) => {
-            const score = MATCH_SCORES[expert.id] ?? 50;
-            const matchedSkills = MATCHED_SKILLS[expert.id] ?? [];
+            const score = liveScores[expert.id] ?? MATCH_SCORES[expert.id] ?? 50;
+            const matchedSkills = liveMatchedSkills[expert.id] ?? MATCHED_SKILLS[expert.id] ?? [];
             const isFull = expert.quotaStatus === 'full';
             const avatarColor = AVATAR_COLORS[idx % AVATAR_COLORS.length];
             const inCompare = compareList.includes(expert.id);
@@ -341,7 +447,7 @@ const AdvisorDiscovery: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-2 mt-5 pt-4 border-t border-[#E2E8F0]">
                   {/* Why this match */}
                   <button
-                    onClick={() => navigate('/student/xai-drawer', { state: { expertId: expert.id } })}
+                    onClick={() => setXaiExpertId(expert.id)}
                     className="text-xs font-semibold text-[#334155] hover:text-[#1E293B] flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F4F8FF] hover:bg-[#EAF2FF] border border-[#E2E8F0] transition-colors"
                   >
                     <BookOpen size={13} className="text-[#8AB4F8]" />
@@ -415,7 +521,13 @@ const AdvisorDiscovery: React.FC = () => {
       )}
 
       {/* XAI Drawer */}
-      <XAIDrawer expertId={xaiExpertId} onClose={() => setXaiExpertId(null)} />
+      <XAIDrawer
+        expertId={xaiExpertId}
+        score={xaiExpertId ? (liveScores[xaiExpertId] ?? MATCH_SCORES[xaiExpertId]) : undefined}
+        matchedSkills={xaiExpertId ? (liveMatchedSkills[xaiExpertId] ?? MATCHED_SKILLS[xaiExpertId]) : undefined}
+        title={searchTopic}
+        onClose={() => setXaiExpertId(null)}
+      />
     </div>
   );
 };

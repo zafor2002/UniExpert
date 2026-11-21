@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import type { UserRole, Expert, Student, AdvisoryProposal, Notification } from '../types';
-import { mockStudents, mockExperts, mockProposals, mockNotifications } from '../data/mockData';
+import { mockStudents, mockExperts, mockProposals, mockNotifications, officeHoursTemplate } from '../data/mockData';
 import { api } from '../api/client';
 
 interface AppState {
@@ -84,6 +84,37 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    // Fetch live 50 faculty profiles from backend SQLite
+    api.getFaculty()
+      .then((facList) => {
+        if (facList && Array.isArray(facList) && facList.length > 0) {
+          const mapped = facList.map((f: any) => ({
+            id: f.id,
+            name: f.name,
+            email: `${f.id}@diu.edu.bd`,
+            role: f.is_industry ? ('mentor' as const) : ('faculty' as const),
+            department: f.department,
+            title: f.title,
+            tier: f.tier,
+            slotsUsed: f.slots_used,
+            slotsTotal: f.slots_total,
+            quotaStatus: f.quota_status,
+            researchAreas: f.research_areas || [],
+            skills: f.skills || [],
+            hIndex: f.h_index || 10,
+            publications: f.publications || [],
+            bio: f.bio || '',
+            isIndustry: Boolean(f.is_industry),
+            rating: 4.8,
+            officeHours: officeHoursTemplate,
+          }));
+          setState(prev => ({ ...prev, experts: mapped }));
+        }
+      })
+      .catch((err) => {
+        console.warn('Backend faculty sync fallback:', err.message);
+      });
+
     // Attempt to fetch saved proposals from backend API
     api.getProposals()
       .then((backendProps) => {
@@ -110,10 +141,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
               { id: `ev-${bp.id}`, state: bp.status, timestamp: bp.created_at, actor: 'System', note: 'Synced from backend database' }
             ]
           }));
-          setState(prev => ({
-            ...prev,
-            proposals: [...mapped, ...prev.proposals]
-          }));
+          setState(prev => {
+            const existingIds = new Set(prev.proposals.map(p => p.id));
+            const uniqueNew = mapped.filter((p: any) => !existingIds.has(p.id));
+            return {
+              ...prev,
+              proposals: [...uniqueNew, ...prev.proposals]
+            };
+          });
         }
       })
       .catch((err) => {
@@ -165,7 +200,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addProposal = useCallback((proposal: AdvisoryProposal) => {
-    setState(prev => ({ ...prev, proposals: [...prev.proposals, proposal] }));
+    setState(prev => ({
+      ...prev,
+      proposals: [proposal, ...prev.proposals.filter(p => p.id !== proposal.id)],
+    }));
   }, []);
 
   const updateExpertQuota = useCallback((expertId: string, delta: number) => {

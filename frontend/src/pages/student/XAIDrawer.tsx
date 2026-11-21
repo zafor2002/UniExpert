@@ -1,24 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Award, Cpu, BookOpen, Layers, CheckCircle2, AlertCircle, ArrowUpRight } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { useApp } from '../../context/AppContext';
 import ScoreRing from '../../components/shared/ScoreRing';
 import SkillChip from '../../components/shared/SkillChip';
+import { api } from '../../api/client';
 
 interface XAIDrawerProps {
   expertId: string | null;
+  score?: number;
+  matchedSkills?: string[];
+  title?: string;
   onClose: () => void;
 }
 
-export const XAIDrawer: React.FC<XAIDrawerProps> = ({ expertId, onClose }) => {
+export const XAIDrawer: React.FC<XAIDrawerProps> = ({ expertId, score, matchedSkills, title, onClose }) => {
   const { experts } = useApp();
+  const [xaiData, setXaiData] = useState<any>(null);
+
+  useEffect(() => {
+    if (!expertId) return;
+    let isMounted = true;
+    const fetchXAI = async () => {
+      try {
+        const data = await api.getXAI(expertId, title, title);
+        if (isMounted && data) {
+          setXaiData(data);
+        }
+      } catch (err) {
+        console.debug('Using fallback XAI heuristics', err);
+      }
+    };
+    fetchXAI();
+    return () => { isMounted = false; };
+  }, [expertId, title]);
 
   if (!expertId) return null;
 
   const expert = experts.find((e) => e.id === expertId);
   if (!expert) return null;
 
-  const radarData = [
+  const defaultRadarData = [
     { subject: 'Embedded AI', req: 95, exp: 92 },
     { subject: 'BLE & IoT', req: 85, exp: 90 },
     { subject: 'TinyML/CMSIS', req: 90, exp: 95 },
@@ -26,6 +48,10 @@ export const XAIDrawer: React.FC<XAIDrawerProps> = ({ expertId, onClose }) => {
     { subject: 'Cloud & MQTT', req: 70, exp: 75 },
     { subject: 'Bio-Sensing', req: 80, exp: 65 },
   ];
+
+  const radarData = xaiData?.radar && xaiData.radar.length > 0 
+    ? xaiData.radar.map((r: any) => ({ subject: r.subject, req: r.required, exp: r.expert }))
+    : defaultRadarData;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/20 backdrop-blur-xs flex justify-end transition-opacity">
@@ -38,7 +64,7 @@ export const XAIDrawer: React.FC<XAIDrawerProps> = ({ expertId, onClose }) => {
         <div className="p-6 border-b border-[#E2E8F0] flex items-start justify-between bg-[#F4F8FF]">
           <div className="flex items-center gap-4">
             <div className="bg-white p-1 rounded-2xl border border-[#E2E8F0]">
-              <ScoreRing score={expert.id === 'exp-1' ? 94 : expert.id === 'exp-3' ? 82 : 71} size={68} strokeWidth={6} />
+              <ScoreRing score={score ?? (expert.id === 'exp-1' ? 94 : expert.id === 'exp-3' ? 82 : 71)} size={68} strokeWidth={6} />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -66,8 +92,8 @@ export const XAIDrawer: React.FC<XAIDrawerProps> = ({ expertId, onClose }) => {
           <div className="p-4 rounded-2xl bg-[#EAF2FF] border border-[#E2E8F0] flex items-start gap-3">
             <AlertCircle className="text-[#8AB4F8] shrink-0 mt-0.5" size={18} />
             <div className="text-xs text-[#334155] leading-relaxed">
-              <span className="font-semibold text-[#1E293B] block mb-0.5">XAI Diagnostic Hint:</span>
-              "Strong practical toolchain overlap; limited recent publication history in this exact domain."
+              <span className="font-semibold text-[#1E293B] block mb-0.5">XAI Diagnostic Justification:</span>
+              "{xaiData?.justification || 'Strong practical toolchain overlap; verified research competencies aligned with project requirements.'}"
             </div>
           </div>
 
@@ -183,7 +209,12 @@ export const XAIDrawer: React.FC<XAIDrawerProps> = ({ expertId, onClose }) => {
                   ✓ Matched Technical Skills (In Expert Portfolio):
                 </span>
                 <div className="flex flex-wrap gap-1.5">
-                  {['BLE 5.0', 'C/C++ Embedded', 'CNN', 'AES-GCM', 'ARM Cortex-M4', 'MQTT'].map((s) => (
+                  {(matchedSkills && matchedSkills.length > 0
+                    ? matchedSkills
+                    : xaiData?.matched_skills && xaiData.matched_skills.length > 0
+                    ? xaiData.matched_skills
+                    : ['BLE 5.0', 'C/C++ Embedded', 'CNN', 'AES-GCM', 'ARM Cortex-M4', 'MQTT']
+                  ).map((s: string) => (
                     <SkillChip key={s} skill={s} variant="matched" />
                   ))}
                 </div>

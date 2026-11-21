@@ -47,7 +47,7 @@ UniExpert replaces rigid keyword directories with a **problem-first discovery en
 
 ### 👨‍💻 Student Engineering Team
 - **Abu Zafor** — Student ID: `232-35-331` — [@zafor2002](https://github.com/zafor2002)
-- **Anamul Haque** — Student ID: `232-35-285`
+- **Anamul Haque** — Student ID: `232-35-285` — [@smanamulhaque](https://github.com/smanamulhaque)
 
 ### 👨‍🏫 Faculty Supervision
 - **Mr. Md. Shohel Arman** — Assistant Professor, Department of Software Engineering

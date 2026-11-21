@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   GitPullRequest, CheckCircle2, MessageSquare, XCircle, Clock, 
-  Layers, Shield, ArrowLeft, AlertTriangle, Users 
+  Layers, Shield, ArrowLeft, AlertTriangle, Users, Inbox 
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
+import { api } from '../../api/client';
 import StatusBadge from '../../components/shared/StatusBadge';
 import ConfirmDialog from '../../components/shared/ConfirmDialog';
 import type { AdvisoryProposal } from '../../types';
@@ -15,11 +16,19 @@ export const IncomingProposals: React.FC = () => {
   const { proposals, updateProposal, updateExpertQuota, experts } = useApp();
   const faculty = experts[0]; // Dr. Farhana Rahman
 
-  const proposal = proposals[0];
+  const [selectedProposalId, setSelectedProposalId] = useState<string>(
+    proposals.length > 0 ? proposals[0].id : ''
+  );
+
+  const proposal = proposals.find((p) => p.id === selectedProposalId) || proposals[0];
 
   // Auto-move status to 'under_review' on open if it was 'submitted'
   useEffect(() => {
     if (proposal && proposal.state === 'submitted') {
+      api.updateProposalStatus(proposal.id, 'under_review').catch((err) => {
+        console.debug('Backend under_review sync:', err.message);
+      });
+
       const updated: AdvisoryProposal = {
         ...proposal,
         state: 'under_review',
@@ -30,14 +39,14 @@ export const IncomingProposals: React.FC = () => {
             id: `ev-${Date.now()}`,
             state: 'under_review',
             timestamp: new Date().toISOString(),
-            actor: 'Dr. Farhana Rahman (Faculty)',
+            actor: `${faculty.name} (Faculty)`,
             note: 'Proposal opened for detailed faculty technical evaluation',
           },
         ],
       };
       updateProposal(updated);
     }
-  }, [proposal]);
+  }, [proposal?.id]);
 
   const [confirmAcceptOpen, setConfirmAcceptOpen] = useState(false);
   const [showNegotiationForm, setShowNegotiationForm] = useState(false);
@@ -48,8 +57,14 @@ export const IncomingProposals: React.FC = () => {
   const [showDeclineForm, setShowDeclineForm] = useState(false);
   const [declineReason, setDeclineReason] = useState('Out of domain scope for current lab semester');
 
-  const handleAcceptProposal = () => {
+  const handleAcceptProposal = async () => {
     if (!proposal) return;
+
+    try {
+      await api.updateProposalStatus(proposal.id, 'accepted');
+    } catch (e: any) {
+      console.warn('Backend proposal status update error:', e.message);
+    }
 
     const updated: AdvisoryProposal = {
       ...proposal,
@@ -61,25 +76,31 @@ export const IncomingProposals: React.FC = () => {
           id: `ev-${Date.now()}`,
           state: 'accepted',
           timestamp: new Date().toISOString(),
-          actor: 'Dr. Farhana Rahman (Faculty)',
-          note: 'Proposal officially accepted for primary supervision. Active workspace provisioned.',
+          actor: `${faculty.name} (Faculty)`,
+          note: 'Proposal officially accepted for primary supervision. Active workspace provisioned and supervisory quota decremented.',
         },
       ],
     };
 
     updateProposal(updated);
-    updateExpertQuota(faculty.id, 1); // Decrements available slots (increases slotsUsed)
+    updateExpertQuota(proposal.expertId || faculty.id, 1);
     setConfirmAcceptOpen(false);
-    toast.success('Proposal accepted. Supervisory quota decremented: 3 → 2 slots remaining.');
+    toast.success(`Proposal accepted. Supervisory quota decremented: ${faculty.slotsUsed + 1}/${faculty.slotsTotal} slots assigned.`);
     
     setTimeout(() => {
       navigate('/student/workspace');
     }, 1500);
   };
 
-  const handleSendNegotiation = (e: React.FormEvent) => {
+  const handleSendNegotiation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!proposal) return;
+
+    try {
+      await api.updateProposalStatus(proposal.id, 'negotiation');
+    } catch (e: any) {
+      console.warn('Backend negotiation status update error:', e.message);
+    }
 
     const updated: AdvisoryProposal = {
       ...proposal,
@@ -92,7 +113,7 @@ export const IncomingProposals: React.FC = () => {
           id: `ev-${Date.now()}`,
           state: 'negotiation',
           timestamp: new Date().toISOString(),
-          actor: 'Dr. Farhana Rahman (Faculty)',
+          actor: `${faculty.name} (Faculty)`,
           note: negotiationNote,
         },
       ],
@@ -103,9 +124,15 @@ export const IncomingProposals: React.FC = () => {
     toast.success('Negotiation conditions dispatched to student team lead.');
   };
 
-  const handleDeclineProposal = (e: React.FormEvent) => {
+  const handleDeclineProposal = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!proposal) return;
+
+    try {
+      await api.updateProposalStatus(proposal.id, 'declined');
+    } catch (e: any) {
+      console.warn('Backend decline status update error:', e.message);
+    }
 
     const updated: AdvisoryProposal = {
       ...proposal,
@@ -117,7 +144,7 @@ export const IncomingProposals: React.FC = () => {
           id: `ev-${Date.now()}`,
           state: 'declined',
           timestamp: new Date().toISOString(),
-          actor: 'Dr. Farhana Rahman (Faculty)',
+          actor: `${faculty.name} (Faculty)`,
           note: `Declined: ${declineReason}`,
         },
       ],
@@ -138,12 +165,46 @@ export const IncomingProposals: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-24">
-      <button
-        onClick={() => navigate('/faculty')}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
-      >
-        <ArrowLeft size={16} /> Back to Faculty Dashboard
-      </button>
+      {/* Back button and Queue Summary */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <button
+          onClick={() => navigate('/faculty')}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+        >
+          <ArrowLeft size={16} /> Back to Faculty Dashboard
+        </button>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-[#64748B]">Review Queue:</span>
+          <span className="text-xs font-bold text-[#1E293B] bg-[#EAF2FF] px-2.5 py-0.5 rounded-full border border-[#8AB4F8]/40">
+            {proposals.length} Solicitations
+          </span>
+        </div>
+      </div>
+
+      {/* Multiple proposals selector tab bar */}
+      {proposals.length > 1 && (
+        <div className="flex overflow-x-auto gap-2 pb-1">
+          {proposals.map((p) => {
+            const isSelected = p.id === proposal.id;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setSelectedProposalId(p.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-semibold transition-all shrink-0 border ${
+                  isSelected
+                    ? 'bg-[#1E293B] text-white border-[#1E293B] shadow-sm'
+                    : 'bg-white text-[#334155] border-[#E2E8F0] hover:bg-[#F4F8FF]'
+                }`}
+              >
+                <Inbox size={14} className={isSelected ? 'text-[#8AB4F8]' : 'text-[#64748B]'} />
+                <span className="max-w-[200px] truncate">{p.projectTitle}</span>
+                <span className="ml-1 opacity-75">({p.state})</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Main Review Card */}
       <div className="card p-6 md:p-8 space-y-6 bg-white border border-[#E2E8F0] rounded-3xl shadow-sm">
@@ -308,7 +369,7 @@ export const IncomingProposals: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#E2E8F0]">
           <div className="text-xs text-[#64748B] flex items-center gap-1.5">
             <Clock size={14} className="text-[#8AB4F8]" />
-            <span>Auto-decrement: Accepting binds 1 of your remaining 3 supervisory slots.</span>
+            <span>Auto-decrement: Accepting binds 1 of your remaining {Math.max(0, faculty.slotsTotal - faculty.slotsUsed)} supervisory slots.</span>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -351,7 +412,7 @@ export const IncomingProposals: React.FC = () => {
         onClose={() => setConfirmAcceptOpen(false)}
         onConfirm={handleAcceptProposal}
         title="Accept Capstone Supervision"
-        message="Are you sure you want to formally accept EdgeShield as primary advisor? This will decrement your available quota by 1 and provision the collaboration workspace."
+        message={`Are you sure you want to formally accept "${proposal.projectTitle}" as primary advisor? This will decrement your available quota by 1 and provision the collaboration workspace.`}
         confirmLabel="Accept & Provision Workspace"
       />
     </div>

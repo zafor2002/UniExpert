@@ -24,13 +24,16 @@ export const AllocationDashboard: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const facultyLoadData = [
-    { name: 'Dr. Farhana', load: 2, cap: 5, status: 'normal' },
-    { name: 'Dr. Tanvir', load: 1, cap: 4, status: 'normal' },
-    { name: 'Prof. Rafiqul', load: 5, cap: 5, status: 'overload' },
-    { name: 'Engr. Sakib', load: 1, cap: 3, status: 'normal' },
-    { name: 'Dr. Shohel', load: 3, cap: 5, status: 'nearing' },
-  ];
+  const facultyLoadData = experts.slice(0, 6).map((exp) => ({
+    name: exp.name.split(' ').slice(0, 2).join(' '),
+    load: exp.slotsUsed,
+    cap: exp.slotsTotal,
+    status: exp.slotsUsed >= exp.slotsTotal ? 'overload' : (exp.slotsTotal - exp.slotsUsed <= 1 ? 'nearing' : 'normal'),
+  }));
+
+  const maxedFaculty = experts.filter((e) => e.slotsUsed >= e.slotsTotal);
+  const totalSlotsUsed = experts.reduce((acc, e) => acc + e.slotsUsed, 0);
+  const totalSlotsTotal = experts.reduce((acc, e) => acc + e.slotsTotal, 0);
 
   const unallocatedTeams = [
     { id: 'team-101', name: 'NeuroPredict', topic: 'EEG Anomaly Classification with Spiking NN', size: 3 },
@@ -94,9 +97,9 @@ export const AllocationDashboard: React.FC = () => {
         />
         <MetricCard
           label="Maxed Capacity"
-          value="1 Faculty"
-          badge="Quota 5/5"
-          subtext="Prof. Md. Rafiqul Islam reached cap"
+          value={`${maxedFaculty.length} Faculty`}
+          badge={`Quota Cap`}
+          subtext={maxedFaculty.length > 0 ? `${maxedFaculty[0].name} reached cap` : 'All faculty have remaining capacity'}
           variant="rose"
           icon={<Flame size={16} className="text-[#DC2626]" />}
         />

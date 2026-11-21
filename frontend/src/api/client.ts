@@ -95,20 +95,51 @@ export const api = {
     return res.json();
   },
 
-  // Advisor Discovery
-  async discoverAdvisors(problemStatement: string) {
+  // AI Matching & NLP Engine
+  async getFaculty() {
+    const res = await fetch(`${API_BASE}/matching/faculty`);
+    if (!res.ok) throw new Error('Failed to fetch faculty profiles');
+    return res.json();
+  },
+
+  async extractEntities(title: string, problemStatement: string) {
+    const res = await fetch(`${API_BASE}/matching/extract-entities`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, problem_statement: problemStatement }),
+    });
+    if (!res.ok) throw new Error('Failed to extract project entities');
+    return res.json();
+  },
+
+  async discoverAdvisors(payload: { title?: string; problem_statement: string; team_skills?: string[]; department_filter?: string; min_tier?: number } | string) {
+    const body = typeof payload === 'string' ? { problem_statement: payload } : payload;
     const res = await fetch(`${API_BASE}/matching/discover`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ problem_statement: problemStatement }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error('Failed to discover advisors');
     return res.json();
   },
 
-  async getXAI(expertId: string) {
-    const res = await fetch(`${API_BASE}/matching/xai/${expertId}`);
+  async getXAI(expertId: string, title?: string, problemStatement?: string) {
+    const params = new URLSearchParams();
+    if (title) params.append('title', title);
+    if (problemStatement) params.append('problem_statement', problemStatement);
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetch(`${API_BASE}/matching/xai/${expertId}${queryString}`);
     if (!res.ok) throw new Error('Failed to fetch XAI breakdown');
+    return res.json();
+  },
+
+  async optimizeCoAdvisor(payload: { primary_advisor_id: string; required_skills: string[]; team_skills?: string[] }) {
+    const res = await fetch(`${API_BASE}/matching/optimize-coadvisor`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Failed to optimize co-advisors');
     return res.json();
   },
 
@@ -130,6 +161,12 @@ export const api = {
   },
 
   // Audit
+  async getAuditTrail() {
+    const res = await fetch(`${API_BASE}/audit/blocks`);
+    if (!res.ok) throw new Error('Failed to fetch audit blocks');
+    return res.json();
+  },
+
   async verifyAuditLedger() {
     const res = await fetch(`${API_BASE}/audit/verify`);
     if (!res.ok) throw new Error('Failed to verify audit ledger');

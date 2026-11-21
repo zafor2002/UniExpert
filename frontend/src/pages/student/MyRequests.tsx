@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   GitPullRequest, CheckCircle2, Clock, AlertCircle, RefreshCw, Send, 
-  ArrowRight, MessageSquare, ChevronRight, UserCheck, ShieldAlert 
+  ArrowRight, MessageSquare, ChevronRight, UserCheck, ShieldAlert, Inbox 
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
+import { api } from '../../api/client';
 import StatusBadge from '../../components/shared/StatusBadge';
 import type { FSMState, AdvisoryProposal } from '../../types';
 
@@ -22,38 +23,50 @@ export const MyRequests: React.FC = () => {
   const { proposals, updateProposal, experts } = useApp();
 
   const [activeTab, setActiveTab] = useState<'active' | 'expired'>('active');
+  const [selectedProposalId, setSelectedProposalId] = useState<string>(
+    proposals.length > 0 ? proposals[0].id : ''
+  );
   const [revisionText, setRevisionText] = useState(
     'Added Milestone 2.5: Benchmark CMSIS-NN 8-bit quantized kernel against TensorFlow Lite for Microcontrollers on nRF52840 (ARM Cortex-M4 @ 64MHz). Will record execution cycle count and RAM consumption.'
   );
   const [submittingRevision, setSubmittingRevision] = useState(false);
 
-  // Proposal 1 in negotiation
-  const negotiationProp = proposals[0];
+  const activeProposals = proposals.filter((p) => p.state !== 'declined');
+  const expiredProposals = proposals.filter((p) => p.state === 'declined');
 
-  const handleResubmitRevision = () => {
+  const currentList = activeTab === 'active' ? activeProposals : expiredProposals;
+  const negotiationProp = currentList.find((p) => p.id === selectedProposalId) || currentList[0] || proposals[0];
+
+  const targetAdvisor = experts.find((e) => e.id === negotiationProp?.expertId) || experts[0];
+
+  const handleResubmitRevision = async () => {
     if (!negotiationProp) return;
     setSubmittingRevision(true);
 
-    setTimeout(() => {
-      setSubmittingRevision(false);
-      const updated: AdvisoryProposal = {
-        ...negotiationProp,
-        state: 'submitted',
-        updatedAt: new Date().toISOString(),
-        timeline: [
-          ...negotiationProp.timeline,
-          {
-            id: `ev-${Date.now()}`,
-            state: 'submitted',
-            timestamp: new Date().toISOString(),
-            actor: 'Abu Zafor (Student)',
-            note: `Revised roadmap submitted: ${revisionText.slice(0, 80)}...`,
-          },
-        ],
-      };
-      updateProposal(updated);
-      toast.success('Revised roadmap submitted successfully. Advisor has been notified.');
-    }, 1000);
+    try {
+      await api.updateProposalStatus(negotiationProp.id, 'submitted');
+    } catch (err: any) {
+      console.warn('Backend proposal revision status update:', err.message);
+    }
+
+    setSubmittingRevision(false);
+    const updated: AdvisoryProposal = {
+      ...negotiationProp,
+      state: 'submitted',
+      updatedAt: new Date().toISOString(),
+      timeline: [
+        ...negotiationProp.timeline,
+        {
+          id: `ev-${Date.now()}`,
+          state: 'submitted',
+          timestamp: new Date().toISOString(),
+          actor: 'Abu Zafor (Student)',
+          note: `Revised roadmap submitted: ${revisionText.slice(0, 80)}...`,
+        },
+      ],
+    };
+    updateProposal(updated);
+    toast.success('Revised roadmap submitted successfully. Advisor has been notified.');
   };
 
   const getStepStatus = (stepState: FSMState, currentState: FSMState) => {
@@ -89,7 +102,7 @@ export const MyRequests: React.FC = () => {
                 : 'text-[#64748B] hover:text-[#1E293B]'
             }`}
           >
-            Active Pipeline (1)
+            Active Pipeline ({activeProposals.length})
           </button>
           <button
             onClick={() => setActiveTab('expired')}
@@ -99,12 +112,36 @@ export const MyRequests: React.FC = () => {
                 : 'text-[#64748B] hover:text-[#1E293B]'
             }`}
           >
-            Historical & Expired (1)
+            Historical & Expired ({expiredProposals.length})
           </button>
         </div>
       </div>
 
-      {activeTab === 'active' && negotiationProp && (
+      {/* Proposal selector if more than 1 in current list */}
+      {currentList.length > 1 && (
+        <div className="flex overflow-x-auto gap-2 pb-1">
+          {currentList.map((p) => {
+            const isSelected = p.id === negotiationProp?.id;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setSelectedProposalId(p.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-semibold transition-all shrink-0 border ${
+                  isSelected
+                    ? 'bg-[#1E293B] text-white border-[#1E293B] shadow-sm'
+                    : 'bg-white text-[#334155] border-[#E2E8F0] hover:bg-[#F4F8FF]'
+                }`}
+              >
+                <Inbox size={14} className={isSelected ? 'text-[#8AB4F8]' : 'text-[#64748B]'} />
+                <span className="max-w-[200px] truncate">{p.projectTitle}</span>
+                <span className="ml-1 opacity-75">({p.state})</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {negotiationProp && (
         <div className="space-y-6">
           {/* Main active request card */}
           <div className="card p-6 md:p-8 space-y-6 bg-white border border-[#E2E8F0] rounded-3xl shadow-sm">
@@ -116,13 +153,13 @@ export const MyRequests: React.FC = () => {
                     ID: #{negotiationProp.id.toUpperCase()}
                   </span>
                   <StatusBadge status={negotiationProp.state} />
-                  <span className="text-xs text-[#64748B]">· Submitted Nov 1, 2026</span>
+                  <span className="text-xs text-[#64748B]">· {new Date(negotiationProp.createdAt).toLocaleDateString()}</span>
                 </div>
                 <h2 className="text-lg font-bold text-[#1E293B]">
                   {negotiationProp.projectTitle}
                 </h2>
                 <p className="text-xs text-[#64748B] mt-1">
-                  Target Advisor: <strong className="text-[#1E293B]">Dr. Farhana Rahman</strong> · Department of Software Engineering
+                  Target Advisor: <strong className="text-[#1E293B]">{targetAdvisor.name}</strong> · {targetAdvisor.department}
                 </p>
               </div>
 

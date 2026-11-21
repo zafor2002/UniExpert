@@ -55,6 +55,9 @@ class FacultyProfile(Base):
     bio = Column(Text, default="")
     office_room = Column(String, default="Room 602")
     is_industry = Column(Boolean, default=False)
+    skills = Column(Text, default="")
+    research_areas = Column(Text, default="")
+    publications_data = Column(Text, default="[]")
 
     user = relationship("User", back_populates="faculty_profile")
 

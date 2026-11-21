@@ -61,6 +61,7 @@ export const ProposalModal: React.FC = () => {
     e.preventDefault();
     setSubmitting(true);
 
+    let savedId = `prop-${Date.now()}`;
     try {
       // 1. Submit proposal to backend API
       const res = await api.submitProposal({
@@ -70,6 +71,9 @@ export const ProposalModal: React.FC = () => {
         primary_advisor_id: expert.id,
         co_advisor_id: scope === 'co_advisor' ? 'co-adv-1' : undefined
       });
+      if (res && res.id) {
+        savedId = res.id;
+      }
       console.log('Saved to backend database:', res);
     } catch (err: any) {
       console.warn('Backend API submission:', err.message);
@@ -83,7 +87,7 @@ export const ProposalModal: React.FC = () => {
     setSubmitting(false);
 
     const newProp: AdvisoryProposal = {
-      id: `prop-${Date.now()}`,
+      id: savedId,
       studentId: 'stu-1',
       expertId: expert.id,
       projectTitle: title,

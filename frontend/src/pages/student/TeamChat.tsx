@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Send, Paperclip, Smile, Users, Hash, Pin,
   Search, Phone, Video, MoreHorizontal, CheckCheck,
-  ChevronDown, Plus, AtSign, Mic, ImageIcon,
+  ChevronDown, Plus, AtSign, Mic, ImageIcon, Wifi, Sparkles
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { api } from '@/api/client';
 import { toast } from 'react-hot-toast';
+import { LiveMeetingModal } from '@/components/meeting/LiveMeetingModal';
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 interface ChatMessage {
@@ -116,8 +117,14 @@ export const TeamChat: React.FC = () => {
   const [input, setInput] = useState('');
   const [showEmoji, setShowEmoji] = useState<string | null>(null);
   const [channels, setChannels] = useState(CHANNELS);
+  const [isMeetingOpen, setIsMeetingOpen] = useState(false);
+  const [typingUser, setTypingUser] = useState<string | null>(null);
+  const [wsStatus, setWsStatus] = useState<'connected' | 'connecting' | 'offline'>('connecting');
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const typingTimeoutRef = useRef<any>(null);
 
   const messages = messagesByChannel[activeChannel] || [];
   const myMember = MEMBERS.find(m => m.id === myId) || MEMBERS[0];
@@ -149,7 +156,6 @@ export const TeamChat: React.FC = () => {
         }
       })
       .catch((err) => {
-        // Quiet fallback to mock data
         console.warn('Backend chat history offline:', err.message);
       });
   }, [activeChannel, myId, myMember.color]);
@@ -158,12 +164,27 @@ export const TeamChat: React.FC = () => {
   useEffect(() => {
     let ws: WebSocket | null = null;
     try {
+      setWsStatus('connecting');
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       ws = new WebSocket(`${protocol}//${window.location.host}/api/chat/ws/${activeChannel}`);
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        setWsStatus('connected');
+      };
+
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data && data.content && data.sender_id !== myId) {
+
+          if (data.type === 'typing' && data.sender_id !== myId) {
+            setTypingUser(data.sender_name || 'A team member');
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+            typingTimeoutRef.current = setTimeout(() => {
+              setTypingUser(null);
+            }, 2500);
+          } else if ((data.type === 'new_message' || data.content) && data.sender_id !== myId) {
+            setTypingUser(null);
             setMessagesByChannel(prev => ({
               ...prev,
               [activeChannel]: [...(prev[activeChannel] || []), {
@@ -182,11 +203,16 @@ export const TeamChat: React.FC = () => {
           // ignore
         }
       };
+
+      ws.onclose = () => {
+        setWsStatus('offline');
+      };
     } catch (e) {
-      // ignore
+      setWsStatus('offline');
     }
     return () => {
       if (ws) ws.close();
+      wsRef.current = null;
     };
   }, [activeChannel, myId]);
 
@@ -194,6 +220,18 @@ export const TeamChat: React.FC = () => {
   useEffect(() => {
     setChannels(prev => prev.map(ch => ch.id === activeChannel ? { ...ch, unread: 0 } : ch));
   }, [activeChannel]);
+
+  const handleInputChange = (val: string) => {
+    setInput(val);
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'typing',
+        sender_id: myId,
+        sender_name: myMember.name,
+        is_typing: true
+      }));
+    }
+  };
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -215,10 +253,20 @@ export const TeamChat: React.FC = () => {
     setInput('');
     inputRef.current?.focus();
 
-    // Send to backend API
-    api.sendChatMessage(activeChannel, content).catch((err) => {
-      console.warn('Message saved locally (backend offline):', err.message);
-    });
+    // Broadcast over WebSocket
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'chat_message',
+        content,
+        sender_id: myId,
+        sender_name: myMember.name
+      }));
+    } else {
+      // Fallback to REST API
+      api.sendChatMessage(activeChannel, content).catch((err) => {
+        console.warn('Message saved locally (backend offline):', err.message);
+      });
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -323,17 +371,30 @@ export const TeamChat: React.FC = () => {
             <Hash size={15} className="text-[#334155]" />
             <span className="text-sm font-bold text-[#0F172A]">{activeChannelData?.name}</span>
             <span className="text-xs text-[#334155] hidden sm:block">· {activeChannelData?.description}</span>
+            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border ${
+              wsStatus === 'connected'
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                : wsStatus === 'connecting'
+                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                : 'bg-slate-100 text-slate-500 border-slate-200'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                wsStatus === 'connected' ? 'bg-emerald-500 animate-pulse' : wsStatus === 'connecting' ? 'bg-amber-500 animate-spin' : 'bg-slate-400'
+              }`} />
+              {wsStatus === 'connected' ? 'WebSocket Live' : wsStatus === 'connecting' ? 'Connecting...' : 'Offline'}
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
             <button className="p-1.5 rounded-lg hover:bg-[#EDF2FB] text-[#334155] transition-colors" title="Search">
               <Search size={15} />
             </button>
             <button
-              onClick={() => toast('Video call feature coming soon!')}
-              className="p-1.5 rounded-lg hover:bg-[#EDF2FB] text-[#334155] transition-colors"
-              title="Video call"
+              onClick={() => setIsMeetingOpen(true)}
+              className="p-1.5 rounded-lg hover:bg-[#EDF2FB] text-blue-600 bg-blue-50 border border-blue-200 transition-colors flex items-center gap-1.5 text-xs font-semibold px-3"
+              title="Launch Live Advisory Meeting"
             >
-              <Video size={15} />
+              <Video size={14} className="text-blue-600" />
+              <span className="hidden sm:inline">Start Meeting</span>
             </button>
             <button className="p-1.5 rounded-lg hover:bg-[#EDF2FB] text-[#334155] transition-colors" title="Members">
               <Users size={15} />
@@ -464,62 +525,78 @@ export const TeamChat: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
-        <div className="shrink-0 px-4 pb-4 pt-2 border-t border-[#CBD5E1]">
-          <div className="flex items-end gap-2 bg-[#EDF2FB] border border-[#CBD5E1] rounded-2xl px-3 py-2">
-            {/* Left actions */}
-            <div className="flex items-center gap-1 pb-1 shrink-0">
-              <button
-                onClick={() => toast('File upload coming soon!')}
-                className="p-1 rounded-lg hover:bg-white text-[#334155] transition-colors"
-                title="Attach file"
-              >
-                <Paperclip size={15} />
-              </button>
-              <button
-                onClick={() => toast('Image sharing coming soon!')}
-                className="p-1 rounded-lg hover:bg-white text-[#334155] transition-colors"
-                title="Share image"
-              >
-                <ImageIcon size={15} />
-              </button>
+          {/* Typing Indicator */}
+          {typingUser && (
+            <div className="px-5 py-1 text-[11px] text-[#64748B] italic flex items-center gap-1.5 animate-pulse bg-slate-50/80 border-t border-[#E2E8F0]">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
+              <span>{typingUser} is typing...</span>
             </div>
+          )}
 
-            <textarea
-              ref={inputRef}
-              rows={1}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={`Message #${activeChannelData?.name}…`}
-              className="flex-1 bg-transparent resize-none text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none py-1 max-h-28 leading-relaxed"
-              style={{ minHeight: '1.5rem' }}
-            />
+          <div className="shrink-0 px-4 pb-4 pt-2 border-t border-[#CBD5E1]">
+            <div className="flex items-end gap-2 bg-[#EDF2FB] border border-[#CBD5E1] rounded-2xl px-3 py-2">
+              {/* Left actions */}
+              <div className="flex items-center gap-1 pb-1 shrink-0">
+                <button
+                  onClick={() => toast('File upload coming soon!')}
+                  className="p-1 rounded-lg hover:bg-white text-[#334155] transition-colors"
+                  title="Attach file"
+                >
+                  <Paperclip size={15} />
+                </button>
+                <button
+                  onClick={() => toast('Image sharing coming soon!')}
+                  className="p-1 rounded-lg hover:bg-white text-[#334155] transition-colors"
+                  title="Share image"
+                >
+                  <ImageIcon size={15} />
+                </button>
+              </div>
 
-            {/* Right actions */}
-            <div className="flex items-center gap-1 pb-1 shrink-0">
-              <button
-                onClick={() => setShowEmoji(showEmoji ? null : 'input')}
-                className="p-1 rounded-lg hover:bg-white text-[#334155] transition-colors"
-              >
-                <Smile size={15} />
-              </button>
-              <button
-                onClick={handleSend}
-                disabled={!input.trim()}
-                className="p-1.5 rounded-xl bg-[#4D90F0] text-white hover:bg-[#3A7EDE] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                <Send size={14} />
-              </button>
+              <textarea
+                ref={inputRef}
+                rows={1}
+                value={input}
+                onChange={e => handleInputChange(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={`Message #${activeChannelData?.name}…`}
+                className="flex-1 bg-transparent resize-none text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none py-1 max-h-28 leading-relaxed"
+                style={{ minHeight: '1.5rem' }}
+              />
+
+              {/* Right actions */}
+              <div className="flex items-center gap-1 pb-1 shrink-0">
+                <button
+                  onClick={() => setShowEmoji(showEmoji ? null : 'input')}
+                  className="p-1 rounded-lg hover:bg-white text-[#334155] transition-colors"
+                >
+                  <Smile size={15} />
+                </button>
+                <button
+                  onClick={handleSend}
+                  disabled={!input.trim()}
+                  className="p-1.5 rounded-xl bg-[#4D90F0] text-white hover:bg-[#3A7EDE] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Send size={14} />
+                </button>
+              </div>
             </div>
+            <p className="text-[9px] text-[#94A3B8] mt-1 px-1">
+              Press <kbd className="font-mono bg-[#EDF2FB] border border-[#CBD5E1] px-1 py-0.5 rounded text-[9px]">Enter</kbd> to send · <kbd className="font-mono bg-[#EDF2FB] border border-[#CBD5E1] px-1 py-0.5 rounded text-[9px]">Shift+Enter</kbd> for new line
+            </p>
           </div>
-          <p className="text-[9px] text-[#94A3B8] mt-1 px-1">
-            Press <kbd className="font-mono bg-[#EDF2FB] border border-[#CBD5E1] px-1 py-0.5 rounded text-[9px]">Enter</kbd> to send · <kbd className="font-mono bg-[#EDF2FB] border border-[#CBD5E1] px-1 py-0.5 rounded text-[9px]">Shift+Enter</kbd> for new line
-          </p>
         </div>
-      </div>
-    </div>
-  );
-};
 
-export default TeamChat;
+        {/* Live Video Consultation & Meeting Modal */}
+        <LiveMeetingModal
+          isOpen={isMeetingOpen}
+          onClose={() => setIsMeetingOpen(false)}
+          roomId="room-edgeshield"
+          roomTitle={`EdgeShield Sync · #${activeChannelData?.name}`}
+          currentUser={currentUser}
+        />
+      </div>
+    );
+  };
+
+  export default TeamChat;

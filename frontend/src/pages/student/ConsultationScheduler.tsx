@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Download, Video, CheckCircle2, AlertTriangle, FileText, Upload, UserCheck } from 'lucide-react';
+import { Calendar, Clock, Download, Video, CheckCircle2, AlertTriangle, FileText, Upload, UserCheck, Sparkles } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
+import { LiveMeetingModal } from '../../components/meeting/LiveMeetingModal';
 import type { OfficeHourSlot } from '../../types';
 
 export const ConsultationScheduler: React.FC = () => {
-  const { experts } = useApp();
+  const { experts, currentUser } = useApp();
   const advisor = experts[0]; // Dr. Farhana Rahman
 
   const [selectedSlot, setSelectedSlot] = useState<OfficeHourSlot | null>(null);
@@ -13,6 +14,7 @@ export const ConsultationScheduler: React.FC = () => {
   const [attachedDoc, setAttachedDoc] = useState<string | null>(null);
   const [isBookedSuccess, setIsBookedSuccess] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
+  const [isLiveMeetingOpen, setIsLiveMeetingOpen] = useState(false);
 
   const slots = advisor.officeHours;
 
@@ -146,8 +148,14 @@ END:VCALENDAR`;
 
           <div className="pt-2 flex flex-wrap justify-center gap-3">
             <button
+              onClick={() => setIsLiveMeetingOpen(true)}
+              className="btn-primary text-xs px-5 py-2.5 rounded-xl shadow-sm bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 font-bold"
+            >
+              <Video size={14} /> Join Live Consultation Room
+            </button>
+            <button
               onClick={downloadICS}
-              className="btn-primary text-xs px-5 py-2.5 rounded-xl shadow-sm"
+              className="btn-secondary text-xs px-5 py-2.5 rounded-xl shadow-sm"
             >
               <Download size={14} /> Download .ics Calendar File
             </button>
@@ -281,6 +289,15 @@ END:VCALENDAR`;
           </div>
         </form>
       )}
+
+      {/* Live Video Consultation Modal */}
+      <LiveMeetingModal
+        isOpen={isLiveMeetingOpen}
+        onClose={() => setIsLiveMeetingOpen(false)}
+        roomId="room-consultation-fr"
+        roomTitle="Dr. Farhana Rahman · Live Office Hour Consultation"
+        currentUser={currentUser}
+      />
     </div>
   );
 };
