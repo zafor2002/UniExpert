@@ -160,7 +160,7 @@ export const api = {
     return res.json();
   },
 
-  // Audit
+  // Audit & Accreditation
   async getAuditTrail() {
     const res = await fetch(`${API_BASE}/audit/blocks`);
     if (!res.ok) throw new Error('Failed to fetch audit blocks');
@@ -171,5 +171,42 @@ export const api = {
     const res = await fetch(`${API_BASE}/audit/verify`);
     if (!res.ok) throw new Error('Failed to verify audit ledger');
     return res.json();
+  },
+
+  async getAccreditationSummary(term: string = 'Fall 2026', department: string = 'Software Engineering') {
+    const params = new URLSearchParams({ term, department });
+    const res = await fetch(`${API_BASE}/reports/accreditation/summary?${params.toString()}`);
+    if (!res.ok) throw new Error('Failed to fetch accreditation summary');
+    return res.json();
+  },
+
+  async downloadAccreditationPdf(term: string = 'Fall 2026', department: string = 'Software Engineering') {
+    const params = new URLSearchParams({ term, department });
+    const res = await fetch(`${API_BASE}/reports/accreditation/pdf?${params.toString()}`);
+    if (!res.ok) throw new Error('Failed to download accreditation PDF');
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `BAETE_Accreditation_Dossier_${term.replace(/\s+/g, '_')}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  },
+
+  async downloadAccreditationCsv(term: string = 'Fall 2026', department: string = 'Software Engineering') {
+    const params = new URLSearchParams({ term, department });
+    const res = await fetch(`${API_BASE}/reports/accreditation/csv?${params.toString()}`);
+    if (!res.ok) throw new Error('Failed to download accreditation CSV');
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `BAETE_Supervisory_Ledger_${term.replace(/\s+/g, '_')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   },
 };

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.db.session import engine, Base, SessionLocal
-from app.api import auth, proposals, matching, chat, audit, meeting
+from app.api import auth, proposals, matching, chat, audit, meeting, reports
 from app.api.matching import get_or_index_faculty
 from app.db.seed_data import ensure_seeded
 
@@ -32,6 +32,7 @@ app.include_router(matching.router, prefix=settings.API_V1_STR)
 app.include_router(chat.router, prefix=settings.API_V1_STR)
 app.include_router(meeting.router, prefix=settings.API_V1_STR)
 app.include_router(audit.router, prefix=settings.API_V1_STR)
+app.include_router(reports.router, prefix=settings.API_V1_STR)
 
 @app.on_event("startup")
 def seed_initial_data():

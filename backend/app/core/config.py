@@ -4,6 +4,10 @@ except ImportError:
     from pydantic import BaseSettings
 
 from typing import List
+from pathlib import Path
+
+_BASE_DIR = Path(__file__).resolve().parent.parent.parent
+_DEFAULT_DB_PATH = (_BASE_DIR / "uniexpert.db").as_posix()
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "UniExpert Backend API"
@@ -23,7 +27,7 @@ class Settings(BaseSettings):
     ]
     
     # Database (Defaults to SQLite for instant zero-config local run)
-    DATABASE_URL: str = "sqlite:///./uniexpert.db"
+    DATABASE_URL: str = f"sqlite:///{_DEFAULT_DB_PATH}"
     
     # Qdrant Vector Store
     QDRANT_HOST: str = "localhost"
