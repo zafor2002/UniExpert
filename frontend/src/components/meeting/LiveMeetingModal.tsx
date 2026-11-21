@@ -74,6 +74,7 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
 
   const [secondsElapsed, setSecondsElapsed] = useState(245);
   const [wsConnected, setWsConnected] = useState(false);
+  const [sessionPeerId] = useState(() => `${myId}-${Math.random().toString(36).substring(2, 7)}`);
   const wsRef = useRef<WebSocket | null>(null);
 
   // Meeting timer
@@ -98,7 +99,7 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
     let ws: WebSocket | null = null;
     try {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const url = `${protocol}//${window.location.host}/api/meeting/ws/${roomId}?peer_id=${encodeURIComponent(myId)}&name=${encodeURIComponent(myName)}&role=${encodeURIComponent(myRole)}`;
+      const url = `${protocol}//${window.location.host}/api/meeting/ws/${roomId}?peer_id=${encodeURIComponent(sessionPeerId)}&name=${encodeURIComponent(myName)}&role=${encodeURIComponent(myRole)}`;
       ws = new WebSocket(url);
       wsRef.current = ws;
 
@@ -113,13 +114,13 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
           if (data.type === 'room_state') {
             if (data.participants && data.participants.length > 0) {
               // Exclude myself from remote participants list
-              const remotes = data.participants.filter((p: any) => p.peer_id !== myId);
+              const remotes = data.participants.filter((p: any) => p.peer_id !== sessionPeerId);
               if (remotes.length > 0) {
                 setParticipants(remotes);
               }
             }
           } else if (data.type === 'peer_joined') {
-            if (data.peer_id !== myId) {
+            if (data.peer_id !== sessionPeerId) {
               setParticipants((prev) => {
                 if (prev.some((p) => p.peer_id === data.peer_id)) return prev;
                 return [...prev, { peer_id: data.peer_id, ...data.user }];

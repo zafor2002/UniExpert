@@ -34,9 +34,9 @@ interface Channel {
 const MEMBERS = [
   { id: 'stu-1', name: 'Abu Zafor',      initials: 'AZ', color: '#4D90F0', role: 'Team Lead',    online: true  },
   { id: 'stu-2', name: 'Rafi Ahmed',     initials: 'RA', color: '#7C8FF5', role: 'Backend Dev',  online: true  },
-  { id: 'stu-3', name: 'Lamia Sultana',  initials: 'LS', color: '#34C99A', role: 'ML Engineer',  online: false },
+  { id: 'stu-3', name: 'Lamia Sultana',  initials: 'LS', color: '#34C99A', role: 'ML Engineer',  online: true  },
   { id: 'stu-4', name: 'Tanvir Hassan',  initials: 'TH', color: '#F59E0B', role: 'Frontend Dev', online: true  },
-  { id: 'adv-1', name: 'Dr. Farhana Rahman', initials: 'FR', color: '#EF4444', role: 'Supervisor', online: false },
+  { id: 'exp-1', name: 'Dr. Farhana Rahman', initials: 'FR', color: '#EF4444', role: 'Supervisor', online: true },
 ];
 
 const CHANNELS: Channel[] = [
@@ -112,6 +112,8 @@ export const TeamChat: React.FC = () => {
   const { currentUser } = useApp();
   const myId = currentUser?.id || 'stu-1';
 
+  const [clientId] = useState(() => `client-${Math.random().toString(36).substring(2, 9)}`);
+  const [selectedMemberId, setSelectedMemberId] = useState<string>(myId);
   const [activeChannel, setActiveChannel] = useState('ch-general');
   const [messagesByChannel, setMessagesByChannel] = useState(MOCK_MESSAGES);
   const [input, setInput] = useState('');
@@ -126,8 +128,16 @@ export const TeamChat: React.FC = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const typingTimeoutRef = useRef<any>(null);
 
+  const myMember = MEMBERS.find(m => m.id === selectedMemberId) || MEMBERS.find(m => m.id === myId) || MEMBERS[0];
   const messages = messagesByChannel[activeChannel] || [];
-  const myMember = MEMBERS.find(m => m.id === myId) || MEMBERS[0];
+
+  // Update selected member when user changes role in demo
+  useEffect(() => {
+    if (currentUser?.id) {
+      const match = MEMBERS.find(m => m.id === currentUser.id);
+      if (match) setSelectedMemberId(match.id);
+    }
+  }, [currentUser?.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -138,17 +148,20 @@ export const TeamChat: React.FC = () => {
     api.getChatHistory(activeChannel)
       .then((history) => {
         if (history && history.length > 0) {
-          const backendMsgs = history.map((h: any) => ({
-            id: h.id,
-            senderId: h.sender_id,
-            senderName: h.sender_name,
-            senderInitials: h.sender_name ? h.sender_name.slice(0, 2).toUpperCase() : 'TM',
-            senderColor: h.sender_id === myId ? myMember.color : '#7C8FF5',
-            content: h.content,
-            timestamp: h.timestamp,
-            type: 'text',
-            pinned: h.pinned,
-          }));
+          const backendMsgs = history.map((h: any) => {
+            const senderMember = MEMBERS.find(m => m.id === h.sender_id);
+            return {
+              id: h.id,
+              senderId: h.sender_id,
+              senderName: h.sender_name,
+              senderInitials: senderMember?.initials || (h.sender_name ? h.sender_name.slice(0, 2).toUpperCase() : 'TM'),
+              senderColor: senderMember?.color || '#7C8FF5',
+              content: h.content,
+              timestamp: h.timestamp,
+              type: 'text',
+              pinned: h.pinned,
+            };
+          });
           setMessagesByChannel(prev => ({
             ...prev,
             [activeChannel]: backendMsgs
@@ -158,7 +171,7 @@ export const TeamChat: React.FC = () => {
       .catch((err) => {
         console.warn('Backend chat history offline:', err.message);
       });
-  }, [activeChannel, myId, myMember.color]);
+  }, [activeChannel]);
 
   // Live WebSocket connection for real-time team collaboration
   useEffect(() => {
@@ -177,27 +190,41 @@ export const TeamChat: React.FC = () => {
         try {
           const data = JSON.parse(event.data);
 
-          if (data.type === 'typing' && data.sender_id !== myId) {
-            setTypingUser(data.sender_name || 'A team member');
-            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-            typingTimeoutRef.current = setTimeout(() => {
+          if (data.type === 'typing') {
+            // Show typing indicator if from another browser tab or client
+            if (data.client_id !== clientId) {
+              setTypingUser(data.sender_name || 'A team member');
+              if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+              typingTimeoutRef.current = setTimeout(() => {
+                setTypingUser(null);
+              }, 2500);
+            }
+          } else if (data.type === 'new_message' || data.content) {
+            // Append message if from another tab/client
+            if (data.client_id !== clientId) {
               setTypingUser(null);
-            }, 2500);
-          } else if ((data.type === 'new_message' || data.content) && data.sender_id !== myId) {
-            setTypingUser(null);
-            setMessagesByChannel(prev => ({
-              ...prev,
-              [activeChannel]: [...(prev[activeChannel] || []), {
-                id: data.id || `ws-${Date.now()}`,
-                senderId: data.sender_id,
-                senderName: data.sender_name || 'Team Member',
-                senderInitials: data.sender_name ? data.sender_name.slice(0, 2).toUpperCase() : 'TM',
-                senderColor: '#7C8FF5',
-                content: data.content,
-                timestamp: data.timestamp || new Date().toISOString(),
-                type: 'text'
-              }]
-            }));
+              const senderMember = MEMBERS.find(m => m.id === data.sender_id);
+              setMessagesByChannel(prev => {
+                const currentList = prev[activeChannel] || [];
+                // Deduplicate by ID
+                if (data.id && currentList.some(m => m.id === data.id)) {
+                  return prev;
+                }
+                return {
+                  ...prev,
+                  [activeChannel]: [...currentList, {
+                    id: data.id || `ws-${Date.now()}`,
+                    senderId: data.sender_id,
+                    senderName: data.sender_name || 'Team Member',
+                    senderInitials: senderMember?.initials || (data.sender_name ? data.sender_name.slice(0, 2).toUpperCase() : 'TM'),
+                    senderColor: senderMember?.color || '#7C8FF5',
+                    content: data.content,
+                    timestamp: data.timestamp || new Date().toISOString(),
+                    type: 'text'
+                  }]
+                };
+              });
+            }
           }
         } catch (e) {
           // ignore
@@ -214,7 +241,7 @@ export const TeamChat: React.FC = () => {
       if (ws) ws.close();
       wsRef.current = null;
     };
-  }, [activeChannel, myId]);
+  }, [activeChannel, clientId]);
 
   // Mark channel as read when switching
   useEffect(() => {
@@ -226,8 +253,9 @@ export const TeamChat: React.FC = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
         type: 'typing',
-        sender_id: myId,
+        sender_id: myMember.id,
         sender_name: myMember.name,
+        client_id: clientId,
         is_typing: true
       }));
     }
@@ -236,9 +264,10 @@ export const TeamChat: React.FC = () => {
   const handleSend = () => {
     if (!input.trim()) return;
     const content = input.trim();
+    const clientMsgId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const msg: ChatMessage = {
-      id: `msg-${Date.now()}`,
-      senderId: myId,
+      id: clientMsgId,
+      senderId: myMember.id,
       senderName: myMember.name,
       senderInitials: myMember.initials,
       senderColor: myMember.color,
@@ -258,8 +287,10 @@ export const TeamChat: React.FC = () => {
       wsRef.current.send(JSON.stringify({
         type: 'chat_message',
         content,
-        sender_id: myId,
-        sender_name: myMember.name
+        sender_id: myMember.id,
+        sender_name: myMember.name,
+        client_id: clientId,
+        client_msg_id: clientMsgId
       }));
     } else {
       // Fallback to REST API
@@ -534,6 +565,25 @@ export const TeamChat: React.FC = () => {
           )}
 
           <div className="shrink-0 px-4 pb-4 pt-2 border-t border-[#CBD5E1]">
+            {/* Live Persona Switcher for Instant Two-Tab Testing */}
+            <div className="flex items-center justify-between pb-1.5 px-1 text-[11px] text-[#64748B]">
+              <div className="flex items-center gap-1.5">
+                <span className="font-medium text-[#475569]">Send as:</span>
+                <select
+                  value={selectedMemberId}
+                  onChange={(e) => setSelectedMemberId(e.target.value)}
+                  className="bg-white border border-[#CBD5E1] rounded-lg px-2 py-0.5 text-[11px] font-semibold text-[#0F172A] focus:outline-none cursor-pointer shadow-2xs"
+                >
+                  {MEMBERS.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name} ({m.role})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <span className="text-[10px] text-[#94A3B8] font-mono">Tab: #{clientId.slice(-4)}</span>
+            </div>
+
             <div className="flex items-end gap-2 bg-[#EDF2FB] border border-[#CBD5E1] rounded-2xl px-3 py-2">
               {/* Left actions */}
               <div className="flex items-center gap-1 pb-1 shrink-0">

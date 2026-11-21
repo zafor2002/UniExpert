@@ -70,6 +70,7 @@ async def chat_websocket_endpoint(websocket: WebSocket, channel_id: str):
                     "channel_id": channel_id,
                     "sender_id": data.get("sender_id"),
                     "sender_name": data.get("sender_name", "Team Member"),
+                    "client_id": data.get("client_id"),
                     "is_typing": data.get("is_typing", True)
                 })
 
@@ -82,6 +83,8 @@ async def chat_websocket_endpoint(websocket: WebSocket, channel_id: str):
                     continue
                 sender_id = data.get("sender_id", "stu-1")
                 sender_name = data.get("sender_name", "Abu Zafor")
+                client_id = data.get("client_id")
+                client_msg_id = data.get("client_msg_id")
 
                 # Persist to SQLite
                 db: Session = SessionLocal()
@@ -103,6 +106,8 @@ async def chat_websocket_endpoint(websocket: WebSocket, channel_id: str):
                         "channel_id": msg.channel_id,
                         "sender_id": msg.sender_id,
                         "sender_name": msg.sender_name,
+                        "client_id": client_id,
+                        "client_msg_id": client_msg_id,
                         "content": msg.content,
                         "timestamp": msg.timestamp.isoformat(),
                         "pinned": msg.pinned
