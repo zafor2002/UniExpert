@@ -7,7 +7,7 @@
 > **Engineering Team:**  
 > • **Abu Zafor** (Student ID: `232-35-331`, Team Lead & System Architect) — [@zafor2002](https://github.com/zafor2002)  
 > • **Anamul Haque** (Student ID: `232-35-285`, Full-Stack & Systems Lead) — [@smanamulhaque](https://github.com/smanamulhaque)  
-> **Faculty Supervisor:** Mr. Md. Shohel Arman (Assistant Professor, Dept. of Software Engineering)  
+> **Faculty Supervisor:** Md. Shohel Arman (Assistant Professor, Dept. of Software Engineering)  
 > **Notion Hub:** [UniExpert Capstone Command Center](https://app.notion.com/p/3f63c6f2b87f8081bd58fd99ca8f2ca0)
 
 ---

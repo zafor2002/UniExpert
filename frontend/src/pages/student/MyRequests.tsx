@@ -332,7 +332,7 @@ export const MyRequests: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-4 rounded-2xl border border-[#E2E8F0] bg-[#F4F8FF] flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-[#1E293B] block">Dr. Shohel Arman</span>
+                    <span className="text-xs font-bold text-[#1E293B] block">Md. Shohel Arman</span>
                     <span className="text-[11px] text-[#64748B]">Software Engineering · 3/5 Slots</span>
                     <span className="text-[10px] font-bold text-[#1E293B] block mt-0.5">78% Semantic Fit</span>
                   </div>

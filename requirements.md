@@ -15,7 +15,7 @@ A final-year software engineering student lead needs a way to seamlessly orchest
 
 ### Key scenarios
 1. **Daily Milestone Execution:** The student lead logs in in the morning, reviews the remaining days to final defense, inspects current sprint deliverables, opens an inline slide-over preview to verify the latest document version, and checks off completed tasks.
-2. **Supervisory Sync Preparation:** Fifteen minutes prior to a scheduled consultation (e.g. Tuesday 14:00 with Dr. Farhana Rahman), the student checks the right-rail consultation card to review room details (Room 611) or click the virtual Google Meet link with pre-filled agenda discussion items.
+2. **Supervisory Sync Preparation:** Fifteen minutes prior to a scheduled consultation (e.g. Tuesday 14:00 with Md. Shohel Arman), the student checks the right-rail consultation card to review room details (Room 611) or click the virtual Google Meet link with pre-filled agenda discussion items.
 3. **FSM Negotiation & Revision Response:** When a faculty advisor requests a roadmap adjustment during the negotiation state, an inline soft lavender/amber alert card surfaces the advisor's feedback, enabling the student lead to revise and resubmit the roadmap with a single click.
 
 ### How might we
@@ -83,7 +83,7 @@ In modern academic capstone programs, students struggle with fragmented workflow
 ## Content and data
 - **Student Profile:** Abu Zafor, ID `232-35-331`, Batch 41 (Section A), Department of Software Engineering, DIU.
 - **Active Capstone:** *"Autonomous Edge-AI Healthcare Monitoring via BLE 5.0 Sensor Fusion & TinyML ECG Anomaly Detection"*.
-- **Supervisor:** Dr. Farhana Rahman (Associate Professor, Tier 1 Verified, 94% Match Alignment).
+- **Supervisor:** Md. Shohel Arman (Assistant Professor, Tier 1 Verified, 94% Match Alignment).
 - **Co-Advisor / Mentor:** Engr. Sakib Al Hasan (Industry Mentor, Cloud Architect).
 - **Milestones Dataset:** 4 structured milestones with deliverables (`SRS Document v1.0`, `Cortex-M4 Embedded C Codebase`, `CMSIS-NN 8-bit Benchmark Report`, `BAETE Criterion 4 & 5 Dossier`).
 - **Consultation Schedule:** Weekly Tuesday 14:00 (Room 611) and Thursday 19:30 (Google Meet).

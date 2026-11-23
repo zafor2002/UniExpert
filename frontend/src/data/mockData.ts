@@ -85,11 +85,11 @@ export const officeHoursTemplate: OfficeHourSlot[] = [
 export const mockExperts: Expert[] = [
   {
     id: 'exp-1',
-    name: "Dr. Farhana Rahman",
-    email: 'farhana.swe@diu.edu.bd',
+    name: "Md. Shohel Arman",
+    email: 'shohel.arman@diu.edu.bd',
     role: 'faculty',
     department: "Software Engineering",
-    title: "Associate Professor",
+    title: "Assistant Professor",
     tier: 1,
     slotsUsed: 2,
     slotsTotal: 5,
@@ -125,7 +125,7 @@ export const mockExperts: Expert[] = [
     ],
     rating: 4.9,
     officeHours: officeHoursTemplate,
-    bio: "Dr. Rahman specializes in deploying deep neural networks on resource-constrained edge devices for healthcare applications. Her research covers TinyML inference optimization, BLE mesh networking, and patient telemetry.",
+    bio: "Md. Shohel Arman specializes in deploying deep neural networks on resource-constrained edge devices for healthcare applications. His research covers TinyML inference optimization, BLE mesh networking, and patient telemetry.",
     isIndustry: false
   },
   {
@@ -249,11 +249,11 @@ export const mockExperts: Expert[] = [
   },
   {
     id: 'exp-5',
-    name: "Dr. Shohel Arman",
-    email: 'shohel.arman@diu.edu.bd',
+    name: "Dr. Imran Mahmud",
+    email: 'imran.swe@diu.edu.bd',
     role: 'faculty',
     department: "Software Engineering",
-    title: "Assistant Professor",
+    title: "Associate Professor",
     tier: 1,
     slotsUsed: 3,
     slotsTotal: 5,
@@ -281,7 +281,7 @@ export const mockExperts: Expert[] = [
     ],
     rating: 4.8,
     officeHours: officeHoursTemplate,
-    bio: "Dr. Arman researches empirical software engineering, agile requirements traceability, and decomposition strategies for migrating monoliths to microservices.",
+    bio: "Dr. Imran Mahmud researches empirical software engineering, agile requirements traceability, and decomposition strategies for migrating monoliths to microservices.",
     isIndustry: false
   },
   {
@@ -1730,8 +1730,8 @@ export const mockProposals: AdvisoryProposal[] = [
     timeline: [
       { id: 'ev-1', state: 'draft', timestamp: '2026-11-01T08:30:00Z', actor: 'Abu Zafor', note: 'Proposal created' },
       { id: 'ev-2', state: 'submitted', timestamp: '2026-11-01T10:00:00Z', actor: 'Abu Zafor', note: 'Proposal submitted' },
-      { id: 'ev-3', state: 'under_review', timestamp: '2026-11-03T09:15:00Z', actor: 'Dr. Farhana Rahman', note: 'Proposal opened for review' },
-      { id: 'ev-4', state: 'negotiation', timestamp: '2026-11-08T14:22:00Z', actor: 'Dr. Farhana Rahman', note: 'Scope needs to benchmark TinyML on ARM Cortex-M4 hardware with CMSIS-NN vs TensorFlow Lite comparison. Please add a hardware benchmarking milestone.' },
+      { id: 'ev-3', state: 'under_review', timestamp: '2026-11-03T09:15:00Z', actor: 'Md. Shohel Arman', note: 'Proposal opened for review' },
+      { id: 'ev-4', state: 'negotiation', timestamp: '2026-11-08T14:22:00Z', actor: 'Md. Shohel Arman', note: 'Scope needs to benchmark TinyML on ARM Cortex-M4 hardware with CMSIS-NN vs TensorFlow Lite comparison. Please add a hardware benchmarking milestone.' },
     ],
     negotiationNote: 'Scope needs to benchmark TinyML on ARM Cortex-M4 hardware with CMSIS-NN vs TensorFlow Lite comparison. Please add a hardware benchmarking milestone.',
   },
@@ -1742,7 +1742,7 @@ export const mockNotifications: Notification[] = [
     id: 'notif-1',
     type: 'fsm_transition',
     title: 'Proposal Under Negotiation',
-    message: 'Dr. Farhana Rahman has requested scope clarification on your EdgeShield proposal.',
+    message: 'Md. Shohel Arman has requested scope clarification on your EdgeShield proposal.',
     timestamp: '2026-11-08T14:22:00Z',
     read: false,
     link: '/student/requests',
@@ -1854,7 +1854,7 @@ export const mockWorkspace: ProjectWorkspace = {
     {
       id: 'msg-1',
       senderId: 'exp-1',
-      senderName: 'Dr. Farhana Rahman',
+      senderName: 'Md. Shohel Arman',
       content: 'Please share the preliminary CNN architecture diagram before Tuesday\'s meeting.',
       timestamp: '2026-11-10T09:30:00Z',
       read: false,

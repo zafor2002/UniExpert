@@ -12,7 +12,7 @@ BENCHMARK_QUERIES = [
         "domain": "Embedded AI & IoT",
         "title": "Autonomous Edge-AI Healthcare Telemetry via TinyML on ARM Cortex-M4 and BLE 5.0",
         "problem_statement": "Designing a wearable patch for real-time ECG anomaly detection on an ARM Cortex-M4 microcontroller running 8-bit quantized CNN models under 92KB RAM with BLE 5.0 AES-GCM telemetry streaming.",
-        "expected_faculty": "Dr. Farhana Rahman"
+        "expected_faculty": "Md. Shohel Arman"
     },
     {
         "id": 2,
@@ -40,7 +40,7 @@ BENCHMARK_QUERIES = [
         "domain": "Software Architecture & Agile",
         "title": "Domain-Driven Design for Migrating Monolithic Banking Architectures to Spring Boot Microservices",
         "problem_statement": "Applying domain-driven design, bounded contexts, and agile requirements engineering to decompose monolithic enterprise Java banking systems into resilient Spring Boot event-driven microservices.",
-        "expected_faculty": "Dr. Shohel Arman"
+        "expected_faculty": "Md. Shohel Arman"
     },
     {
         "id": 6,

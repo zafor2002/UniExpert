@@ -14,7 +14,7 @@ import type { AdvisoryProposal } from '../../types';
 export const IncomingProposals: React.FC = () => {
   const navigate = useNavigate();
   const { proposals, updateProposal, updateExpertQuota, experts } = useApp();
-  const faculty = experts[0]; // Dr. Farhana Rahman
+  const faculty = experts[0]; // Md. Shohel Arman
 
   const [selectedProposalId, setSelectedProposalId] = useState<string>(
     proposals.length > 0 ? proposals[0].id : ''

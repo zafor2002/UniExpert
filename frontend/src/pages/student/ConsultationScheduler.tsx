@@ -7,7 +7,7 @@ import type { OfficeHourSlot } from '../../types';
 
 export const ConsultationScheduler: React.FC = () => {
   const { experts, currentUser } = useApp();
-  const advisor = experts[0]; // Dr. Farhana Rahman
+  const advisor = experts[0]; // Md. Shohel Arman
 
   const [selectedSlot, setSelectedSlot] = useState<OfficeHourSlot | null>(null);
   const [agenda, setAgenda] = useState('Review TinyML CMSIS-NN quantization benchmark and finalize BLE advertising packet structure.');
@@ -67,7 +67,7 @@ export const ConsultationScheduler: React.FC = () => {
 VERSION:2.0
 PRODID:-//Daffodil International University//UniExpert//EN
 BEGIN:VEVENT
-SUMMARY:UniExpert Consultation: Dr. Farhana Rahman
+SUMMARY:UniExpert Consultation: Md. Shohel Arman
 DESCRIPTION:${agenda}
 LOCATION:Zoom Conference Link (DIU Virtual Classroom)
 DTSTART:20261117T140000Z
@@ -130,7 +130,7 @@ END:VCALENDAR`;
           </div>
           <h2 className="text-xl font-bold text-[#1E293B]">Office Hour Booking Confirmed!</h2>
           <p className="text-sm text-[#334155] max-w-md mx-auto">
-            Your appointment with <strong>Dr. Farhana Rahman</strong> has been confirmed for <strong>{selectedSlot?.day} at {selectedSlot?.startTime} - {selectedSlot?.endTime}</strong>.
+            Your appointment with <strong>Md. Shohel Arman</strong> has been confirmed for <strong>{selectedSlot?.day} at {selectedSlot?.startTime} - {selectedSlot?.endTime}</strong>.
           </p>
 
           <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] max-w-md mx-auto text-left space-y-3 shadow-2xs">
@@ -295,7 +295,7 @@ END:VCALENDAR`;
         isOpen={isLiveMeetingOpen}
         onClose={() => setIsLiveMeetingOpen(false)}
         roomId="room-consultation-fr"
-        roomTitle="Dr. Farhana Rahman · Live Office Hour Consultation"
+        roomTitle="Md. Shohel Arman · Live Office Hour Consultation"
         currentUser={currentUser}
       />
     </div>

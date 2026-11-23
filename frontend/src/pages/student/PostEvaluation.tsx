@@ -8,7 +8,7 @@ import { useApp } from '../../context/AppContext';
 export const PostEvaluation: React.FC = () => {
   const navigate = useNavigate();
   const { experts } = useApp();
-  const advisor = experts[0]; // Dr. Farhana Rahman
+  const advisor = experts[0]; // Md. Shohel Arman
 
   const [responsiveness, setResponsiveness] = useState(5);
   const [technicalDepth, setTechnicalDepth] = useState(5);

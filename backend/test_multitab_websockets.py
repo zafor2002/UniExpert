@@ -15,9 +15,9 @@ async def test_full_meeting_flow():
         assert len(s1.get("agenda", [])) >= 1, "Agenda items should be present"
         print("  [PASS] Tab 1 joined room-edgeshield and received initial room_state & agenda!")
 
-        # Connect Tab 2 (Dr. Farhana Rahman)
+        # Connect Tab 2 (Md. Shohel Arman)
         async with websockets.connect(
-            "ws://localhost:5173/api/meeting/ws/room-edgeshield?peer_id=exp-1-tab2&name=Dr.%20Farhana%20Rahman&role=Supervisor"
+            "ws://localhost:5173/api/meeting/ws/room-edgeshield?peer_id=exp-1-tab2&name=Md.%20Shohel%20Arman&role=Supervisor"
         ) as m2:
             s2 = json.loads(await asyncio.wait_for(m2.recv(), timeout=2.0))
             assert s2["type"] == "room_state"
@@ -27,8 +27,8 @@ async def test_full_meeting_flow():
             join_frame = json.loads(await asyncio.wait_for(m1.recv(), timeout=2.0))
             assert join_frame["type"] == "peer_joined"
             assert join_frame["peer_id"] == "exp-1-tab2"
-            assert join_frame["user"]["name"] == "Dr. Farhana Rahman"
-            print("  [PASS] Tab 1 notified: Dr. Farhana Rahman joined the meeting!")
+            assert join_frame["user"]["name"] == "Md. Shohel Arman"
+            print("  [PASS] Tab 1 notified: Md. Shohel Arman joined the meeting!")
 
             # 1. Media State Toggle: Tab 2 mutes mic
             await m2.send(json.dumps({"type": "media_state", "audio_muted": True, "video_off": False}))
@@ -53,7 +53,7 @@ async def test_full_meeting_flow():
             }))
             chat_frame = json.loads(await asyncio.wait_for(m1.recv(), timeout=2.0))
             assert chat_frame["type"] == "meeting_chat_message"
-            assert chat_frame["sender_name"] == "Dr. Farhana Rahman"
+            assert chat_frame["sender_name"] == "Md. Shohel Arman"
             assert "CMSIS-NN" in chat_frame["content"]
             print("  [PASS] Tab 1 received in-meeting chat message:", chat_frame["content"])
 
@@ -73,7 +73,7 @@ async def test_full_meeting_flow():
         leave_frame = json.loads(await asyncio.wait_for(m1.recv(), timeout=2.0))
         assert leave_frame["type"] == "peer_left"
         assert leave_frame["peer_id"] == "exp-1-tab2"
-        print("  [PASS] Tab 1 notified: Dr. Farhana Rahman left the room!")
+        print("  [PASS] Tab 1 notified: Md. Shohel Arman left the room!")
 
     print("\n======================================================================")
     print("ALL LIVE MEETING WEBSOCKET CAPABILITIES VERIFIED 100% OPERATIONAL!")

@@ -79,7 +79,7 @@ export const ProjectWorkspace: React.FC = () => {
           </div>
           <h1 className="text-2xl font-bold text-[#1E293B]">{mockWorkspace.projectTitle}</h1>
           <p className="text-xs text-[#64748B] mt-1">
-            Supervised by: <strong className="text-[#1E293B]">Dr. Farhana Rahman</strong> (Department of Software Engineering)
+            Supervised by: <strong className="text-[#1E293B]">Md. Shohel Arman</strong> (Department of Software Engineering)
           </p>
         </div>
 

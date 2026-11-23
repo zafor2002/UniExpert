@@ -54,13 +54,13 @@ UniExpert replaces rigid keyword directories with a **problem-first discovery en
 | **Anamul Haque**<br/>`@smanamulhaque` | **ID:** `232-35-285`<br/>*Full-Stack & Systems Lead* | • **Local High-Performance AI Pipeline:** Deployed ONNX Runtime (`all-MiniLM-L6-v2`) quantization + FAISS IndexFlatIP ($<18\text{ ms}$ latency on CPU at $\$0.00$ cost).<br/>• **Full-Duplex WebSockets (RFC 6455):** Built Team Chat with multi-tab session isolation, typing indicators, presence, and persona switcher.<br/>• **Live Video Consultation Room:** Developed interactive meeting canvas, media state toggles (mic/cam/share), hand-raising queue, and collaborative live agenda checkoffs.<br/>• **Cryptographic Merkle Audit Ledger:** Engineered append-only SHA-256 Merkle tree (`merkle_tree.py`, `/api/audit/verify`) with live non-repudiation proof.<br/>• **BAETE Accreditation PDF/CSV Generator:** Built pure-Python ReportLab publication engine compiling Criterion 4 & 5 dossiers.<br/>• **Supervisor Contribution Endorsement:** Created grading & endorsement modal sealed on Merkle chain.<br/>• **Docker Stack & Testing:** Multi-container orchestration and automated multi-tab WebSocket test harness. | **Criterion 5 (Modern Tools):**<br/>FastAPI, ONNX, FAISS, WebSockets, SHA-256 Merkle Ledger, ReportLab, Docker |
 
 #### 🤝 Collaborative Engineering & Pair Programming
-- **Weekly Advisory Syncs:** Joint bi-weekly consultation meetings with faculty supervisor **Mr. Md. Shohel Arman** and advisor **Dr. Farhana Rahman**.
+- **Weekly Advisory Syncs:** Joint bi-weekly consultation meetings with faculty supervisor **Md. Shohel Arman**.
 - **Cross-Module Integration:** End-to-end integration between frontend React components and backend FastAPI asynchronous services.
 - **Continuous Quality Assurance:** Automated regression testing, TypeScript compilation verification, and continuous Git attribution.
 - **Activity & Sprint Tracking:** Comprehensive daily sprint logs documented in [**`JOURNAL.md`**](./JOURNAL.md).
 
 ### 👨‍🏫 Faculty Supervision
-- **Mr. Md. Shohel Arman** — Assistant Professor, Department of Software Engineering
+- **Md. Shohel Arman** — Assistant Professor, Department of Software Engineering
 
 ---
 
@@ -174,7 +174,7 @@ The prototype features an ultra-clean, monochromatic academic layout where navig
    - **My Applications (FSM):** 4-stage lifecycle tracking (`DRAFT` $\rightarrow$ `SUBMITTED` $\rightarrow$ `UNDER_REVIEW` $\rightarrow$ `ACCEPTED` / `DECLINED`) and collaborative milestone notes.
    - **Book Office Hours:** Direct atomic reservation of faculty consultation slots with `.ics` calendar sync.
 
-2. 👨‍🏫 **Faculty Advisor Workspace (`Dr. Md. Shohel Arman`):**
+2. 👨‍🏫 **Faculty Advisor Workspace (`Md. Shohel Arman`):**
    - **Advisory Inbox:** Actionable queue of student proposals with 1-click **Accept** (auto-decrements quota), **Decline with Reason**, or **Request Scope Revision**.
    - **Supervisory Capacity:** Anti-burnout quota meter (max 5 teams/semester cap) and custom 30-min office hours slot manager.
    - **Active Supervised Groups:** Direct management of accepted capstone teams and milestone review tracking.

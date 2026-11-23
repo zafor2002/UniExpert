@@ -19,7 +19,7 @@ export const RBACManagement: React.FC = () => {
   const [users, setUsers] = useState<AccountUser[]>([
     { id: 'u-1', name: 'Abu Zafor', email: 'abu.zafor@diu.edu.bd', role: 'student', status: 'active', lastLogin: 'Today, 10:14 AM' },
     { id: 'u-2', name: 'Anamul Haque', email: 'anamul.haque@diu.edu.bd', role: 'student', status: 'active', lastLogin: 'Yesterday' },
-    { id: 'u-3', name: 'Dr. Farhana Rahman', email: 'farhana.rahman@diu.edu.bd', role: 'faculty', status: 'active', lastLogin: 'Today, 09:30 AM' },
+    { id: 'u-3', name: 'Md. Shohel Arman', email: 'shohel.arman@diu.edu.bd', role: 'faculty', status: 'active', lastLogin: 'Today, 09:30 AM' },
     { id: 'u-4', name: 'Dr. Tanvir Ahmed', email: 'tanvir.ahmed@diu.edu.bd', role: 'faculty', status: 'active', lastLogin: 'Nov 09, 2026' },
     { id: 'u-5', name: 'Prof. Md. Rafiqul Islam', email: 'rafiqul.islam@diu.edu.bd', role: 'faculty', status: 'active', lastLogin: 'Nov 08, 2026' },
     { id: 'u-6', name: 'Engr. Sakib Al Hasan', email: 'sakib@techbridge.io', role: 'mentor', status: 'active', lastLogin: 'Nov 07, 2026' },

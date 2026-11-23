@@ -38,8 +38,8 @@ def test_ai_pipeline():
     for exp in experts:
         print(f"   * {exp['name']} ({exp['department']}) -> Score: {exp['match_score']}% [Semantic: {exp['semantic_score']}%, Skills: {exp['skills_score']}%, Pubs: {exp['publication_score']}%]")
 
-    # Verify Dr. Farhana Rahman is top ranked for Edge AI / TinyML
-    assert experts[0]["name"] == "Dr. Farhana Rahman"
+    # Verify Md. Shohel Arman is top ranked for Edge AI / TinyML
+    assert experts[0]["name"] == "Md. Shohel Arman"
 
     # 4. Explainable AI (XAI)
     top_id = experts[0]["id"]

@@ -55,10 +55,10 @@ export const AccreditationReports: React.FC = () => {
         merkle_total_blocks: 5,
         merkle_latest_hash: '64161186255de8296c270e29376f8f1a5b868969d0e9d3824e885f0610e06e8f',
         faculty_table: [
-          { name: 'Dr. Farhana Rahman', title: 'Associate Professor', tier: 'Tier 2', teams: 2, cap: 5, students: 6, status: 'Within Limit' },
+          { name: 'Md. Shohel Arman', title: 'Assistant Professor', tier: 'Tier 1', teams: 2, cap: 5, students: 6, status: 'Within Limit' },
           { name: 'Dr. Tanvir Ahmed', title: 'Assistant Professor', tier: 'Tier 2', teams: 1, cap: 4, students: 3, status: 'Within Limit' },
           { name: 'Prof. Md. Rafiqul Islam', title: 'Professor', tier: 'Tier 1', teams: 5, cap: 5, students: 15, status: 'Quota Maxed' },
-          { name: 'Dr. Shohel Arman', title: 'Senior Lecturer', tier: 'Tier 3', teams: 3, cap: 3, students: 9, status: 'Nearing Cap' },
+          { name: 'Dr. Imran Mahmud', title: 'Associate Professor', tier: 'Tier 2', teams: 3, cap: 4, students: 9, status: 'Within Limit' },
         ],
         audit_blocks: [
           { block_index: 0, event_type: 'PROPOSAL_SUBMITTED', actor_id: 'stu-1', block_hash: '45ae2ce40c3e3d427abc54eed60ae8ec34d293deff6fd1ae275919f95560e37b', timestamp: '2026-11-18 10:00:00' },

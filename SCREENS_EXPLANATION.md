@@ -148,7 +148,7 @@
 * **Part Covered:** **Set-Cover Co-Supervision Optimization.**
   * Solves the minimum set-cover problem to cover 100% of the project's domain requirements.
   * Evaluates inter-departmental faculty (e.g. Electrical Engineering + Software Engineering) or Industry Practitioners.
-  * Calculates coverage gain percentages (e.g., "+35% coverage boost with Dr. Arman").
+  * Calculates coverage gain percentages (e.g., "+35% coverage boost with Md. Shohel Arman").
 
 ### 15. Proposal Modal (Submission & SLA)
 * **Route:** `/student/proposal-modal`

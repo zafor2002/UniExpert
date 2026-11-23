@@ -143,7 +143,7 @@ class MemberRatingItem(BaseModel):
 
 class ContributionEndorsementCreate(BaseModel):
     supervisor_id: str = "exp-1"
-    supervisor_name: str = "Dr. Farhana Rahman"
+    supervisor_name: str = "Md. Shohel Arman"
     milestone_title: str = "Milestone 2: Prototype & Demo"
     ratings: List[MemberRatingItem]
     signature_confirmed: bool = True

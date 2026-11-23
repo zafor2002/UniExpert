@@ -127,7 +127,7 @@ UniExpert enforces role-based access control (RBAC) across 6 distinct institutio
 - **5-Stage Capstone Lifecycle Stepper:** Interactive visual roadmap: *Problem Formulation* → *Advisor Matching* → *Active Supervision (Active)* → *Defense Ready* → *Completed*.
 - **KPI Metric Grid (`MetricCard.tsx`):**
   - *Lifecycle Status:* Stage 3 of 5 (Active Supervision).
-  - *Primary Advisor Match:* 94% Alignment (Dr. Farhana Rahman).
+  - *Primary Advisor Match:* 94% Alignment (Md. Shohel Arman).
   - *Team Skill Coverage:* 100% Core Competency (0 critical gaps).
   - *Defense Countdown:* Real-time day counter to Dec 20, 2026.
 - **Active Project Card:** Live milestone progress bar, interactive milestone checkboxes with instantaneous completion toggling, and direct workspace link.
@@ -229,7 +229,7 @@ UniExpert enforces role-based access control (RBAC) across 6 distinct institutio
 ### Module C: Faculty Advisor Workflow
 
 #### Screen 19: Faculty Dashboard (`/faculty`)
-- **Academic Header & ORCID Badge:** Dr. Farhana Rahman (Associate Professor), h-index: 7, Tier 1 Verified.
+- **Academic Header & ORCID Badge:** Md. Shohel Arman (Associate Professor), h-index: 7, Tier 1 Verified.
 - **Supervisory Anti-Burnout Quota Meter:** Visual progress bar (e.g. 2 of 5 slots used) with warning threshold at 80%.
 - **Inbound Solicitation Queue:** Summary of proposals awaiting review.
 - **Active Supervised Groups:** Direct access to student project workspaces.

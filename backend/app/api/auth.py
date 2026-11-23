@@ -68,7 +68,7 @@ def login(user_in: UserLogin, db: Session = Depends(get_db)):
     if not user:
         if email.endswith("@diu.edu.bd") or email.endswith(".edu.bd") or email.endswith("@techbridge.io"):
             role = "student"
-            if "farhana" in email or "faculty" in email or "prof" in email:
+            if "shohel" in email or "arman" in email or "faculty" in email or "prof" in email:
                 role = "faculty"
             elif "coord" in email:
                 role = "coordinator"

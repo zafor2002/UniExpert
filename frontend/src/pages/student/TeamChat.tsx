@@ -36,7 +36,7 @@ const MEMBERS = [
   { id: 'stu-2', name: 'Rafi Ahmed',     initials: 'RA', color: '#7C8FF5', role: 'Backend Dev',  online: true  },
   { id: 'stu-3', name: 'Lamia Sultana',  initials: 'LS', color: '#34C99A', role: 'ML Engineer',  online: true  },
   { id: 'stu-4', name: 'Tanvir Hassan',  initials: 'TH', color: '#F59E0B', role: 'Frontend Dev', online: true  },
-  { id: 'exp-1', name: 'Dr. Farhana Rahman', initials: 'FR', color: '#EF4444', role: 'Supervisor', online: true },
+  { id: 'exp-1', name: 'Md. Shohel Arman', initials: 'SA', color: '#EF4444', role: 'Supervisor', online: true },
 ];
 
 const CHANNELS: Channel[] = [
@@ -49,7 +49,7 @@ const CHANNELS: Channel[] = [
 const MOCK_MESSAGES: Record<string, ChatMessage[]> = {
   'ch-general': [
     {
-      id: 'm1', senderId: 'adv-1', senderName: 'Dr. Farhana Rahman', senderInitials: 'FR', senderColor: '#EF4444',
+      id: 'm1', senderId: 'adv-1', senderName: 'Md. Shohel Arman', senderInitials: 'SA', senderColor: '#EF4444',
       content: 'Good morning team! Reminder: Final defense is Dec 20. Please ensure all deliverables are submitted by Dec 15.',
       timestamp: '2026-11-13T09:00:00Z', type: 'text', pinned: true,
       reactions: [{ emoji: '👍', count: 3, byMe: true }],

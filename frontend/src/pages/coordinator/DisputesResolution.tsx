@@ -9,7 +9,7 @@ export const DisputesResolution: React.FC = () => {
       team: 'Team NeuroWear (Batch 41)',
       faculty: 'Prof. Md. Rafiqul Islam',
       issue: 'Proposal SLA Expired (7-Day Limit Reached with Quota Maxed)',
-      suggestedAdvisor: 'Dr. Farhana Rahman (Embedded AI)',
+      suggestedAdvisor: 'Md. Shohel Arman (Embedded AI)',
       status: 'pending',
     },
     {

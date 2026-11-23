@@ -159,12 +159,12 @@ export default function StudentDashboard() {
   const consultations = [
     {
       id: 'c1',
-      title: 'Weekly Supervisory Sync — Dr. Farhana Rahman',
+      title: 'Weekly Supervisory Sync — Md. Shohel Arman',
       day: 'Tuesday, Nov 17',
       time: '14:00 – 14:30',
       type: 'physical',
       location: 'Faculty Office Room 611, SE Building',
-      advisor: 'Dr. Farhana Rahman',
+      advisor: 'Md. Shohel Arman',
     },
     {
       id: 'c2',
@@ -285,7 +285,7 @@ export default function StudentDashboard() {
         <MetricCard
           label="Primary Advisor Fit"
           value="94% Match"
-          badge="Dr. Farhana"
+          badge="Md. Shohel Arman"
           subtext="Associate Prof · Embedded AI Specialization"
           variant="mint"
           icon={<Zap size={18} className="text-[#0F766E]" />}
@@ -334,7 +334,7 @@ export default function StudentDashboard() {
               <div className="flex flex-wrap gap-4 text-xs text-[#64748B] mt-3">
                 <span className="flex items-center gap-1.5 font-medium text-[#1E293B] bg-white/80 px-2.5 py-1 rounded-xl border border-[#E2E8F0]">
                   <GraduationCap size={15} className="text-[#2563EB]" />
-                  Lead: Dr. Farhana Rahman (SWE)
+                  Lead: Md. Shohel Arman (SWE)
                 </span>
                 <span className="flex items-center gap-1.5 font-medium text-[#1E293B] bg-white/80 px-2.5 py-1 rounded-xl border border-[#E2E8F0]">
                   <UserCheck size={15} className="text-[#4338CA]" />
@@ -479,7 +479,7 @@ export default function StudentDashboard() {
                   </div>
                 )}
                 <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-1">
-                  <span>Target Advisor: Dr. Farhana Rahman</span>
+                  <span>Target Advisor: Md. Shohel Arman</span>
                   <span className="font-mono">
                     Updated {formatDate(negotiationProposal.updatedAt)}
                   </span>

@@ -16,7 +16,7 @@ const ACTIVE_PROPOSAL_ID = 'af8b2f33-bfe6-4e4f-82b7-18446b3275da';
 export const FacultyDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { proposals, experts } = useApp();
-  const faculty = experts[0]; // Dr. Farhana Rahman
+  const faculty = experts[0]; // Md. Shohel Arman
 
   const pendingProposals = proposals.filter((p) => p.state === 'submitted' || p.state === 'under_review' || p.state === 'negotiation');
 
@@ -94,7 +94,7 @@ export const FacultyDashboard: React.FC = () => {
     try {
       const payload = {
         supervisor_id: 'exp-1',
-        supervisor_name: faculty.name || 'Dr. Farhana Rahman',
+        supervisor_name: faculty.name || 'Md. Shohel Arman',
         milestone_title: selectedMilestone,
         ratings: memberRatings.map(m => ({
           member_id: m.member_id,

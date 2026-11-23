@@ -167,7 +167,7 @@ All AI endpoints are mounted under the prefix: `/api/matching`.
 [
   {
     "id": "exp-1",
-    "name": "Dr. Farhana Rahman",
+    "name": "Md. Shohel Arman",
     "title": "Associate Professor",
     "department": "Software Engineering",
     "tier": 1,
@@ -195,7 +195,7 @@ All AI endpoints are mounted under the prefix: `/api/matching`.
 ```json
 {
   "expert_id": "exp-1",
-  "expert_name": "Dr. Farhana Rahman",
+  "expert_name": "Md. Shohel Arman",
   "radar": [
     { "subject": "TinyML", "required": 90, "expert": 94 },
     { "subject": "ARM Cortex-M4", "required": 90, "expert": 94 },
@@ -210,7 +210,7 @@ All AI endpoints are mounted under the prefix: `/api/matching`.
     "credential_tier": 0.10
   },
   "matched_skills": ["Arm Cortex-M4", "Tinyml", "Ble 5.0"],
-  "justification": "Dr. Farhana Rahman has strong academic and technical alignment with 'Autonomous Edge-AI Healthcare Monitoring'. They possess verified skills in Arm Cortex-M4, Tinyml, Ble 5.0, with 3 remaining supervision slots."
+  "justification": "Md. Shohel Arman has strong academic and technical alignment with 'Autonomous Edge-AI Healthcare Monitoring'. They possess verified skills in Arm Cortex-M4, Tinyml, Ble 5.0, with 3 remaining supervision slots."
 }
 ```
 

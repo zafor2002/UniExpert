@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 export const QuotaPolicy: React.FC = () => {
   const [defaultCap, setDefaultCap] = useState(5);
-  const [facultySelect, setFacultySelect] = useState('Dr. Farhana Rahman');
+  const [facultySelect, setFacultySelect] = useState('Md. Shohel Arman');
   const [overrideValue, setOverrideValue] = useState(6);
   const [rationale, setRationale] = useState(
     'Special departmental dispensation granted for interdisciplinary medical IoT project with Department of Pharmacy.'
@@ -13,7 +13,7 @@ export const QuotaPolicy: React.FC = () => {
   const [overrides, setOverrides] = useState([
     {
       id: 'ov-1',
-      faculty: 'Dr. Farhana Rahman',
+      faculty: 'Md. Shohel Arman',
       original: 5,
       granted: 6,
       rationale: 'Special dispensation for interdisciplinary medical IoT',
@@ -101,10 +101,10 @@ export const QuotaPolicy: React.FC = () => {
                   onChange={(e) => setFacultySelect(e.target.value)}
                   className="input text-xs border-[#E2E8F0] bg-white text-[#334155]"
                 >
-                  <option value="Dr. Farhana Rahman">Dr. Farhana Rahman (SWE)</option>
+                  <option value="Md. Shohel Arman">Md. Shohel Arman (SWE)</option>
                   <option value="Dr. Tanvir Ahmed">Dr. Tanvir Ahmed (Pharmacy)</option>
                   <option value="Prof. Md. Rafiqul Islam">Prof. Md. Rafiqul Islam (CSE)</option>
-                  <option value="Dr. Shohel Arman">Dr. Shohel Arman (SWE)</option>
+                  <option value="Dr. Imran Mahmud">Dr. Imran Mahmud (SWE)</option>
                 </select>
               </div>
 

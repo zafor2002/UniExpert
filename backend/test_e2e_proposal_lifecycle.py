@@ -14,7 +14,7 @@ def run_e2e_test():
     print("STARTING FULL END-TO-END MULTI-ROLE PROPOSAL LIFECYCLE TEST")
     print("=" * 70)
 
-    # 1. Fetch initial faculty quota for Dr. Farhana Rahman (user_id: 'exp-1')
+    # 1. Fetch initial faculty quota for Md. Shohel Arman (user_id: 'exp-1')
     from app.db.session import SessionLocal
     from app.models.models import FacultyProfile, AuditBlock, Proposal
     db = SessionLocal()
@@ -23,7 +23,7 @@ def run_e2e_test():
         print("[FAIL] Advisor exp-1 not found in database!")
         return False
     initial_slots = advisor.slots_used
-    print(f"[STEP 1] Initial Supervisory Slots for Dr. Farhana Rahman: {initial_slots} / {advisor.slots_total}")
+    print(f"[STEP 1] Initial Supervisory Slots for Md. Shohel Arman: {initial_slots} / {advisor.slots_total}")
 
     # 2. Submit a new Student Proposal via REST API
     payload = {

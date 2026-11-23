@@ -33,7 +33,7 @@
 │ Stage           │ 1. Setup (Day 1)   │ 2. Negotiation (Week 2)     │ 3. Active Sprint (Days 30–100)    │
 ├─────────────────┼────────────────────┼─────────────────────────────┼───────────────────────────────────┤
 │ User Goal       │ Formulate problem  │ Agree on roadmap with lead  │ Execute deliverables & prep for   │
-│                 │ & discover advisor │ advisor (Dr. Farhana)       │ weekly supervisory reviews        │
+│                 │ & discover advisor │ advisor (Md. Shohel Arman)       │ weekly supervisory reviews        │
 ├─────────────────┼────────────────────┼─────────────────────────────┼───────────────────────────────────┤
 │ Primary Actions │ Reads onboarding   │ Monitors FSM stepper;       │ Checks defense countdown (38d);   │
 │                 │ banner; inputs NLP │ receives negotiation quote; │ previews deliverable in drawer;   │

@@ -135,7 +135,7 @@ class ContributionEndorsement(Base):
     id = Column(String, primary_key=True, default=gen_uuid)
     proposal_id = Column(String, ForeignKey("proposals.id"), nullable=False)
     supervisor_id = Column(String, nullable=False, default="exp-1")
-    supervisor_name = Column(String, nullable=False, default="Dr. Farhana Rahman")
+    supervisor_name = Column(String, nullable=False, default="Md. Shohel Arman")
     milestone_title = Column(String, nullable=False, default="Milestone 2: Prototype & Demo")
     ratings_json = Column(Text, nullable=False)  # JSON serialized List[MemberRatingItem]
     merkle_block_index = Column(Integer, nullable=True)

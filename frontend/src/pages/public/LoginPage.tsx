@@ -60,7 +60,7 @@ export default function LoginPage() {
     // Determine target role based on email identity
     let targetRole = currentRole;
     const lowerEmail = email.toLowerCase();
-    if (lowerEmail.includes('farhana') || lowerEmail.includes('faculty') || lowerEmail.includes('prof')) {
+    if (lowerEmail.includes('shohel') || lowerEmail.includes('arman') || lowerEmail.includes('faculty') || lowerEmail.includes('prof')) {
       targetRole = 'faculty';
     } else if (lowerEmail.includes('coord')) {
       targetRole = 'coordinator';
@@ -227,7 +227,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => { resetLockout(); setEmail('farhana.swe@diu.edu.bd'); setPassword('password123'); }}
+              onClick={() => { resetLockout(); setEmail('shohel.arman@diu.edu.bd'); setPassword('password123'); }}
               className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
             >
               👨‍🏫 Faculty Advisor

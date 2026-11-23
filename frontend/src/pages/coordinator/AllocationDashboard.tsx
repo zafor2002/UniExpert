@@ -42,7 +42,7 @@ export const AllocationDashboard: React.FC = () => {
   ];
 
   const handleAssignCoAdvisor = (teamName: string) => {
-    toast.success(`Assigned Dr. Farhana Rahman as co-advisor for ${teamName}.`);
+    toast.success(`Assigned Md. Shohel Arman as co-advisor for ${teamName}.`);
   };
 
   return (

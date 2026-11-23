@@ -9,7 +9,7 @@ UniExpert is an AI-powered academic capstone collaboration and expert discovery 
 
 ## 2. Primary User & Context of Use
 - **Primary Persona:** Abu Zafor, Student Project Lead (DIU Software Engineering, Batch 41, Section A).
-- **Context:** Managing a complex technical capstone (*Autonomous Edge-AI Healthcare Monitoring via BLE 5.0 Sensor Fusion & TinyML ECG Anomaly Detection*) under primary supervisor Dr. Farhana Rahman (Associate Professor) and industry mentor Engr. Sakib Al Hasan.
+- **Context:** Managing a complex technical capstone (*Autonomous Edge-AI Healthcare Monitoring via BLE 5.0 Sensor Fusion & TinyML ECG Anomaly Detection*) under primary supervisor Md. Shohel Arman (Associate Professor) and industry mentor Engr. Sakib Al Hasan.
 - **Environment:** 13" to 16" laptops in campus laboratories, development desks, and home workstations, with secondary mobile access for quick on-campus schedule verification.
 
 ---

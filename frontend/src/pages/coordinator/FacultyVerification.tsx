@@ -17,7 +17,7 @@ export const FacultyVerification: React.FC = () => {
   const [pendingList, setPendingList] = useState<PendingFaculty[]>([
     {
       id: 'f-1',
-      name: 'Dr. Shohel Arman',
+      name: 'Md. Shohel Arman',
       email: 'shohel.arman@diu.edu.bd',
       dept: 'Software Engineering',
       title: 'Assistant Professor',

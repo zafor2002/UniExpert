@@ -15,7 +15,7 @@ export const ResearchPortfolio: React.FC = () => {
   const faculty = experts[0];
 
   const [orcid, setOrcid] = useState('0000-0002-1234-5678');
-  const [scholarId, setScholarId] = useState('farhana_rahman_diu');
+  const [scholarId, setScholarId] = useState('shohel_arman_diu');
   const [syncState, setSyncState] = useState<SyncState>('idle');
   const [publications, setPublications] = useState<Publication[]>(mockPublications);
 

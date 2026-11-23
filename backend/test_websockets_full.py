@@ -74,7 +74,7 @@ async def test_full_websockets():
     print("\n[STEP 3] Testing Live Meeting & Video Consultation WebSocket on /api/meeting/ws/room-edgeshield ...")
     room_id = "room-edgeshield"
     ws_student_url = f"{BASE_WS}/meeting/ws/{room_id}?peer_id=peer-az&name=Abu+Zafor&role=Team+Lead"
-    ws_faculty_url = f"{BASE_WS}/meeting/ws/{room_id}?peer_id=peer-fr&name=Dr.+Farhana+Rahman&role=Supervisor"
+    ws_faculty_url = f"{BASE_WS}/meeting/ws/{room_id}?peer_id=peer-fr&name=Md.+Shohel+Arman&role=Supervisor"
 
     async with websockets.connect(ws_student_url) as ws_student:
         # Student receives initial room state
