@@ -7,7 +7,6 @@ import {
   Bell,
   ChevronDown,
   LogOut,
-  RefreshCw,
   Sparkles,
 } from 'lucide-react';
 import NotificationDropdown from '../shared/NotificationDropdown';
@@ -81,7 +80,7 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuClick }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/login');
   };
 
   const initials = currentUser ? getInitials(currentUser.name) : 'UE';
@@ -193,16 +192,32 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuClick }) => {
 
               <div className="py-1">
                 <button
-                  onClick={() => { setShowUserMenu(false); navigate('/student/profile'); }}
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    const profilePath = currentRole === 'student' ? '/student/profile' :
+                      currentRole === 'faculty' ? '/faculty/portfolio' :
+                      currentRole === 'mentor' ? '/mentor/profile' :
+                      currentRole === 'coordinator' ? '/coordinator/dashboard' :
+                      currentRole === 'admin' ? '/admin/taxonomy' : '/auditor/trail';
+                    navigate(profilePath);
+                  }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#334155] hover:bg-[#F4F8FF] transition-colors"
                 >
                   My Profile
                 </button>
                 <button
-                  onClick={() => { setShowUserMenu(false); navigate('/student/workspace'); }}
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    const workspacePath = currentRole === 'faculty' ? '/faculty/workspace' :
+                      currentRole === 'mentor' ? '/mentor/dashboard' :
+                      currentRole === 'coordinator' ? '/coordinator/dashboard' :
+                      currentRole === 'admin' ? '/admin/taxonomy' :
+                      currentRole === 'auditor' ? '/auditor/trail' : '/student/workspace';
+                    navigate(workspacePath);
+                  }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#334155] hover:bg-[#F4F8FF] transition-colors"
                 >
-                  Active Project Workspace
+                  Active Workspace
                 </button>
                 <button
                   onClick={() => { setShowUserMenu(false); handleLogout(); }}

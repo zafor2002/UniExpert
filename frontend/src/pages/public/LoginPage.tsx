@@ -66,7 +66,7 @@ export default function LoginPage() {
       targetRole = 'coordinator';
     } else if (lowerEmail.includes('admin')) {
       targetRole = 'admin';
-    } else if (lowerEmail.includes('mentor')) {
+    } else if (lowerEmail.includes('mentor') || lowerEmail.includes('sakib') || lowerEmail.includes('techbridge')) {
       targetRole = 'mentor';
     } else if (lowerEmail.includes('audit') || lowerEmail.includes('qa')) {
       targetRole = 'auditor';
@@ -96,6 +96,21 @@ export default function LoginPage() {
 
     if (result.success) {
       setRole(targetRole as any);
+      const roleDisplayName: Record<string, string> = {
+        student: 'Abu Zafor',
+        faculty: 'Md. Shohel Arman',
+        mentor: 'Engr. Sakib Al Hasan',
+        coordinator: 'Prof. Dr. Syed Akhter Hossain',
+        admin: 'System Administrator',
+        auditor: 'DIU Quality Assurance Cell'
+      };
+      localStorage.setItem('uniexpert_token', 'mock_jwt_' + targetRole + '_' + Date.now());
+      localStorage.setItem('uniexpert_user', JSON.stringify({
+        id: targetRole + '-1',
+        role: targetRole,
+        name: roleDisplayName[targetRole] || targetRole.toUpperCase()
+      }));
+
       if (result.requiresMfa) {
         toast.success('Credentials verified. Please complete MFA.');
         navigate('/mfa');
@@ -245,6 +260,20 @@ export default function LoginPage() {
               className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
             >
               🛡️ Administrator
+            </button>
+            <button
+              type="button"
+              onClick={() => { resetLockout(); setEmail('sakib@techbridge.io'); setPassword('password123'); }}
+              className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
+            >
+              💼 Industry Mentor
+            </button>
+            <button
+              type="button"
+              onClick={() => { resetLockout(); setEmail('qa@diu.edu.bd'); setPassword('password123'); }}
+              className="p-2.5 rounded-xl bg-[#F4F8FF] border border-[#E2E8F0] hover:bg-[#EAF2FF] text-[#1E3A8A] text-left text-[11px] font-semibold transition-colors"
+            >
+              📋 Auditor
             </button>
           </div>
         </div>

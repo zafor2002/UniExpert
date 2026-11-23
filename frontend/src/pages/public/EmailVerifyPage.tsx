@@ -182,7 +182,7 @@ export function EmailVerifyPage() {
 
 export function MfaPage() {
   const navigate = useNavigate();
-  const { submitMfa } = useApp();
+  const { submitMfa, currentRole } = useApp();
 
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -196,7 +196,7 @@ export function MfaPage() {
 
     if (result.success) {
       toast.success('MFA verified. Authentication complete.');
-      navigate('/coordinator/dashboard');
+      navigate(currentRole === 'admin' ? '/admin/taxonomy' : '/coordinator/dashboard');
     } else {
       toast.error('Invalid MFA code. Try 123456 for demo.');
     }

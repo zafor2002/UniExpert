@@ -178,9 +178,6 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false, onMobileClose }) 
           <p className="text-[10px] text-[#CBD5E1]">SE 331 Capstone Platform</p>
         </div>
       )}
-
-      {/* Bottom spacer for DemoRoleSwitcher */}
-      <div className="h-14 flex-shrink-0" />
     </div>
   );
 

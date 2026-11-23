@@ -49,41 +49,44 @@ const roleUserMap: Record<UserRole, Student | Expert> = {
 };
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AppState>({
-    currentRole: 'student',
-    currentUser: mockStudents[0],
-    darkMode: false,
-    experts: mockExperts,
-    proposals: mockProposals,
-    notifications: mockNotifications,
-    compareList: [],
-    isAuthenticated: false,
-    mfaRequired: false,
-    loginAttempts: 0,
-    lockedUntil: null,
-    vectorSearchOnline: true,
+  const [state, setState] = useState<AppState>(() => {
+    let savedRole: UserRole = 'student';
+    let savedUser: Student | Expert = mockStudents[0];
+    let isAuth = false;
+
+    try {
+      const savedToken = typeof window !== 'undefined' ? localStorage.getItem('uniexpert_token') : null;
+      const savedUserStr = typeof window !== 'undefined' ? localStorage.getItem('uniexpert_user') : null;
+      if (savedToken && savedUserStr) {
+        const u = JSON.parse(savedUserStr);
+        if (u.role && roleUserMap[u.role as UserRole]) {
+          savedRole = u.role as UserRole;
+          savedUser = roleUserMap[savedRole] || mockStudents[0];
+          isAuth = true;
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    return {
+      currentRole: savedRole,
+      currentUser: savedUser,
+      darkMode: false,
+      experts: mockExperts,
+      proposals: mockProposals,
+      notifications: mockNotifications,
+      compareList: [],
+      isAuthenticated: isAuth,
+      mfaRequired: false,
+      loginAttempts: 0,
+      lockedUntil: null,
+      vectorSearchOnline: true,
+    };
   });
 
   // Check saved session & sync proposals from backend
   useEffect(() => {
-    const savedToken = localStorage.getItem('uniexpert_token');
-    const savedUserStr = localStorage.getItem('uniexpert_user');
-    if (savedToken && savedUserStr) {
-      try {
-        const u = JSON.parse(savedUserStr);
-        if (u.role) {
-          setState(prev => ({
-            ...prev,
-            isAuthenticated: true,
-            currentRole: u.role,
-            currentUser: roleUserMap[u.role as UserRole] || prev.currentUser
-          }));
-        }
-      } catch (e) {
-        // ignore
-      }
-    }
-
     // Fetch live 50 faculty profiles from backend SQLite
     api.getFaculty()
       .then((facList) => {
@@ -253,12 +256,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    setState(prev => ({ ...prev, isAuthenticated: false, mfaRequired: false }));
+    try {
+      localStorage.removeItem('uniexpert_token');
+      localStorage.removeItem('uniexpert_user');
+    } catch {
+      // ignore
+    }
+    setState(prev => ({
+      ...prev,
+      isAuthenticated: false,
+      mfaRequired: false,
+      currentRole: 'student',
+      currentUser: mockStudents[0]
+    }));
   }, []);
 
   const submitMfa = useCallback((code: string) => {
     if (code === '123456') {
-      setState(prev => ({ ...prev, isAuthenticated: true, mfaRequired: false }));
+      setState(prev => {
+        try {
+          localStorage.setItem('uniexpert_token', 'mock_jwt_mfa_' + prev.currentRole + '_' + Date.now());
+          localStorage.setItem('uniexpert_user', JSON.stringify({
+            id: prev.currentRole + '-1',
+            role: prev.currentRole,
+            name: roleUserMap[prev.currentRole]?.name || prev.currentRole.toUpperCase()
+          }));
+        } catch {
+          // ignore
+        }
+        return { ...prev, isAuthenticated: true, mfaRequired: false };
+      });
       return { success: true, message: 'Authentication successful.' };
     }
     return { success: false, message: 'Invalid MFA code.' };

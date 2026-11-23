@@ -343,6 +343,31 @@ This journal chronicles the continuous, iterative engineering progress of UniExp
 
 ---
 
+### 🗓️ Sprint 18: Strict Institutional Role-Based Access Control (RBAC), Route Guards, Session Persistence & Elimination of Demo Role Switcher (2026-11-24)
+* **Sprint Focus:** Implementation of strict client-side Role-Based Access Control (RBAC) route guards across all 37 application views, permanent removal of the floating demo role switcher widget, synchronous session persistence with `localStorage`, and role-aware navigation and sign-out pipelines.  
+* **Lead Contributors:** Abu Zafor (RBAC Security Architecture & Institutional Policy Design), Anamul Haque (Route Guard Pipeline, Session Lifecycle & Frontend Engineering)  
+
+#### Activities & Delivered Artifacts:
+1. **Permanent Removal of `DemoRoleSwitcher`:**
+   - Completely deleted `DemoRoleSwitcher.tsx` and removed its import and JSX invocation in `AppLayout.tsx`.
+   - Eliminated bottom compensation spacers and padding across `Sidebar.tsx` and `<main>` containers for a clean, professional, enterprise-grade layout.
+2. **Strict `ProtectedRoute` Guard Component (`ProtectedRoute.tsx`):**
+   - Built a modular React route wrapper that enforces authentication and authorization checks per route.
+   - Unauthenticated visitors attempting to access protected student, faculty, mentor, coordinator, admin, or auditor routes are instantly redirected to `/login` with location memory (`state: { from: location }`).
+   - Authenticated users attempting to visit routes outside their assigned role (e.g., student accessing `/admin/taxonomy` or `/faculty/dashboard`) are blocked and automatically redirected to their own role's home dashboard.
+3. **App-Wide Route Guarding (`App.tsx`):**
+   - Encapsulated all application routes into distinct role guards: `StudentRoute`, `FacultyRoute`, `MentorRoute`, `CoordinatorRoute`, `AdminRoute`, and `AuditorRoute`.
+   - Ensured public pages (`/`, `/login`, `/register`, `/verify-email`, `/mfa`) remain accessible without credentials.
+4. **Synchronous Session Persistence & Seamless Login Flow (`AppContext.tsx`, `LoginPage.tsx`):**
+   - Enhanced `AppContext.tsx` with synchronous initialization from `localStorage` (`uniexpert_token`, `uniexpert_user`) inside `useState`, preventing any flash of redirect on page refresh.
+   - Updated `LoginPage.tsx` with 1-Click demo presets for all 6 roles (Student Lead, Faculty Advisor, Coordinator, Administrator, Industry Mentor, and Auditor).
+   - Ensured `logout` in `TopBar.tsx` and `AppContext.tsx` completely flushes session tokens from storage and redirects directly to `/login`.
+   - Updated user profile dropdown in `TopBar.tsx` with role-aware profile and workspace destination links.
+
+* **BAETE Alignment:** Criterion 4 (Engineering Management & Institutional Governance) and Criterion 5 (Modern IT Security Standards: RBAC, Least Privilege Architecture & JWT Session Security).
+
+---
+
 ## 📊 Summary of Team Member Engineering Contributions
 
 ```

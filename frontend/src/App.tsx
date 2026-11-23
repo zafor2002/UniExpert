@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
+import ProtectedRoute from './components/shared/ProtectedRoute';
 
 // Public pages
 import LandingPage from './pages/public/LandingPage';
@@ -51,6 +52,43 @@ import SystemHealth from './pages/admin/SystemHealth';
 import AuditTrail from './pages/auditor/AuditTrail';
 import AccreditationReports from './pages/auditor/AccreditationReports';
 
+// Route Guards by Role
+const StudentRoute = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute allowedRoles={['student']}>
+    <AppLayout>{children}</AppLayout>
+  </ProtectedRoute>
+);
+
+const FacultyRoute = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute allowedRoles={['faculty']}>
+    <AppLayout>{children}</AppLayout>
+  </ProtectedRoute>
+);
+
+const MentorRoute = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute allowedRoles={['mentor']}>
+    <AppLayout>{children}</AppLayout>
+  </ProtectedRoute>
+);
+
+const CoordinatorRoute = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute allowedRoles={['coordinator']}>
+    <AppLayout>{children}</AppLayout>
+  </ProtectedRoute>
+);
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute allowedRoles={['admin']}>
+    <AppLayout>{children}</AppLayout>
+  </ProtectedRoute>
+);
+
+const AuditorRoute = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute allowedRoles={['auditor']}>
+    <AppLayout>{children}</AppLayout>
+  </ProtectedRoute>
+);
+
 export default function App() {
   return (
     <Routes>
@@ -61,377 +99,62 @@ export default function App() {
       <Route path="/verify-email" element={<EmailVerifyPage />} />
       <Route path="/mfa" element={<MfaPage />} />
 
-      {/* Student Routes (wrapped in AppLayout) */}
-      <Route
-        path="/student"
-        element={
-          <AppLayout>
-            <Navigate to="/student/dashboard" replace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/dashboard"
-        element={
-          <AppLayout>
-            <StudentDashboard />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/profile"
-        element={
-          <AppLayout>
-            <StudentProfile />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/new-proposal"
-        element={
-          <AppLayout>
-            <NewProposal />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/proposals/new"
-        element={
-          <AppLayout>
-            <NewProposal />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/entity-review"
-        element={
-          <AppLayout>
-            <EntityReview />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/discovery"
-        element={
-          <AppLayout>
-            <AdvisorDiscovery />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/compare"
-        element={
-          <AppLayout>
-            <ExpertComparison />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/skill-gap"
-        element={
-          <AppLayout>
-            <SkillGapAnalysis />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/co-advisor"
-        element={
-          <AppLayout>
-            <CoAdvisorOptimizer />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/proposal-modal"
-        element={
-          <AppLayout>
-            <ProposalModal />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/proposals"
-        element={
-          <AppLayout>
-            <MyRequests />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/requests"
-        element={
-          <AppLayout>
-            <MyRequests />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/consultation"
-        element={
-          <AppLayout>
-            <ConsultationScheduler />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/scheduler"
-        element={
-          <AppLayout>
-            <ConsultationScheduler />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/workspace"
-        element={
-          <AppLayout>
-            <ProjectWorkspace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/evaluation"
-        element={
-          <AppLayout>
-            <PostEvaluation />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/contributions"
-        element={
-          <AppLayout>
-            <ContributionTracker />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/student/chat"
-        element={
-          <AppLayout>
-            <TeamChat />
-          </AppLayout>
-        }
-      />
+      {/* Student Routes (Protected: Student Role) */}
+      <Route path="/student" element={<StudentRoute><Navigate to="/student/dashboard" replace /></StudentRoute>} />
+      <Route path="/student/dashboard" element={<StudentRoute><StudentDashboard /></StudentRoute>} />
+      <Route path="/student/profile" element={<StudentRoute><StudentProfile /></StudentRoute>} />
+      <Route path="/student/new-proposal" element={<StudentRoute><NewProposal /></StudentRoute>} />
+      <Route path="/student/proposals/new" element={<StudentRoute><NewProposal /></StudentRoute>} />
+      <Route path="/student/entity-review" element={<StudentRoute><EntityReview /></StudentRoute>} />
+      <Route path="/student/discovery" element={<StudentRoute><AdvisorDiscovery /></StudentRoute>} />
+      <Route path="/student/compare" element={<StudentRoute><ExpertComparison /></StudentRoute>} />
+      <Route path="/student/skill-gap" element={<StudentRoute><SkillGapAnalysis /></StudentRoute>} />
+      <Route path="/student/co-advisor" element={<StudentRoute><CoAdvisorOptimizer /></StudentRoute>} />
+      <Route path="/student/proposal-modal" element={<StudentRoute><ProposalModal /></StudentRoute>} />
+      <Route path="/student/proposals" element={<StudentRoute><MyRequests /></StudentRoute>} />
+      <Route path="/student/requests" element={<StudentRoute><MyRequests /></StudentRoute>} />
+      <Route path="/student/consultation" element={<StudentRoute><ConsultationScheduler /></StudentRoute>} />
+      <Route path="/student/scheduler" element={<StudentRoute><ConsultationScheduler /></StudentRoute>} />
+      <Route path="/student/workspace" element={<StudentRoute><ProjectWorkspace /></StudentRoute>} />
+      <Route path="/student/evaluation" element={<StudentRoute><PostEvaluation /></StudentRoute>} />
+      <Route path="/student/contributions" element={<StudentRoute><ContributionTracker /></StudentRoute>} />
+      <Route path="/student/chat" element={<StudentRoute><TeamChat /></StudentRoute>} />
 
-      {/* Faculty Routes */}
-      <Route
-        path="/faculty"
-        element={
-          <AppLayout>
-            <Navigate to="/faculty/dashboard" replace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/dashboard"
-        element={
-          <AppLayout>
-            <FacultyDashboard />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/workspace"
-        element={
-          <AppLayout>
-            <ProjectWorkspace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/chat"
-        element={
-          <AppLayout>
-            <TeamChat />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/portfolio"
-        element={
-          <AppLayout>
-            <ResearchPortfolio />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/proposals"
-        element={
-          <AppLayout>
-            <IncomingProposals />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/capacity"
-        element={
-          <AppLayout>
-            <CapacitySettings />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/quota"
-        element={
-          <AppLayout>
-            <CapacitySettings />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/faculty/calendar"
-        element={
-          <AppLayout>
-            <CalendarSettings />
-          </AppLayout>
-        }
-      />
+      {/* Faculty Routes (Protected: Faculty Role) */}
+      <Route path="/faculty" element={<FacultyRoute><Navigate to="/faculty/dashboard" replace /></FacultyRoute>} />
+      <Route path="/faculty/dashboard" element={<FacultyRoute><FacultyDashboard /></FacultyRoute>} />
+      <Route path="/faculty/workspace" element={<FacultyRoute><ProjectWorkspace /></FacultyRoute>} />
+      <Route path="/faculty/chat" element={<FacultyRoute><TeamChat /></FacultyRoute>} />
+      <Route path="/faculty/portfolio" element={<FacultyRoute><ResearchPortfolio /></FacultyRoute>} />
+      <Route path="/faculty/proposals" element={<FacultyRoute><IncomingProposals /></FacultyRoute>} />
+      <Route path="/faculty/capacity" element={<FacultyRoute><CapacitySettings /></FacultyRoute>} />
+      <Route path="/faculty/quota" element={<FacultyRoute><CapacitySettings /></FacultyRoute>} />
+      <Route path="/faculty/calendar" element={<FacultyRoute><CalendarSettings /></FacultyRoute>} />
 
-      {/* Industry Mentor Routes */}
-      <Route
-        path="/mentor"
-        element={
-          <AppLayout>
-            <Navigate to="/mentor/dashboard" replace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/mentor/dashboard"
-        element={
-          <AppLayout>
-            <MentorDashboard />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/mentor/profile"
-        element={
-          <AppLayout>
-            <MentorOnboarding />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/mentor/onboarding"
-        element={
-          <AppLayout>
-            <MentorOnboarding />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/mentor/requests"
-        element={
-          <AppLayout>
-            <MentorDashboard />
-          </AppLayout>
-        }
-      />
+      {/* Industry Mentor Routes (Protected: Mentor Role) */}
+      <Route path="/mentor" element={<MentorRoute><Navigate to="/mentor/dashboard" replace /></MentorRoute>} />
+      <Route path="/mentor/dashboard" element={<MentorRoute><MentorDashboard /></MentorRoute>} />
+      <Route path="/mentor/profile" element={<MentorRoute><MentorOnboarding /></MentorRoute>} />
+      <Route path="/mentor/onboarding" element={<MentorRoute><MentorOnboarding /></MentorRoute>} />
+      <Route path="/mentor/requests" element={<MentorRoute><MentorDashboard /></MentorRoute>} />
 
-      {/* Coordinator Routes */}
-      <Route
-        path="/coordinator"
-        element={
-          <AppLayout>
-            <Navigate to="/coordinator/dashboard" replace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/coordinator/dashboard"
-        element={
-          <AppLayout>
-            <AllocationDashboard />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/coordinator/verification"
-        element={
-          <AppLayout>
-            <FacultyVerification />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/coordinator/quota"
-        element={
-          <AppLayout>
-            <QuotaPolicy />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/coordinator/disputes"
-        element={
-          <AppLayout>
-            <DisputesResolution />
-          </AppLayout>
-        }
-      />
+      {/* Coordinator Routes (Protected: Coordinator Role) */}
+      <Route path="/coordinator" element={<CoordinatorRoute><Navigate to="/coordinator/dashboard" replace /></CoordinatorRoute>} />
+      <Route path="/coordinator/dashboard" element={<CoordinatorRoute><AllocationDashboard /></CoordinatorRoute>} />
+      <Route path="/coordinator/verification" element={<CoordinatorRoute><FacultyVerification /></CoordinatorRoute>} />
+      <Route path="/coordinator/quota" element={<CoordinatorRoute><QuotaPolicy /></CoordinatorRoute>} />
+      <Route path="/coordinator/disputes" element={<CoordinatorRoute><DisputesResolution /></CoordinatorRoute>} />
 
-      {/* Admin Routes */}
-      <Route
-        path="/admin"
-        element={
-          <AppLayout>
-            <Navigate to="/admin/taxonomy" replace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/admin/taxonomy"
-        element={
-          <AppLayout>
-            <TaxonomyConsole />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/admin/rbac"
-        element={
-          <AppLayout>
-            <RBACManagement />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/admin/health"
-        element={
-          <AppLayout>
-            <SystemHealth />
-          </AppLayout>
-        }
-      />
+      {/* Admin Routes (Protected: Admin Role) */}
+      <Route path="/admin" element={<AdminRoute><Navigate to="/admin/taxonomy" replace /></AdminRoute>} />
+      <Route path="/admin/taxonomy" element={<AdminRoute><TaxonomyConsole /></AdminRoute>} />
+      <Route path="/admin/rbac" element={<AdminRoute><RBACManagement /></AdminRoute>} />
+      <Route path="/admin/health" element={<AdminRoute><SystemHealth /></AdminRoute>} />
 
-      {/* Auditor Routes */}
-      <Route
-        path="/auditor"
-        element={
-          <AppLayout>
-            <Navigate to="/auditor/trail" replace />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/auditor/trail"
-        element={
-          <AppLayout>
-            <AuditTrail />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/auditor/reports"
-        element={
-          <AppLayout>
-            <AccreditationReports />
-          </AppLayout>
-        }
-      />
+      {/* Auditor Routes (Protected: Auditor Role) */}
+      <Route path="/auditor" element={<AuditorRoute><Navigate to="/auditor/trail" replace /></AuditorRoute>} />
+      <Route path="/auditor/trail" element={<AuditorRoute><AuditTrail /></AuditorRoute>} />
+      <Route path="/auditor/reports" element={<AuditorRoute><AccreditationReports /></AuditorRoute>} />
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
