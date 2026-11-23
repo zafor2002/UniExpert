@@ -40,6 +40,18 @@ export const getWsUrl = (path: string): string => {
   return `${wsBase}/${path.replace(/^\/+/, '')}`;
 };
 
+export function formatMessageTime(timestamp: string): string {
+  if (!timestamp) return '';
+  let str = timestamp.trim().replace(' ', 'T');
+  if (!str.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(str)) {
+    str += 'Z';
+  }
+  const date = new Date(str);
+  return isNaN(date.getTime())
+    ? ''
+    : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
 export interface LoginPayload {
   email: string;
   password: string;

@@ -5,7 +5,7 @@ import {
   ChevronDown, Plus, AtSign, Mic, ImageIcon, Wifi, Sparkles
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import { api, getWsUrl } from '@/api/client';
+import { api, getWsUrl, formatMessageTime } from '@/api/client';
 import { toast } from 'react-hot-toast';
 import { LiveMeetingModal } from '@/components/meeting/LiveMeetingModal';
 
@@ -370,8 +370,7 @@ export const TeamChat: React.FC = () => {
     setShowEmoji(null);
   };
 
-  const formatTime = (iso: string) =>
-    new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (iso: string) => formatMessageTime(iso);
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });

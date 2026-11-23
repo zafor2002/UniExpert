@@ -7,7 +7,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
 import { mockWorkspace } from '../../data/mockData';
-import { api, getWsUrl } from '../../api/client';
+import { api, getWsUrl, formatMessageTime } from '../../api/client';
 import { LiveMeetingModal } from '../../components/meeting/LiveMeetingModal';
 import type { WorkspaceMessage, WorkspaceFile } from '../../types';
 
@@ -414,7 +414,7 @@ export const ProjectWorkspace: React.FC = () => {
                       {msg.senderName}
                     </span>
                     <span className="text-[10px] text-[#64748B] font-mono">
-                      {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {formatMessageTime(msg.timestamp)}
                     </span>
                   </div>
                   <div

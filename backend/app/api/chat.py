@@ -38,6 +38,10 @@ async def post_message(
     db.refresh(msg)
 
     # Broadcast via WebSocket
+    ts_str = msg.timestamp.isoformat()
+    if not ts_str.endswith("Z"):
+        ts_str += "Z"
+
     await ws_manager.broadcast(msg_in.channel_id, {
         "type": "new_message",
         "id": msg.id,
@@ -45,7 +49,7 @@ async def post_message(
         "sender_id": msg.sender_id,
         "sender_name": msg.sender_name,
         "content": msg.content,
-        "timestamp": msg.timestamp.isoformat(),
+        "timestamp": ts_str,
         "client_id": client_id,
         "client_msg_id": client_msg_id,
         "pinned": msg.pinned
@@ -104,6 +108,10 @@ async def chat_websocket_endpoint(websocket: WebSocket, channel_id: str):
                     db.commit()
                     db.refresh(msg)
 
+                    ts_str = msg.timestamp.isoformat()
+                    if not ts_str.endswith("Z"):
+                        ts_str += "Z"
+
                     payload = {
                         "type": "new_message",
                         "id": msg.id,
@@ -113,7 +121,7 @@ async def chat_websocket_endpoint(websocket: WebSocket, channel_id: str):
                         "client_id": client_id,
                         "client_msg_id": client_msg_id,
                         "content": msg.content,
-                        "timestamp": msg.timestamp.isoformat(),
+                        "timestamp": ts_str,
                         "pinned": msg.pinned
                     }
                 finally:
