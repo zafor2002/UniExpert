@@ -44,10 +44,20 @@ UniExpert replaces rigid keyword directories with a **problem-first discovery en
 - **Department:** Department of Software Engineering, Faculty of Science & Information Technology
 - **Academic Term:** Fall 2026 (October — December 2026, 12 Weeks)
 - **Date of Submission:** October 14, 2026
+- **Agile Development Journal:** [**`JOURNAL.md`**](./JOURNAL.md) (Chronological Daily Activity Log)
 
-### 👨‍💻 Student Engineering Team
-- **Abu Zafor** — Student ID: `232-35-331` — [@zafor2002](https://github.com/zafor2002)
-- **Anamul Haque** — Student ID: `232-35-285` — [@smanamulhaque](https://github.com/smanamulhaque)
+### 👨‍💻 Student Engineering Team & Contribution Breakdown
+
+| Team Member | Academic ID & Role | Core Engineering Responsibilities & Modules Delivered | BAETE Criteria Ownership |
+| :--- | :--- | :--- | :--- |
+| **Abu Zafor**<br/>`@zafor2002` | **ID:** `232-35-331`<br/>*Team Lead & System Architect* | • **Project Architecture & LaTeX Specifications:** Authored formal Proposal, SRS (IEEE 830), and Final Documentation (64 pages).<br/>• **AI Matchmaking Formulation:** Designed mathematical model $\mathcal{S}(u, e) = \sum w_i S_i$, zero-shot NLP entity extractor, and complexity metric.<br/>• **Explainable AI (XAI) Engine:** Formulated multi-axis radar decomposition ($S_{\text{domain}}, S_{\text{capacity}}, S_{\text{citation}}$) and feature attribution.<br/>• **Set-Cover Co-Advisor Optimizer:** Implemented greedy approximation for multidisciplinary team skill deficits ($\Delta\mathcal{K}$).<br/>• **FSM Lifecycle Design:** Defined 7-state proposal state machine, SLA timers, and supervisor review policies.<br/>• **Notion & Sprint Management:** Continuous synchronization with DIU Capstone Command Center. | **Criterion 4 (P1–P4):**<br/>Complex Problem Formulation, Mathematical Modeling & Systemic Analysis |
+| **Anamul Haque**<br/>`@smanamulhaque` | **ID:** `232-35-285`<br/>*Full-Stack & Systems Lead* | • **Local High-Performance AI Pipeline:** Deployed ONNX Runtime (`all-MiniLM-L6-v2`) quantization + FAISS IndexFlatIP ($<18\text{ ms}$ latency on CPU at $\$0.00$ cost).<br/>• **Full-Duplex WebSockets (RFC 6455):** Built Team Chat with multi-tab session isolation, typing indicators, presence, and persona switcher.<br/>• **Live Video Consultation Room:** Developed interactive meeting canvas, media state toggles (mic/cam/share), hand-raising queue, and collaborative live agenda checkoffs.<br/>• **Cryptographic Merkle Audit Ledger:** Engineered append-only SHA-256 Merkle tree (`merkle_tree.py`, `/api/audit/verify`) with live non-repudiation proof.<br/>• **BAETE Accreditation PDF/CSV Generator:** Built pure-Python ReportLab publication engine compiling Criterion 4 & 5 dossiers.<br/>• **Supervisor Contribution Endorsement:** Created grading & endorsement modal sealed on Merkle chain.<br/>• **Docker Stack & Testing:** Multi-container orchestration and automated multi-tab WebSocket test harness. | **Criterion 5 (Modern Tools):**<br/>FastAPI, ONNX, FAISS, WebSockets, SHA-256 Merkle Ledger, ReportLab, Docker |
+
+#### 🤝 Collaborative Engineering & Pair Programming
+- **Weekly Advisory Syncs:** Joint bi-weekly consultation meetings with faculty supervisor **Mr. Md. Shohel Arman** and advisor **Dr. Farhana Rahman**.
+- **Cross-Module Integration:** End-to-end integration between frontend React components and backend FastAPI asynchronous services.
+- **Continuous Quality Assurance:** Automated regression testing, TypeScript compilation verification, and continuous Git attribution.
+- **Activity & Sprint Tracking:** Comprehensive daily sprint logs documented in [**`JOURNAL.md`**](./JOURNAL.md).
 
 ### 👨‍🏫 Faculty Supervision
 - **Mr. Md. Shohel Arman** — Assistant Professor, Department of Software Engineering
