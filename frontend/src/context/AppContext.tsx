@@ -30,7 +30,8 @@ interface AppContextType extends AppState {
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
   addNotification: (n: Notification) => void;
-  login: (email: string, _password: string) => { success: boolean; message: string; requiresMfa?: boolean };
+  login: (email: string, _password: string, targetRole?: UserRole) => { success: boolean; message: string; requiresMfa?: boolean; role?: UserRole };
+  setAuthSession: (user: Student | Expert, role: UserRole, token?: string) => void;
   logout: () => void;
   submitMfa: (code: string) => { success: boolean; message: string };
   incrementLoginAttempts: () => void;
@@ -240,13 +241,65 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setState(prev => ({ ...prev, notifications: [n, ...prev.notifications] }));
   }, []);
 
-  const login = useCallback((email: string, _password: string) => {
+  const setAuthSession = useCallback((user: Student | Expert, role: UserRole, token?: string) => {
+    try {
+      if (token) localStorage.setItem('uniexpert_token', token);
+      localStorage.setItem('uniexpert_user', JSON.stringify({
+        id: user.id,
+        role: role,
+        name: user.name,
+      }));
+    } catch {
+      // ignore
+    }
+    setState(prev => ({
+      ...prev,
+      isAuthenticated: true,
+      currentRole: role,
+      currentUser: user,
+      mfaRequired: false,
+      loginAttempts: 0,
+      lockedUntil: null,
+    }));
+  }, []);
+
+  const login = useCallback((email: string, _password: string, targetRole?: UserRole) => {
     // Permissive institutional check for seamless demo & test experience
     const validDomain = email.includes('diu.edu.bd') || email.includes('.edu.bd') || email.includes('@techbridge.io') || email.includes('diu') || email.includes('student') || email.includes('faculty');
     if (validDomain) {
       const requiresMfa = email.includes('admin') || email.includes('coord');
-      setState(prev => ({ ...prev, isAuthenticated: !requiresMfa, mfaRequired: requiresMfa, loginAttempts: 0, lockedUntil: null }));
-      return { success: true, message: 'Authentication successful.', requiresMfa };
+      const resolvedRole: UserRole = targetRole || (
+        email.includes('shohel') || email.includes('arman') || email.includes('faculty') ? 'faculty' :
+        email.includes('coord') ? 'coordinator' :
+        email.includes('admin') ? 'admin' :
+        email.includes('mentor') || email.includes('sakib') || email.includes('techbridge') ? 'mentor' :
+        email.includes('audit') || email.includes('qa') ? 'auditor' : 'student'
+      );
+      const user = roleUserMap[resolvedRole] || mockStudents[0];
+      const token = 'mock_jwt_' + resolvedRole + '_' + Date.now();
+
+      try {
+        localStorage.setItem('uniexpert_token', token);
+        localStorage.setItem('uniexpert_user', JSON.stringify({
+          id: user.id,
+          role: resolvedRole,
+          name: user.name,
+        }));
+      } catch {
+        // ignore
+      }
+
+      setState(prev => ({
+        ...prev,
+        isAuthenticated: !requiresMfa,
+        mfaRequired: requiresMfa,
+        currentRole: resolvedRole,
+        currentUser: user,
+        loginAttempts: 0,
+        lockedUntil: null
+      }));
+
+      return { success: true, message: 'Authentication successful.', requiresMfa, role: resolvedRole };
     }
     return { success: false, message: 'Please enter a valid institutional email ending in .edu.bd' };
   }, []);
@@ -314,6 +367,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       markAllNotificationsRead,
       addNotification,
       login,
+      setAuthSession,
       logout,
       submitMfa,
       incrementLoginAttempts,

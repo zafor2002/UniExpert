@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, Shield, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api/client';
+import type { UserRole } from '../../types';
 import toast from 'react-hot-toast';
 
 const roleDashboards: Record<string, string> = {
@@ -24,7 +25,7 @@ function formatCountdown(ms: number) {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { isAuthenticated, login, incrementLoginAttempts, resetLockout, loginAttempts, lockedUntil, currentRole, setRole } = useApp();
+  const { isAuthenticated, login, setAuthSession, incrementLoginAttempts, resetLockout, loginAttempts, lockedUntil, currentRole } = useApp();
 
   // If already authenticated, redirect to appropriate role dashboard
   useEffect(() => {
@@ -65,7 +66,7 @@ export default function LoginPage() {
     setLoading(true);
 
     // Determine target role based on email identity
-    let targetRole = currentRole;
+    let targetRole: UserRole = 'student';
     const lowerEmail = email.toLowerCase();
     if (lowerEmail.includes('shohel') || lowerEmail.includes('arman') || lowerEmail.includes('faculty') || lowerEmail.includes('prof')) {
       targetRole = 'faculty';
@@ -81,16 +82,30 @@ export default function LoginPage() {
       targetRole = 'student';
     }
 
+    const roleDisplayName: Record<string, string> = {
+      student: 'Abu Zafor',
+      faculty: 'Md. Shohel Arman',
+      mentor: 'Engr. Sakib Al Hasan',
+      coordinator: 'Prof. Dr. Syed Akhter Hossain',
+      admin: 'System Administrator',
+      auditor: 'DIU Quality Assurance Cell'
+    };
+
     try {
       // 1. Try real backend API first
       const res = await api.login({ email, password });
       if (res && res.access_token) {
-        localStorage.setItem('uniexpert_token', res.access_token);
-        localStorage.setItem('uniexpert_user', JSON.stringify({ id: res.user_id, role: res.role, name: res.name }));
-        if (res.role) setRole(res.role as any);
+        const finalRole = (res.role || targetRole) as UserRole;
+        const userObj: any = {
+          id: res.user_id || `${finalRole}-1`,
+          name: res.name || roleDisplayName[finalRole] || 'User',
+          role: finalRole,
+          email: email
+        };
+        setAuthSession(userObj, finalRole, res.access_token);
         setLoading(false);
-        toast.success(`Welcome back, ${res.name || 'User'}!`);
-        navigate(roleDashboards[res.role] ?? roleDashboards[targetRole] ?? '/student/dashboard');
+        toast.success(`Welcome back, ${userObj.name}!`);
+        navigate(roleDashboards[finalRole] ?? '/student/dashboard', { replace: true });
         return;
       }
     } catch (err: any) {
@@ -98,32 +113,17 @@ export default function LoginPage() {
     }
 
     // 2. Seamless local fallback for instant testing/demo
-    const result = login(email, password);
+    const result = login(email, password, targetRole);
     setLoading(false);
 
     if (result.success) {
-      setRole(targetRole as any);
-      const roleDisplayName: Record<string, string> = {
-        student: 'Abu Zafor',
-        faculty: 'Md. Shohel Arman',
-        mentor: 'Engr. Sakib Al Hasan',
-        coordinator: 'Prof. Dr. Syed Akhter Hossain',
-        admin: 'System Administrator',
-        auditor: 'DIU Quality Assurance Cell'
-      };
-      localStorage.setItem('uniexpert_token', 'mock_jwt_' + targetRole + '_' + Date.now());
-      localStorage.setItem('uniexpert_user', JSON.stringify({
-        id: targetRole + '-1',
-        role: targetRole,
-        name: roleDisplayName[targetRole] || targetRole.toUpperCase()
-      }));
-
+      const finalRole = (result.role || targetRole) as UserRole;
       if (result.requiresMfa) {
         toast.success('Credentials verified. Please complete MFA.');
-        navigate('/mfa');
+        navigate('/mfa', { replace: true });
       } else {
-        toast.success(`Signed in successfully as ${targetRole.toUpperCase()}.`);
-        navigate(roleDashboards[targetRole] ?? '/student/dashboard');
+        toast.success(`Signed in successfully as ${finalRole.toUpperCase()}.`);
+        navigate(roleDashboards[finalRole] ?? '/student/dashboard', { replace: true });
       }
     } else {
       incrementLoginAttempts();
