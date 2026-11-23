@@ -44,7 +44,8 @@ class ConnectionManager:
         peer_id: str,
         user_info: dict,
         websocket: WebSocket,
-        agenda: Optional[list] = None
+        agenda: Optional[list] = None,
+        chat_messages: Optional[list] = None
     ):
         await websocket.accept()
         if room_id not in self.meeting_rooms:
@@ -69,7 +70,8 @@ class ConnectionManager:
                 "room_id": room_id,
                 "your_peer_id": peer_id,
                 "participants": participants,
-                "agenda": agenda or []
+                "agenda": agenda or [],
+                "chat_messages": chat_messages or []
             })
         except Exception as e:
             logger.warning(f"Error sending room_state to {peer_id}: {e}")

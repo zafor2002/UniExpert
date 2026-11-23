@@ -223,6 +223,17 @@ export const api = {
     return res.json();
   },
 
+  // Live Video Consultation & Meeting Messages
+  async getMeetingMessages(roomId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/meeting/rooms/${roomId}/messages`);
+      if (!res.ok) return [];
+      return res.json();
+    } catch {
+      return [];
+    }
+  },
+
   // Audit & Accreditation
   async getAuditTrail() {
     const res = await fetch(`${API_BASE}/audit/blocks`);

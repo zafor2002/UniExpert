@@ -22,6 +22,24 @@ MEETING_ROOMS: Dict[str, Dict[str, Any]] = {
             {"id": "ag-1", "text": "Review TinyML CMSIS-NN 8-bit quantization benchmark", "completed": True},
             {"id": "ag-2", "text": "Verify BLE 5.0 AES-GCM transport payload format", "completed": False},
             {"id": "ag-3", "text": "Lock Milestone 2 deliverable submission date", "completed": False}
+        ],
+        "chat_messages": [
+            {
+                "id": "mc-init-1",
+                "sender_id": "exp-1",
+                "sender_name": "Md. Shohel Arman",
+                "sender_role": "Supervisor",
+                "content": "Welcome to the consultation! Please verify your latest TinyML quantization benchmarks before we begin.",
+                "timestamp": "2026-11-23T14:30:00Z"
+            },
+            {
+                "id": "mc-init-2",
+                "sender_id": "stu-1",
+                "sender_name": "Abu Zafor",
+                "sender_role": "Team Lead",
+                "content": "All benchmarks and BLE GATT packet profiles are ready for review.",
+                "timestamp": "2026-11-23T14:35:00Z"
+            }
         ]
     },
     "room-consultation-fr": {
@@ -34,6 +52,16 @@ MEETING_ROOMS: Dict[str, Dict[str, Any]] = {
         "is_active": True,
         "agenda": [
             {"id": "ag-1", "text": "Hardware prototype validation & power budget check", "completed": False}
+        ],
+        "chat_messages": [
+            {
+                "id": "mc-init-3",
+                "sender_id": "exp-1",
+                "sender_name": "Md. Shohel Arman",
+                "sender_role": "Supervisor",
+                "content": "Office hour session is open. Please raise your hand if you have specific architectural questions.",
+                "timestamp": "2026-11-23T14:00:00Z"
+            }
         ]
     }
 }
@@ -64,6 +92,14 @@ def get_room_details(room_id: str):
         "participants": participants,
         "participant_count": len(participants)
     }
+
+@router.get("/rooms/{room_id}/messages", response_model=List[Dict[str, Any]])
+def get_meeting_messages(room_id: str):
+    """Retrieves chronological in-meeting text chat history for a session."""
+    room = MEETING_ROOMS.get(room_id)
+    if not room:
+        return []
+    return room.get("chat_messages", [])
 
 @router.get("/active", response_model=List[Dict[str, Any]])
 def list_active_rooms():
@@ -134,9 +170,17 @@ async def meeting_websocket_endpoint(
         }
 
     agenda_items = MEETING_ROOMS[room_id].get("agenda", [])
+    chat_history = MEETING_ROOMS[room_id].get("chat_messages", [])
 
-    # Register in meeting manager and announce arrival
-    await ws_manager.join_meeting(room_id, assigned_peer_id, user_info, websocket, agenda=agenda_items)
+    # Register in meeting manager and announce arrival with current roster & chat history
+    await ws_manager.join_meeting(
+        room_id,
+        assigned_peer_id,
+        user_info,
+        websocket,
+        agenda=agenda_items,
+        chat_messages=chat_history
+    )
 
     try:
         while True:
@@ -194,17 +238,29 @@ async def meeting_websocket_endpoint(
 
             # 4. In-Meeting Live Chat Message
             elif event_type == "meeting_chat":
+                msg_content = data.get("content", "").strip()
+                if not msg_content:
+                    continue
+                new_chat_msg = {
+                    "type": "meeting_chat_message",
+                    "id": data.get("client_msg_id") or f"mc-{uuid.uuid4().hex[:6]}",
+                    "sender_id": assigned_peer_id,
+                    "sender_name": user_info["name"],
+                    "sender_role": user_info["role"],
+                    "content": msg_content,
+                    "timestamp": datetime.utcnow().isoformat() + "Z"
+                }
+
+                if room_id in MEETING_ROOMS:
+                    if "chat_messages" not in MEETING_ROOMS[room_id]:
+                        MEETING_ROOMS[room_id]["chat_messages"] = []
+                    MEETING_ROOMS[room_id]["chat_messages"].append(new_chat_msg)
+                    if len(MEETING_ROOMS[room_id]["chat_messages"]) > 100:
+                        MEETING_ROOMS[room_id]["chat_messages"] = MEETING_ROOMS[room_id]["chat_messages"][-100:]
+
                 await ws_manager.broadcast_to_meeting(
                     room_id,
-                    {
-                        "type": "meeting_chat_message",
-                        "id": f"mc-{uuid.uuid4().hex[:6]}",
-                        "sender_id": assigned_peer_id,
-                        "sender_name": user_info["name"],
-                        "sender_role": user_info["role"],
-                        "content": data.get("content", ""),
-                        "timestamp": datetime.utcnow().isoformat()
-                    },
+                    new_chat_msg,
                     exclude_peer=assigned_peer_id
                 )
 
