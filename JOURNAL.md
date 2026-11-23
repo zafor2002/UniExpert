@@ -258,6 +258,25 @@ This journal chronicles the continuous, iterative engineering progress of UniExp
 
 ---
 
+### Sprint 14: Cloud Deployment Configuration & Vercel Production Readiness
+* **Date Range:** November 23, 2026  
+* **Sprint Focus:** Configuring production-ready deployment on Vercel for the React 19 / Vite SPA, configuring client-side SPA routing rewrites, and environment-aware API/WebSocket endpoints.  
+* **Lead Contributors:** Abu Zafor (Vercel Architecture & Deployment Config), Anamul Haque (Environment Parameterization & Build Automation)  
+
+#### Activities & Delivered Artifacts:
+1. **Vercel Build & Routing Configurations:**
+   - Created root-level `vercel.json` and `package.json` for monorepo single-command building (`npm --prefix frontend run build`).
+   - Created `frontend/vercel.json` to configure client-side SPA routing rewrites to `/index.html` preventing 404 errors on deep routes.
+2. **Environment Parameterization:**
+   - Upgraded `client.ts` to read `import.meta.env.VITE_API_BASE_URL` with fallback to `/api`.
+   - Parameterized WebSockets in `LiveMeetingModal.tsx` and `TeamChat.tsx` to read `VITE_WS_BASE_URL` or auto-convert `VITE_API_BASE_URL` to `wss://`.
+3. **Seamless Offline Fallback for Vercel Demos:**
+   - Ensured that on Vercel, the platform seamlessly runs with rich interactive mock data even before the backend is deployed.
+
+* **BAETE Alignment:** Criterion 5 (Modern Tools: Global Cloud Edge Deployment, CI/CD GitOps, and Zero-Configuration SPA Hosting).
+
+---
+
 ## 📊 Summary of Team Member Engineering Contributions
 
 ```

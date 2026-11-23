@@ -92,8 +92,15 @@ export const LiveMeetingModal: React.FC<LiveMeetingModalProps> = ({
 
     let ws: WebSocket | null = null;
     try {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const url = `${protocol}//${window.location.host}/api/meeting/ws/${roomId}?peer_id=${encodeURIComponent(sessionPeerId)}&name=${encodeURIComponent(myName)}&role=${encodeURIComponent(myRole)}`;
+      const customApi = import.meta.env.VITE_API_BASE_URL as string | undefined;
+      const customWs = import.meta.env.VITE_WS_BASE_URL as string | undefined;
+      let baseWs = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api`;
+      if (customWs) {
+        baseWs = customWs;
+      } else if (customApi) {
+        baseWs = customApi.replace(/^http/, 'ws');
+      }
+      const url = `${baseWs}/meeting/ws/${roomId}?peer_id=${encodeURIComponent(sessionPeerId)}&name=${encodeURIComponent(myName)}&role=${encodeURIComponent(myRole)}`;
       ws = new WebSocket(url);
       wsRef.current = ws;
 

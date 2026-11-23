@@ -1,6 +1,6 @@
 // API client for connecting the frontend to the backend REST and WebSocket services
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || '/api';
 
 export interface LoginPayload {
   email: string;

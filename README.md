@@ -196,6 +196,27 @@ The prototype features an ultra-clean, monochromatic academic layout where navig
 
 ---
 
+## 🚀 Deployment (Vercel & Cloud Hosting)
+
+UniExpert is optimized for modern cloud deployment:
+
+### 1. Deploying the Frontend to Vercel
+The frontend is built with React 19, TypeScript, and Vite. Both root and frontend configurations are included for 1-click Vercel deployment:
+
+1. Go to [Vercel Dashboard](https://vercel.com/new) and click **"Add New..."** $\to$ **"Project"**.
+2. Select your imported GitHub repository: `zafor2002/UniExpert`.
+3. **Project Settings:**
+   - **Framework Preset:** Vite
+   - **Root Directory:** `./` (or `frontend` if deploying frontend alone)
+   - **Build Command:** `npm --prefix frontend run build` (auto-detected via `vercel.json`)
+   - **Output Directory:** `frontend/dist` (auto-detected via `vercel.json`)
+4. **Environment Variables (Optional):**
+   - `VITE_API_BASE_URL`: URL of your deployed backend (e.g., `https://uniexpert-backend.onrender.com/api`).
+   - *Note:* If omitted, the frontend automatically runs in self-contained demo mode with full mock data and local state persistence!
+5. Click **"Deploy"**. Your application will be live globally in under 60 seconds with SSL and SPA routing.
+
+---
+
 ## 🏛️ System Architecture
 
 ```mermaid

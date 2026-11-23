@@ -178,8 +178,15 @@ export const TeamChat: React.FC = () => {
     let ws: WebSocket | null = null;
     try {
       setWsStatus('connecting');
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      ws = new WebSocket(`${protocol}//${window.location.host}/api/chat/ws/${activeChannel}`);
+      const customApi = import.meta.env.VITE_API_BASE_URL as string | undefined;
+      const customWs = import.meta.env.VITE_WS_BASE_URL as string | undefined;
+      let baseWs = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api`;
+      if (customWs) {
+        baseWs = customWs;
+      } else if (customApi) {
+        baseWs = customApi.replace(/^http/, 'ws');
+      }
+      ws = new WebSocket(`${baseWs}/chat/ws/${activeChannel}`);
       wsRef.current = ws;
 
       ws.onopen = () => {
