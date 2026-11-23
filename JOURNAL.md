@@ -232,6 +232,32 @@ This journal chronicles the continuous, iterative engineering progress of UniExp
 
 ---
 
+### Sprint 13: Academic Software Requirements Specification (SRS) Compilation
+* **Date Range:** November 23, 2026  
+* **Sprint Focus:** Professional Software Requirements Specification (SRS) document authoring in Microsoft Word (`.docx`) format adhering to IEEE Std 830-1998, DIU academic layout, Times New Roman typography, and comprehensive system design modeling.  
+* **Lead Contributors:** Abu Zafor (Requirements Engineering & System Design Modeling), Anamul Haque (Diagram Generation, Word Document Automation & Testing)  
+
+#### Activities & Delivered Artifacts:
+1. **Academic SRS Document (`UniExpert_Software_Requirements_Specification.docx`):**
+   - Prepared comprehensive 47-page formal SRS document in `.docx` format using Times New Roman typography and DIU institutional cover page.
+   - Fully articulated 10 required academic sections: Introduction, Overall Description, System Design, Functional Requirements (FR-01 to FR-34 across 8 modules), Non-Functional Requirements (NFR-01 to NFR-20 across 7 quality attributes), User Interface Design, Database Specification (9 entity tables), System Constraints & Business Rules (BR-01 to BR-08 and RBAC matrix), Testing Requirements (TC-01 to TC-10 verification suite), and Future Enhancements.
+2. **High-Resolution System Design Diagrams (`docs_assets/`):**
+   - Multi-Tier System Architecture Diagram (`fig_architecture.png`)
+   - System Boundary Use Case Diagram (`fig_use_case.png`)
+   - Proposal Ingestion & Matching Activity Diagram (`fig_activity_matching.png`)
+   - DFD Level-0 Context Diagram (`fig_dfd_level0.png`) and Level-1 Functional Decomposition (`fig_dfd_level1.png`)
+   - Relational Entity Relationship Diagram (`fig_erd.png`)
+   - UML Domain Class Diagram (`fig_class_diagram.png`)
+   - Sequence Diagrams for Proposal Matching (`fig_sequence_matching.png`) and Supervisory Endorsement (`fig_sequence_endorsement.png`)
+   - UML Component Architecture Diagram (`fig_component_diagram.png`)
+3. **UI Screenshots & Verification:**
+   - Captured real-world 1280x800 resolution screenshots from running Vite frontend for Student Dashboard, Faculty Workspace, Project Workspace, Consultation Scheduler, and Accreditation Auditor Terminal.
+   - Verified 100% adherence to natural human engineering English with strict zero AI terminology.
+
+* **BAETE Alignment:** Criterion 4 (WP1–WP7 Engineering Problem Specification) and Criterion 5 (Modern Modeling Tools & IEEE Documentation Standards).
+
+---
+
 ## 📊 Summary of Team Member Engineering Contributions
 
 ```
