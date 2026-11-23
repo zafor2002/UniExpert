@@ -319,6 +319,30 @@ This journal chronicles the continuous, iterative engineering progress of UniExp
 
 ---
 
+### Sprint 17: Live Meeting Room Hardware Camera/Mic Access, Persistent Chat & Join Notifications
+* **Date Range:** November 23, 2026  
+* **Sprint Focus:** Full browser MediaDevices hardware camera and microphone integration, persistent in-meeting text chat history with server-side synchronization, and real-time audio/visual notifications when attendees enter or leave.  
+* **Lead Contributors:** Abu Zafor (WebRTC/MediaStream Hardware Pipeline & UX), Anamul Haque (Persistent Meeting Room Signaling & Audio Synthesis)  
+
+#### Activities & Delivered Artifacts:
+1. **Live Camera & Microphone Access (`LiveMeetingModal.tsx`):**
+   - Implemented real browser media stream acquisition using `navigator.mediaDevices.getUserMedia({ video: true, audio: true })`.
+   - Wired live `<video>` playback with mirror transformation (`-scale-x-100`) for natural self-view.
+   - Connected hardware audio and video track toggling directly to the mute/unmute and camera buttons.
+   - Enabled screen sharing via `navigator.mediaDevices.getDisplayMedia`.
+   - Guaranteed automatic hardware release (`track.stop()`) on modal close to turn off device indicators.
+2. **Persistent In-Meeting Chat History:**
+   - Integrated dual-layer persistence: `localStorage` caching in the frontend and `chat_messages` state history in the backend (`meeting.py`).
+   - Wired `GET /api/meeting/rooms/{room_id}/messages` and WebSocket `room_state` payload so all incoming participants instantly receive previous in-meeting text history.
+3. **Attendee Join/Leave Notifications:**
+   - Synthesized real-time two-tone chime audio (587Hz → 880Hz) using the browser's Web Audio API without requiring external audio files.
+   - Designed animated floating notification banner pill on peer arrival (`👋 [Name] ([Role]) joined the meeting`).
+   - Automatically appended system events to the meeting chat stream for complete auditability.
+
+* **BAETE Alignment:** Criterion 5 (Modern Communication & Collaboration Tools: WebRTC, Web Audio API, and RFC 6455 WebSockets).
+
+---
+
 ## 📊 Summary of Team Member Engineering Contributions
 
 ```
