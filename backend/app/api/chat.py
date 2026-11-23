@@ -21,6 +21,8 @@ async def post_message(
     msg_in: ChatMessageCreate,
     sender_id: str = "stu-1",
     sender_name: str = "Abu Zafor",
+    client_id: Optional[str] = None,
+    client_msg_id: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """Submits a chat message via REST API and broadcasts to all WebSocket peers."""
@@ -44,6 +46,8 @@ async def post_message(
         "sender_name": msg.sender_name,
         "content": msg.content,
         "timestamp": msg.timestamp.isoformat(),
+        "client_id": client_id,
+        "client_msg_id": client_msg_id,
         "pinned": msg.pinned
     })
 

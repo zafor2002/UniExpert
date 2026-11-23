@@ -48,15 +48,25 @@ export const ProjectWorkspace: React.FC = () => {
     api.getChatHistory('ch-general')
       .then((history) => {
         if (history && Array.isArray(history) && history.length > 0) {
-          const mapped: WorkspaceMessage[] = history.map((m: any) => ({
-            id: String(m.id),
-            senderId: m.sender_id || 'stu-1',
-            senderName: m.sender_name || 'Team Member',
-            content: m.content,
-            timestamp: m.timestamp || new Date().toISOString(),
-            read: true,
-          }));
-          setMessages(mapped);
+          const seen = new Set<string>();
+          const deduped: WorkspaceMessage[] = [];
+          for (const m of history) {
+            const key = `${m.sender_id || m.sender_name}-${m.content}-${Math.floor(new Date(m.timestamp).getTime() / 4000)}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              deduped.push({
+                id: String(m.id),
+                senderId: m.sender_id || 'stu-1',
+                senderName: m.sender_name || 'Team Member',
+                content: m.content,
+                timestamp: m.timestamp || new Date().toISOString(),
+                read: true,
+              });
+            }
+          }
+          if (deduped.length > 0) {
+            setMessages(deduped);
+          }
         }
       })
       .catch((err) => {
@@ -86,22 +96,35 @@ export const ProjectWorkspace: React.FC = () => {
           try {
             const data = JSON.parse(event.data);
             if (data.type === 'new_message' || data.content) {
-              if (data.client_id !== clientId) {
-                setMessages((prev) => {
-                  if (data.id && prev.some((m) => m.id === String(data.id))) return prev;
-                  return [
-                    ...prev,
-                    {
-                      id: String(data.id || `ws-${Date.now()}`),
-                      senderId: data.sender_id || 'stu-1',
-                      senderName: data.sender_name || 'Team Member',
-                      content: data.content,
-                      timestamp: data.timestamp || new Date().toISOString(),
-                      read: true,
-                    },
-                  ];
+              // Ignore messages sent by our own browser tab
+              if (data.client_id && data.client_id === clientId) return;
+
+              setMessages((prev) => {
+                // Deduplicate by ID, client_msg_id, or identical content+sender within 5s
+                const isDuplicate = prev.some((m) => {
+                  if (data.id && m.id === String(data.id)) return true;
+                  if (data.client_msg_id && m.id === data.client_msg_id) return true;
+                  if (m.content === data.content && (m.senderId === data.sender_id || m.senderName === data.sender_name)) {
+                    const msgTime = new Date(m.timestamp).getTime();
+                    const incomingTime = new Date(data.timestamp || Date.now()).getTime();
+                    if (Math.abs(msgTime - incomingTime) < 5000) return true;
+                  }
+                  return false;
                 });
-              }
+                if (isDuplicate) return prev;
+
+                return [
+                  ...prev,
+                  {
+                    id: String(data.id || data.client_msg_id || `ws-${Date.now()}`),
+                    senderId: data.sender_id || 'stu-1',
+                    senderName: data.sender_name || 'Team Member',
+                    content: data.content,
+                    timestamp: data.timestamp || new Date().toISOString(),
+                    read: true,
+                  },
+                ];
+              });
             }
           } catch (e) {
             // ignore
@@ -150,7 +173,7 @@ export const ProjectWorkspace: React.FC = () => {
     const mySenderId = currentUser?.id || (isFaculty ? 'exp-1' : 'stu-1');
     const mySenderName = currentUser?.name || (isFaculty ? 'Md. Shohel Arman' : 'Abu Zafor');
 
-    const tempId = `msg-${Date.now()}`;
+    const tempId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const localMsg: WorkspaceMessage = {
       id: tempId,
       senderId: mySenderId,
@@ -163,7 +186,7 @@ export const ProjectWorkspace: React.FC = () => {
     setMessages((prev) => [...prev, localMsg]);
     setNewMessage('');
 
-    // Broadcast via WebSocket
+    // If WebSocket is open, send ONLY via WebSocket (persists to DB and broadcasts to peers)
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       try {
         wsRef.current.send(
@@ -173,18 +196,19 @@ export const ProjectWorkspace: React.FC = () => {
             sender_id: mySenderId,
             sender_name: mySenderName,
             client_id: clientId,
+            client_msg_id: tempId,
           })
         );
       } catch (e) {
         // ignore
       }
-    }
-
-    // Persist via REST API
-    try {
-      await api.sendChatMessage('ch-general', content, mySenderId, mySenderName);
-    } catch (err: any) {
-      console.debug('REST message fallback:', err.message);
+    } else {
+      // Fallback to REST API ONLY when WebSocket is disconnected
+      try {
+        await api.sendChatMessage('ch-general', content, mySenderId, mySenderName, clientId, tempId);
+      } catch (err: any) {
+        console.debug('REST message fallback:', err.message);
+      }
     }
   };
 

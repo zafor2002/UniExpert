@@ -152,23 +152,29 @@ export const TeamChat: React.FC = () => {
     api.getChatHistory(activeChannel)
       .then((history) => {
         if (history && history.length > 0) {
-          const backendMsgs = history.map((h: any) => {
-            const senderMember = MEMBERS.find(m => m.id === h.sender_id);
-            return {
-              id: h.id,
-              senderId: h.sender_id,
-              senderName: h.sender_name,
-              senderInitials: senderMember?.initials || (h.sender_name ? h.sender_name.slice(0, 2).toUpperCase() : 'TM'),
-              senderColor: senderMember?.color || '#7C8FF5',
-              content: h.content,
-              timestamp: h.timestamp,
-              type: 'text',
-              pinned: h.pinned,
-            };
-          });
+          const seen = new Set<string>();
+          const deduped: any[] = [];
+          for (const h of history) {
+            const key = `${h.sender_id || h.sender_name}-${h.content}-${Math.floor(new Date(h.timestamp).getTime() / 4000)}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              const senderMember = MEMBERS.find(m => m.id === h.sender_id);
+              deduped.push({
+                id: h.id,
+                senderId: h.sender_id,
+                senderName: h.sender_name,
+                senderInitials: senderMember?.initials || (h.sender_name ? h.sender_name.slice(0, 2).toUpperCase() : 'TM'),
+                senderColor: senderMember?.color || '#7C8FF5',
+                content: h.content,
+                timestamp: h.timestamp,
+                type: 'text',
+                pinned: h.pinned,
+              });
+            }
+          }
           setMessagesByChannel(prev => ({
             ...prev,
-            [activeChannel]: backendMsgs
+            [activeChannel]: deduped
           }));
         }
       })
@@ -211,32 +217,41 @@ export const TeamChat: React.FC = () => {
                 }, 2500);
               }
             } else if (data.type === 'new_message' || data.content) {
-              // Append message if from another tab/client
-              if (data.client_id !== clientId) {
-                setTypingUser(null);
-                const targetChannel = data.channel_id || activeChannel;
-                const senderMember = MEMBERS.find(m => m.id === data.sender_id);
-                setMessagesByChannel(prev => {
-                  const currentList = prev[targetChannel] || [];
-                  // Deduplicate by ID
-                  if (data.id && currentList.some(m => m.id === data.id)) {
-                    return prev;
+              // Ignore messages broadcast by our own browser tab
+              if (data.client_id && data.client_id === clientId) return;
+
+              setTypingUser(null);
+              const targetChannel = data.channel_id || activeChannel;
+              const senderMember = MEMBERS.find(m => m.id === data.sender_id);
+              setMessagesByChannel(prev => {
+                const currentList = prev[targetChannel] || [];
+                // Deduplicate by ID, client_msg_id, or identical content+sender within 5s
+                const isDuplicate = currentList.some(m => {
+                  if (data.id && m.id === data.id) return true;
+                  if (data.client_msg_id && m.id === data.client_msg_id) return true;
+                  if (m.content === data.content && (m.senderId === data.sender_id || m.senderName === data.sender_name)) {
+                    const msgTime = new Date(m.timestamp).getTime();
+                    const incomingTime = new Date(data.timestamp || Date.now()).getTime();
+                    if (Math.abs(msgTime - incomingTime) < 5000) return true;
                   }
-                  return {
-                    ...prev,
-                    [targetChannel]: [...currentList, {
-                      id: data.id || `ws-${Date.now()}`,
-                      senderId: data.sender_id,
-                      senderName: data.sender_name || 'Team Member',
-                      senderInitials: senderMember?.initials || (data.sender_name ? data.sender_name.slice(0, 2).toUpperCase() : 'TM'),
-                      senderColor: senderMember?.color || '#7C8FF5',
-                      content: data.content,
-                      timestamp: data.timestamp || new Date().toISOString(),
-                      type: 'text'
-                    }]
-                  };
+                  return false;
                 });
-              }
+                if (isDuplicate) return prev;
+
+                return {
+                  ...prev,
+                  [targetChannel]: [...currentList, {
+                    id: data.id || `ws-${Date.now()}`,
+                    senderId: data.sender_id,
+                    senderName: data.sender_name || 'Team Member',
+                    senderInitials: senderMember?.initials || (data.sender_name ? data.sender_name.slice(0, 2).toUpperCase() : 'TM'),
+                    senderColor: senderMember?.color || '#7C8FF5',
+                    content: data.content,
+                    timestamp: data.timestamp || new Date().toISOString(),
+                    type: 'text'
+                  }]
+                };
+              });
             }
           } catch (e) {
             // ignore
