@@ -297,6 +297,28 @@ This journal chronicles the continuous, iterative engineering progress of UniExp
 
 ---
 
+### Sprint 16: Faculty Workspace & Supervisory Real-Time Messaging Integration
+* **Date Range:** November 23, 2026  
+* **Sprint Focus:** Integrating full bidirectional live chat and project workspace into the Faculty Advisor persona, exposing multi-channel chat in the faculty navigation sidebar, linking live student message feeds to the Faculty Dashboard, and wiring live WebSockets in the Project Workspace.  
+* **Lead Contributors:** Abu Zafor (Faculty UX & Supervisory Workspace Routing), Anamul Haque (Full-Stack WebSocket Linkage & Role-Aware Chat Architecture)  
+
+#### Activities & Delivered Artifacts:
+1. **Faculty Sidebar & Route Upgrades (`Sidebar.tsx`, `App.tsx`):**
+   - Added `Supervision Workspace` (`/faculty/workspace`) and `Team Chat & Messages` (`/faculty/chat`) directly into the faculty navigation menu.
+   - Added corresponding first-class routes in `App.tsx` rendering `ProjectWorkspace` and `TeamChat`.
+2. **Faculty Dashboard Live Messaging Widgets (`FacultyDashboard.tsx`):**
+   - Added direct "Chat & Messages" action buttons on active research group cards (Team BioShield AI and Team NeuroWear).
+   - Added a dedicated "Live Student Messages" feed card on the Faculty Dashboard displaying real-time updates and a 1-click shortcut to launch the full team chat.
+   - Added "Live Capstone Team Chat" under Quick Management.
+3. **Live WebSocket Integration in Project Workspace (`ProjectWorkspace.tsx`):**
+   - Connected Tab 2 ("Live Supervision Feed") to live REST message history (`api.getChatHistory`) and WebSocket streaming (`getWsUrl`).
+   - Added URL tab query param support (`?tab=discussion`) so navigating from the faculty dashboard immediately opens the discussion feed.
+   - Configured dynamic role-aware message attribution (faculty sends as `Md. Shohel Arman` with ID `exp-1`, student sends as `Abu Zafor` with ID `stu-1`).
+
+* **BAETE Alignment:** Criterion 4 (Continuous Project Guidance & Formative Assessment) and Criterion 5 (Modern Interactive Communication Frameworks).
+
+---
+
 ## 📊 Summary of Team Member Engineering Contributions
 
 ```
