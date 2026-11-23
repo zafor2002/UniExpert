@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import type { UserRole } from '../../types';
 import {
@@ -89,6 +89,15 @@ const roleTitles: Record<UserRole, string> = {
   auditor: 'Auditor & Compliance',
 };
 
+const roleDashboards: Record<UserRole, string> = {
+  student: '/student/dashboard',
+  faculty: '/faculty/dashboard',
+  mentor: '/mentor/dashboard',
+  coordinator: '/coordinator/dashboard',
+  admin: '/admin/taxonomy',
+  auditor: '/auditor/trail',
+};
+
 interface SidebarProps {
   mobileOpen?: boolean;
   onMobileClose?: () => void;
@@ -97,9 +106,11 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false, onMobileClose }) => {
   const { currentRole } = useApp();
   const location = useLocation();
+  const navigate = useNavigate();
   const navItems = navConfig[currentRole] ?? [];
   const currentPath = location.pathname;
   const [collapsed, setCollapsed] = useState(false);
+  const dashboardPath = roleDashboards[currentRole] || '/student/dashboard';
 
   const sidebarContent = (
     <div
@@ -111,7 +122,11 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false, onMobileClose }) 
       {/* Logo */}
       <div className="flex items-center justify-between h-16 px-4 border-b border-[#E2E8F0] flex-shrink-0 bg-white">
         {!collapsed ? (
-          <div className="flex items-center gap-2">
+          <div 
+            onClick={() => navigate(dashboardPath)}
+            className="flex items-center gap-2 cursor-pointer select-none hover:opacity-90 transition-opacity"
+            title="Go to Dashboard"
+          >
             <div className="w-7 h-7 rounded-lg bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE]">
               <Sparkles size={14} />
             </div>
@@ -120,7 +135,11 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false, onMobileClose }) 
             </span>
           </div>
         ) : (
-          <div className="w-8 h-8 rounded-lg bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE] mx-auto">
+          <div 
+            onClick={() => navigate(dashboardPath)}
+            className="w-8 h-8 rounded-lg bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE] mx-auto cursor-pointer hover:opacity-90 transition-opacity"
+            title="Go to Dashboard"
+          >
             <Sparkles size={16} />
           </div>
         )}

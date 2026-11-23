@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useApp } from '../../context/AppContext';
 import {
   Brain,
   Zap,
@@ -105,13 +106,30 @@ const roles = [
   { icon: <UserCheck className="w-6 h-6 text-[#334155]" />, title: 'Institutional Auditor', desc: 'Verify SHA-256 Merkle chain integrity and export signed BAETE accreditation reports.', bg: 'bg-[#F8FAFC] border-[#E2E8F0]' },
 ];
 
+const roleDashboards: Record<string, string> = {
+  student: '/student/dashboard',
+  faculty: '/faculty/dashboard',
+  mentor: '/mentor/dashboard',
+  coordinator: '/coordinator/dashboard',
+  admin: '/admin/taxonomy',
+  auditor: '/auditor/trail',
+};
+
 export default function LandingPage() {
+  const { isAuthenticated, currentRole } = useApp();
+  const navigate = useNavigate();
+  const dashboardPath = roleDashboards[currentRole] || '/student/dashboard';
+
   return (
     <div className="min-h-screen bg-[#F4F8FF] text-[#334155] font-sans">
       {/* Navbar: White with subtle border */}
       <header className="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div 
+            onClick={() => navigate(isAuthenticated ? dashboardPath : '/')}
+            className="flex items-center gap-2.5 cursor-pointer select-none hover:opacity-90 transition-opacity"
+            title={isAuthenticated ? "Go to Dashboard" : "UniExpert Home"}
+          >
             <div className="w-8 h-8 rounded-xl bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE]">
               <Sparkles size={16} />
             </div>
@@ -121,12 +139,20 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link to="/login" className="btn-secondary text-xs px-4 py-2">
-              Log In
-            </Link>
-            <Link to="/register" className="btn-primary text-xs px-4 py-2 font-semibold">
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <Link to={dashboardPath} className="btn-primary text-xs px-4 py-2 font-semibold flex items-center gap-1.5">
+                Go to Dashboard <ArrowRight size={14} />
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="btn-secondary text-xs px-4 py-2">
+                  Log In
+                </Link>
+                <Link to="/register" className="btn-primary text-xs px-4 py-2 font-semibold">
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -153,18 +179,29 @@ export default function LandingPage() {
 
         {/* Soft Blue CTA with dark readable text */}
         <div className="flex flex-col sm:flex-row gap-3.5 justify-center items-center">
-          <Link
-            to="/register"
-            className="inline-flex items-center gap-2 bg-[#8AB4F8] hover:bg-[#76A4F2] text-[#1E293B] px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-sm active:scale-95"
-          >
-            Start Capstone Match <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            to="/login"
-            className="inline-flex items-center gap-2 bg-white hover:bg-[#F8FAFC] text-[#334155] border border-[#E2E8F0] px-6 py-3 rounded-xl font-medium text-sm transition-all shadow-sm"
-          >
-            Institutional Log In
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              to={dashboardPath}
+              className="inline-flex items-center gap-2 bg-[#3B75DE] hover:bg-[#2D63C8] text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-sm active:scale-95"
+            >
+              Go to Workspace Dashboard <ArrowRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 bg-[#8AB4F8] hover:bg-[#76A4F2] text-[#1E293B] px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-sm active:scale-95"
+              >
+                Start Capstone Match <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 bg-white hover:bg-[#F8FAFC] text-[#334155] border border-[#E2E8F0] px-6 py-3 rounded-xl font-medium text-sm transition-all shadow-sm"
+              >
+                Institutional Log In
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Floating KPI Cards in White */}

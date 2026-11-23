@@ -7,6 +7,15 @@ import toast from 'react-hot-toast';
 const MOCK_TOKEN = 'A7F3B2';
 const EXPIRY_HOURS = 24;
 
+const roleDashboards: Record<string, string> = {
+  student: '/student/dashboard',
+  faculty: '/faculty/dashboard',
+  mentor: '/mentor/dashboard',
+  coordinator: '/coordinator/dashboard',
+  admin: '/admin/taxonomy',
+  auditor: '/auditor/trail',
+};
+
 function formatTimeLeft(ms: number) {
   if (ms <= 0) return '00:00:00';
   const totalSec = Math.floor(ms / 1000);
@@ -20,6 +29,8 @@ function formatTimeLeft(ms: number) {
 
 export function EmailVerifyPage() {
   const navigate = useNavigate();
+  const { isAuthenticated, currentRole } = useApp();
+  const dashboardPath = roleDashboards[currentRole] || '/student/dashboard';
 
   const [inputToken, setInputToken] = useState('');
   const [resending, setResending] = useState(false);
@@ -69,8 +80,9 @@ export function EmailVerifyPage() {
       {/* Brand header */}
       <div className="text-center mb-8">
         <div 
-          onClick={() => navigate('/')} 
-          className="inline-flex items-center gap-2.5 cursor-pointer mb-2"
+          onClick={() => navigate(isAuthenticated ? dashboardPath : '/')} 
+          className="inline-flex items-center gap-2.5 cursor-pointer mb-2 hover:opacity-90 transition-opacity"
+          title="UniExpert Home"
         >
           <div className="w-10 h-10 rounded-2xl bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE] shadow-sm">
             <Sparkles size={20} />
@@ -182,7 +194,7 @@ export function EmailVerifyPage() {
 
 export function MfaPage() {
   const navigate = useNavigate();
-  const { submitMfa, currentRole } = useApp();
+  const { submitMfa, currentRole, isAuthenticated } = useApp();
 
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -207,8 +219,9 @@ export function MfaPage() {
       {/* Brand header */}
       <div className="text-center mb-8">
         <div 
-          onClick={() => navigate('/')} 
-          className="inline-flex items-center gap-2.5 cursor-pointer mb-2"
+          onClick={() => navigate(isAuthenticated ? (roleDashboards[currentRole] || '/student/dashboard') : '/')} 
+          className="inline-flex items-center gap-2.5 cursor-pointer mb-2 hover:opacity-90 transition-opacity"
+          title="UniExpert Home"
         >
           <div className="w-10 h-10 rounded-2xl bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE] shadow-sm">
             <Sparkles size={20} />

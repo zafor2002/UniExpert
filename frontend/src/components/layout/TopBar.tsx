@@ -46,6 +46,17 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const { currentUser, currentRole, notifications, logout } = useApp();
 
+  const roleDashboards: Record<string, string> = {
+    student: '/student/dashboard',
+    faculty: '/faculty/dashboard',
+    mentor: '/mentor/dashboard',
+    coordinator: '/coordinator/dashboard',
+    admin: '/admin/taxonomy',
+    auditor: '/auditor/trail',
+  };
+
+  const dashboardPath = roleDashboards[currentRole] || '/student/dashboard';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -99,8 +110,9 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuClick }) => {
         </button>
 
         <div 
-          onClick={() => navigate('/')} 
-          className="flex items-center gap-2 cursor-pointer select-none"
+          onClick={() => navigate(dashboardPath)} 
+          className="flex items-center gap-2 cursor-pointer select-none hover:opacity-90 transition-opacity"
+          title="Go to Dashboard"
         >
           <div className="w-8 h-8 rounded-xl bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE]">
             <Sparkles size={16} />

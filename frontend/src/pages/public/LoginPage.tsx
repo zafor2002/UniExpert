@@ -24,7 +24,14 @@ function formatCountdown(ms: number) {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, incrementLoginAttempts, resetLockout, loginAttempts, lockedUntil, currentRole, setRole } = useApp();
+  const { isAuthenticated, login, incrementLoginAttempts, resetLockout, loginAttempts, lockedUntil, currentRole, setRole } = useApp();
+
+  // If already authenticated, redirect to appropriate role dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(roleDashboards[currentRole] ?? '/student/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, currentRole, navigate]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -134,8 +141,9 @@ export default function LoginPage() {
       {/* Brand header */}
       <div className="text-center mb-8">
         <div 
-          onClick={() => navigate('/')} 
-          className="inline-flex items-center gap-2.5 cursor-pointer mb-2"
+          onClick={() => navigate(isAuthenticated ? (roleDashboards[currentRole] ?? '/student/dashboard') : '/')} 
+          className="inline-flex items-center gap-2.5 cursor-pointer mb-2 hover:opacity-90 transition-opacity"
+          title="UniExpert Home"
         >
           <div className="w-10 h-10 rounded-2xl bg-[#EAF2FF] border border-[#D5E5FD] flex items-center justify-center text-[#3B75DE] shadow-sm">
             <Sparkles size={20} />
