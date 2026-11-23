@@ -233,6 +233,22 @@ export default function App() {
         }
       />
       <Route
+        path="/faculty/workspace"
+        element={
+          <AppLayout>
+            <ProjectWorkspace />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/faculty/chat"
+        element={
+          <AppLayout>
+            <TeamChat />
+          </AppLayout>
+        }
+      />
+      <Route
         path="/faculty/portfolio"
         element={
           <AppLayout>

@@ -51,8 +51,10 @@ const navConfig: Record<UserRole, NavItem[]> = {
   ],
   faculty: [
     { label: 'Dashboard', path: '/faculty/dashboard', icon: LayoutDashboard },
-    { label: 'Research Portfolio', path: '/faculty/portfolio', icon: BookOpen },
+    { label: 'Supervision Workspace', path: '/faculty/workspace', icon: FolderKanban },
+    { label: 'Team Chat & Messages', path: '/faculty/chat', icon: MessageSquare },
     { label: 'Incoming Proposals', path: '/faculty/proposals', icon: FileText },
+    { label: 'Research Portfolio', path: '/faculty/portfolio', icon: BookOpen },
     { label: 'Capacity & Quota', path: '/faculty/quota', icon: Sliders },
     { label: 'Calendar Settings', path: '/faculty/calendar', icon: Calendar },
   ],

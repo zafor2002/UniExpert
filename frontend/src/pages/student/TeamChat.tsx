@@ -99,7 +99,7 @@ const MOCK_MESSAGES: Record<string, ChatMessage[]> = {
   'ch-meetings': [
     {
       id: 'mt1', senderId: 'stu-1', senderName: 'Abu Zafor', senderInitials: 'AZ', senderColor: '#4D90F0',
-      content: '📋 **Meeting Notes – Nov 7, 2026**\n\nPresent: All members + Dr. Rahman\n• Action: CMSIS-NN integration by Nov 10 ✅\n• Action: BLE driver testing by Nov 12 ✅\n• Next meeting: Nov 14, 15:00 (Room 602)',
+      content: '📋 **Meeting Notes – Nov 7, 2026**\n\nPresent: All members + Md. Shohel Arman\n• Action: CMSIS-NN integration by Nov 10 ✅\n• Action: BLE driver testing by Nov 12 ✅\n• Next meeting: Nov 14, 15:00 (Room 602)',
       timestamp: '2026-11-07T16:00:00Z', type: 'text', pinned: true,
     },
   ],
@@ -133,11 +133,15 @@ export const TeamChat: React.FC = () => {
 
   // Update selected member when user changes role in demo
   useEffect(() => {
+    if (currentUser?.role === 'faculty' || currentUser?.id === 'exp-1') {
+      setSelectedMemberId('exp-1');
+      return;
+    }
     if (currentUser?.id) {
       const match = MEMBERS.find(m => m.id === currentUser.id);
       if (match) setSelectedMemberId(match.id);
     }
-  }, [currentUser?.id]);
+  }, [currentUser?.id, currentUser?.role]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

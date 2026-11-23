@@ -188,8 +188,12 @@ export const api = {
     return res.json();
   },
 
-  async sendChatMessage(channelId: string, content: string) {
-    const res = await fetch(`${API_BASE}/chat/messages`, {
+  async sendChatMessage(channelId: string, content: string, senderId?: string, senderName?: string) {
+    const params = new URLSearchParams();
+    if (senderId) params.set('sender_id', senderId);
+    if (senderName) params.set('sender_name', senderName);
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetch(`${API_BASE}/chat/messages${qs}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ channel_id: channelId, content }),

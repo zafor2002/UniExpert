@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, BookOpen, Clock, AlertTriangle, ArrowRight, CheckCircle2, 
   XCircle, GitPullRequest, Calendar, Award, Bell, Shield, Layers, FileCheck,
-  ShieldCheck, Lock, Sliders, CheckSquare, X, Sparkles, MessageSquare
+  ShieldCheck, Lock, Sliders, CheckSquare, X, Sparkles, MessageSquare, FolderKanban
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useApp } from '../../context/AppContext';
@@ -306,15 +306,21 @@ export const FacultyDashboard: React.FC = () => {
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => setEndorseModalOpen(true)}
-                      className="btn-primary text-xs py-1.5 px-3.5 rounded-xl flex items-center gap-1.5 shadow-sm bg-[#2563EB] hover:bg-[#1D4ED8]"
+                      className="btn-primary text-xs py-1.5 px-3 rounded-xl flex items-center gap-1.5 shadow-sm bg-[#2563EB] hover:bg-[#1D4ED8]"
                     >
-                      <Award size={14} /> Grade & Endorse Points
+                      <Award size={13} /> Grade & Endorse
                     </button>
                     <button
-                      onClick={() => navigate('/student/workspace')}
-                      className="btn-secondary text-xs py-1.5 px-3 rounded-xl"
+                      onClick={() => navigate('/faculty/chat')}
+                      className="btn-primary text-xs py-1.5 px-3 rounded-xl flex items-center gap-1 shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
                     >
-                      Workspace
+                      <MessageSquare size={13} /> Chat & Messages
+                    </button>
+                    <button
+                      onClick={() => navigate('/faculty/workspace?tab=discussion')}
+                      className="btn-secondary text-xs py-1.5 px-3 rounded-xl flex items-center gap-1"
+                    >
+                      <FolderKanban size={13} /> Workspace
                     </button>
                   </div>
                 </div>
@@ -355,12 +361,20 @@ export const FacultyDashboard: React.FC = () => {
                     Lead: Sadia Karim · Final thesis draft submitted for plagiarism scan
                   </p>
                 </div>
-                <button
-                  onClick={() => navigate('/student/workspace')}
-                  className="btn-secondary text-xs py-1.5 px-3 rounded-xl"
-                >
-                  Workspace
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => navigate('/faculty/chat')}
+                    className="btn-primary text-xs py-1.5 px-3 rounded-xl flex items-center gap-1 shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+                  >
+                    <MessageSquare size={13} /> Chat
+                  </button>
+                  <button
+                    onClick={() => navigate('/faculty/workspace?tab=discussion')}
+                    className="btn-secondary text-xs py-1.5 px-3 rounded-xl flex items-center gap-1"
+                  >
+                    <FolderKanban size={13} /> Workspace
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -368,6 +382,50 @@ export const FacultyDashboard: React.FC = () => {
 
         {/* Right Column: Upcoming Consultations & Quick Actions */}
         <div className="space-y-6">
+          {/* Live Student Messages Feed */}
+          <div className="card p-6 space-y-4 bg-white border border-[#E2E8F0] rounded-3xl shadow-sm">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold text-[#1E293B] flex items-center gap-2">
+                <MessageSquare size={18} className="text-[#8AB4F8]" />
+                Live Student Messages
+              </h2>
+              <span className="inline-flex items-center gap-1 text-[11px] font-mono font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Live
+              </span>
+            </div>
+            <p className="text-xs text-[#64748B]">
+              Real-time feed from active capstone research teams
+            </p>
+
+            <div className="space-y-2.5">
+              <div className="p-3 rounded-2xl border border-[#E2E8F0] bg-[#F4F8FF] space-y-1">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-[#1E293B]">Abu Zafor (BioShield Lead)</span>
+                  <span className="text-[10px] font-mono text-[#64748B]">Today</span>
+                </div>
+                <p className="text-xs text-[#334155] line-clamp-2">
+                  "Understood, Md. Shohel Arman. We're on track. M2 (Prototype Demo) is ready for review."
+                </p>
+              </div>
+              <div className="p-3 rounded-2xl border border-[#E2E8F0] bg-[#F4F8FF] space-y-1">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-[#1E293B]">Lamia Sultana (BioShield ML)</span>
+                  <span className="text-[10px] font-mono text-[#64748B]">Yesterday</span>
+                </div>
+                <p className="text-xs text-[#334155] line-clamp-2">
+                  "Confusion matrix uploaded. False positive rate &lt; 2% on anomaly detection."
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => navigate('/faculty/chat')}
+              className="w-full btn-primary text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+            >
+              <MessageSquare size={14} /> Open Full Team Chat (Live)
+            </button>
+          </div>
           {/* Upcoming Consultations */}
           <div className="card p-6 space-y-4 bg-white border border-[#E2E8F0] rounded-3xl shadow-sm">
             <h2 className="text-base font-bold text-[#1E293B] flex items-center gap-2">
@@ -405,6 +463,17 @@ export const FacultyDashboard: React.FC = () => {
             <h2 className="text-base font-bold text-[#1E293B]">Quick Management</h2>
 
             <div className="space-y-2 text-xs">
+              <button
+                onClick={() => navigate('/faculty/chat')}
+                className="w-full p-3 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-100/70 text-left font-semibold text-blue-900 flex items-center justify-between transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <MessageSquare size={14} className="text-blue-600" />
+                  <span>Live Capstone Team Chat</span>
+                </div>
+                <ArrowRight size={14} className="text-blue-600" />
+              </button>
+
               <button
                 onClick={() => navigate('/faculty/portfolio')}
                 className="w-full p-3 rounded-xl border border-[#E2E8F0] hover:bg-[#F4F8FF] text-left font-semibold text-[#334155] hover:text-[#1E293B] flex items-center justify-between transition-colors"
