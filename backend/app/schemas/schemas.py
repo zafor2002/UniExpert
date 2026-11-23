@@ -131,3 +131,30 @@ class ChatMessageResponse(BaseModel):
 class ConsultationBooking(BaseModel):
     slot_id: str
     agenda: Optional[str] = None
+
+# --- Contribution Endorsement Schemas ---
+class MemberRatingItem(BaseModel):
+    member_id: str
+    member_name: str
+    role: str
+    points: int = 25
+    percentage: float = 25.0
+    qualitative_feedback: Optional[str] = ""
+
+class ContributionEndorsementCreate(BaseModel):
+    supervisor_id: str = "exp-1"
+    supervisor_name: str = "Dr. Farhana Rahman"
+    milestone_title: str = "Milestone 2: Prototype & Demo"
+    ratings: List[MemberRatingItem]
+    signature_confirmed: bool = True
+
+class ContributionEndorsementResponse(BaseModel):
+    id: str
+    proposal_id: str
+    supervisor_id: str
+    supervisor_name: str
+    milestone_title: str
+    ratings: List[Dict[str, Any]]
+    merkle_block_index: Optional[int] = None
+    block_hash: Optional[str] = None
+    created_at: datetime

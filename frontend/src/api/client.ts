@@ -209,4 +209,30 @@ export const api = {
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
   },
+
+  // Supervisory Contribution Endorsements
+  async endorseContributions(proposalId: string, payload: any) {
+    const res = await fetch(`${API_BASE}/proposals/${proposalId}/endorse-contributions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to submit contribution endorsement');
+    }
+    return res.json();
+  },
+
+  async getContributionEndorsements(proposalId: string) {
+    const res = await fetch(`${API_BASE}/proposals/${proposalId}/endorsements`);
+    if (!res.ok) throw new Error('Failed to fetch endorsements');
+    return res.json();
+  },
+
+  async getLatestContributionEndorsement(proposalId: string) {
+    const res = await fetch(`${API_BASE}/proposals/${proposalId}/endorsements/latest`);
+    if (!res.ok) throw new Error('Failed to fetch latest endorsement');
+    return res.json();
+  },
 };
