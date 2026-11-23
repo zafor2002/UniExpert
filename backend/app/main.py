@@ -16,10 +16,11 @@ app = FastAPI(
     description="UniExpert - AI-Powered Capstone Advisory & Accreditation Platform Backend"
 )
 
-# CORS Middleware
+# CORS Middleware - allows localhost, Vercel deployments, and custom domains
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
