@@ -5,7 +5,7 @@ import {
   ChevronDown, Plus, AtSign, Mic, ImageIcon, Wifi, Sparkles
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import { api } from '@/api/client';
+import { api, getWsUrl } from '@/api/client';
 import { toast } from 'react-hot-toast';
 import { LiveMeetingModal } from '@/components/meeting/LiveMeetingModal';
 
@@ -56,7 +56,7 @@ const MOCK_MESSAGES: Record<string, ChatMessage[]> = {
     },
     {
       id: 'm2', senderId: 'stu-1', senderName: 'Abu Zafor', senderInitials: 'AZ', senderColor: '#4D90F0',
-      content: "Understood, Dr. Rahman. We're on track. M2 (Prototype Demo) is ready for the Nov 15 deadline.",
+      content: "Understood, Md. Shohel Arman. We're on track. M2 (Prototype Demo) is ready for the Nov 15 deadline.",
       timestamp: '2026-11-13T09:15:00Z', type: 'text',
     },
     {
@@ -173,78 +173,98 @@ export const TeamChat: React.FC = () => {
       });
   }, [activeChannel]);
 
-  // Live WebSocket connection for real-time team collaboration
+  // Live WebSocket connection for real-time team collaboration with auto-reconnect
   useEffect(() => {
     let ws: WebSocket | null = null;
-    try {
-      setWsStatus('connecting');
-      const customApi = import.meta.env.VITE_API_BASE_URL as string | undefined;
-      const customWs = import.meta.env.VITE_WS_BASE_URL as string | undefined;
-      let baseWs = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api`;
-      if (customWs) {
-        baseWs = customWs;
-      } else if (customApi) {
-        baseWs = customApi.replace(/^http/, 'ws');
-      }
-      ws = new WebSocket(`${baseWs}/chat/ws/${activeChannel}`);
-      wsRef.current = ws;
+    let reconnectTimer: any = null;
+    let isDisposed = false;
 
-      ws.onopen = () => {
-        setWsStatus('connected');
-      };
+    const connectWs = () => {
+      if (isDisposed) return;
+      try {
+        setWsStatus('connecting');
+        const wsUrl = getWsUrl(`chat/ws/${activeChannel}`);
+        ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
 
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-
-          if (data.type === 'typing') {
-            // Show typing indicator if from another browser tab or client
-            if (data.client_id !== clientId) {
-              setTypingUser(data.sender_name || 'A team member');
-              if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-              typingTimeoutRef.current = setTimeout(() => {
-                setTypingUser(null);
-              }, 2500);
-            }
-          } else if (data.type === 'new_message' || data.content) {
-            // Append message if from another tab/client
-            if (data.client_id !== clientId) {
-              setTypingUser(null);
-              const senderMember = MEMBERS.find(m => m.id === data.sender_id);
-              setMessagesByChannel(prev => {
-                const currentList = prev[activeChannel] || [];
-                // Deduplicate by ID
-                if (data.id && currentList.some(m => m.id === data.id)) {
-                  return prev;
-                }
-                return {
-                  ...prev,
-                  [activeChannel]: [...currentList, {
-                    id: data.id || `ws-${Date.now()}`,
-                    senderId: data.sender_id,
-                    senderName: data.sender_name || 'Team Member',
-                    senderInitials: senderMember?.initials || (data.sender_name ? data.sender_name.slice(0, 2).toUpperCase() : 'TM'),
-                    senderColor: senderMember?.color || '#7C8FF5',
-                    content: data.content,
-                    timestamp: data.timestamp || new Date().toISOString(),
-                    type: 'text'
-                  }]
-                };
-              });
-            }
+        ws.onopen = () => {
+          if (!isDisposed) {
+            setWsStatus('connected');
           }
-        } catch (e) {
-          // ignore
-        }
-      };
+        };
 
-      ws.onclose = () => {
-        setWsStatus('offline');
-      };
-    } catch (e) {
-      setWsStatus('offline');
-    }
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+
+            if (data.type === 'typing') {
+              // Show typing indicator if from another browser tab or client
+              if (data.client_id !== clientId) {
+                setTypingUser(data.sender_name || 'A team member');
+                if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+                typingTimeoutRef.current = setTimeout(() => {
+                  setTypingUser(null);
+                }, 2500);
+              }
+            } else if (data.type === 'new_message' || data.content) {
+              // Append message if from another tab/client
+              if (data.client_id !== clientId) {
+                setTypingUser(null);
+                const targetChannel = data.channel_id || activeChannel;
+                const senderMember = MEMBERS.find(m => m.id === data.sender_id);
+                setMessagesByChannel(prev => {
+                  const currentList = prev[targetChannel] || [];
+                  // Deduplicate by ID
+                  if (data.id && currentList.some(m => m.id === data.id)) {
+                    return prev;
+                  }
+                  return {
+                    ...prev,
+                    [targetChannel]: [...currentList, {
+                      id: data.id || `ws-${Date.now()}`,
+                      senderId: data.sender_id,
+                      senderName: data.sender_name || 'Team Member',
+                      senderInitials: senderMember?.initials || (data.sender_name ? data.sender_name.slice(0, 2).toUpperCase() : 'TM'),
+                      senderColor: senderMember?.color || '#7C8FF5',
+                      content: data.content,
+                      timestamp: data.timestamp || new Date().toISOString(),
+                      type: 'text'
+                    }]
+                  };
+                });
+              }
+            }
+          } catch (e) {
+            // ignore
+          }
+        };
+
+        ws.onclose = () => {
+          if (!isDisposed) {
+            setWsStatus('offline');
+            // Auto-reconnect after 3s (useful when backend is waking up on Render)
+            reconnectTimer = setTimeout(connectWs, 3000);
+          }
+        };
+
+        ws.onerror = () => {
+          if (!isDisposed) {
+            setWsStatus('offline');
+          }
+        };
+      } catch (e) {
+        if (!isDisposed) {
+          setWsStatus('offline');
+          reconnectTimer = setTimeout(connectWs, 4000);
+        }
+      }
+    };
+
+    connectWs();
+
     return () => {
+      isDisposed = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
       if (ws) ws.close();
       wsRef.current = null;
     };

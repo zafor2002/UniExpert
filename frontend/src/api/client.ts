@@ -1,6 +1,44 @@
 // API client for connecting the frontend to the backend REST and WebSocket services
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || '/api';
+const DEFAULT_PROD_API = 'https://uniexpert-backend.onrender.com/api';
+
+export const resolveApiBase = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
+  if (envUrl && envUrl.trim()) {
+    let clean = envUrl.trim().replace(/\/+$/, '');
+    if (!clean.endsWith('/api')) clean += '/api';
+    return clean;
+  }
+  // When running in production on Vercel or any remote domain
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
+    return DEFAULT_PROD_API;
+  }
+  // Local development fallback
+  return '/api';
+};
+
+export const API_BASE = resolveApiBase();
+
+export const getWsUrl = (path: string): string => {
+  const customWs = import.meta.env.VITE_WS_BASE_URL as string | undefined;
+  if (customWs && customWs.trim()) {
+    const base = customWs.trim().replace(/\/+$/, '');
+    return `${base}/${path.replace(/^\/+/, '')}`;
+  }
+
+  const base = resolveApiBase();
+  let wsBase: string;
+  if (base.startsWith('https://')) {
+    wsBase = 'wss://' + base.slice(8);
+  } else if (base.startsWith('http://')) {
+    wsBase = 'ws://' + base.slice(7);
+  } else {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    wsBase = `${protocol}//${window.location.host}${base}`;
+  }
+
+  return `${wsBase}/${path.replace(/^\/+/, '')}`;
+};
 
 export interface LoginPayload {
   email: string;
