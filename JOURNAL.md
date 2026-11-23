@@ -277,6 +277,26 @@ This journal chronicles the continuous, iterative engineering progress of UniExp
 
 ---
 
+### Sprint 15: Full-Stack Cloud Live Linkage & Production Real-Time WebSocket Channel
+* **Date Range:** November 23, 2026  
+* **Sprint Focus:** Cloud deployment of FastAPI backend service on Render, dynamic WebSocket URL routing, auto-reconnection for serverless/cold-start environments, and live real-time team chat synchronization between Vercel and Render.  
+* **Lead Contributors:** Abu Zafor (Cloud Infrastructure & CORS Configuration), Anamul Haque (Production WebSocket Routing & Auto-Reconnection Architecture)  
+
+#### Activities & Delivered Artifacts:
+1. **Cloud Backend Deployment on Render:**
+   - Deployed FastAPI core backend to Render (`https://uniexpert-backend.onrender.com`).
+   - Pinned `.python-version` to `3.11.9` and streamlined `backend/requirements.txt` to eliminate C/Rust build errors on cloud container builders.
+   - Configured origin regex `https://.*\.vercel\.app` in FastAPI CORS middleware for secure cross-origin REST and WebSocket handshakes.
+2. **Production WebSocket Dynamic Routing (`client.ts`):**
+   - Implemented `resolveApiBase()` and `getWsUrl()` that automatically detects when the application runs on Vercel and routes WebSocket traffic to `wss://uniexpert-backend.onrender.com/api/chat/ws/...` without requiring manual build-time environment flags.
+3. **Resilient Auto-Reconnection (`TeamChat.tsx`):**
+   - Added automated reconnect timers (3-second retry loop) handling Render container spin-up latencies (cold starts), ensuring real-time bidirectional message sync across multiple browser tabs and remote devices.
+   - Verified active socket connection state indicator (`WebSocket Live` vs `Connecting` / `Offline`).
+
+* **BAETE Alignment:** Criterion 5 (Modern Engineering Tools: Distributed Cloud Microservices, Asynchronous Event Loops, and Secure WebSockets over TLS).
+
+---
+
 ## 📊 Summary of Team Member Engineering Contributions
 
 ```
