@@ -124,9 +124,9 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     r.font.bold = True
     r.font.size = Pt(10)
     r.font.color.rgb = PRIMARY_COLOR
-    r = p.add_run("Abu Zafor\nStudent ID: 221-35-748\nDept. of Software Engineering\nDaffodil International University\n\n")
+    r = p.add_run("Abu Zafor\nStudent ID: 232-35-331\nDept. of Software Engineering\nDaffodil International University\n\n")
     r.font.size = Pt(9.5)
-    r = p.add_run("Anamul Haque\nStudent ID: 221-35-961\nDept. of Software Engineering\nDaffodil International University")
+    r = p.add_run("Anamul Haque\nStudent ID: 232-35-285\nDept. of Software Engineering\nDaffodil International University")
     r.font.size = Pt(9.5)
 
     c01 = t_meta.cell(0, 1)
@@ -135,13 +135,7 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     r.font.bold = True
     r.font.size = Pt(10)
     r.font.color.rgb = PRIMARY_COLOR
-    r = p.add_run("Md. Shohel Arman\nAssistant Professor\nDept. of Software Engineering\nDaffodil International University\n\n")
-    r.font.size = Pt(9.5)
-    r = p.add_run("ACADEMIC COORDINATOR:\n")
-    r.font.bold = True
-    r.font.size = Pt(10)
-    r.font.color.rgb = PRIMARY_COLOR
-    r = p.add_run("Prof. Dr. Syed Akhter Hossain\nProfessor & Head, Dept. of Software Engineering\nDaffodil International University")
+    r = p.add_run("Md. Shohel Arman\nAssistant Professor\nDept. of Software Engineering\nDaffodil International University")
     r.font.size = Pt(9.5)
 
     c10 = t_meta.cell(1, 0)
@@ -639,7 +633,7 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     p.add_run("―" * 32 + "\n")
     r = p.add_run("Abu Zafor\n")
     r.font.bold = True
-    p.add_run("Student Project Lead (ID: 221-35-748)\nDept. of Software Engineering, DIU\n\n")
+    p.add_run("Student Project Lead (ID: 232-35-331)\nDept. of Software Engineering, DIU\n\n")
 
     s01 = t_sig.cell(0, 1)
     p = s01.paragraphs[0]
@@ -653,14 +647,11 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     p.add_run("―" * 32 + "\n")
     r = p.add_run("Anamul Haque\n")
     r.font.bold = True
-    p.add_run("Student Co-Lead (ID: 221-35-961)\nDept. of Software Engineering, DIU")
+    p.add_run("Student Co-Lead (ID: 232-35-285)\nDept. of Software Engineering, DIU")
 
     s11 = t_sig.cell(1, 1)
     p = s11.paragraphs[0]
-    p.add_run("―" * 32 + "\n")
-    r = p.add_run("Prof. Dr. Syed Akhter Hossain\n")
-    r.font.bold = True
-    p.add_run("Department Capstone Coordinator\nHead, Dept. of Software Engineering, DIU")
+    p.text = ""
 
     doc.save(output_path)
     print(f"Successfully generated {output_path}")
