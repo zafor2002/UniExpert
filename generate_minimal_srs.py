@@ -47,14 +47,12 @@ TEX_CONTENT = r'''\documentclass[10.5pt,a4paper]{article}
 % Captions
 \captionsetup{font=small,labelfont=bf,skip=4pt}
 
-% Headers & Footers
+% Headers & Footers (Clean - No running header mark)
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\textcolor{darkslate}{\textbf{UniExpert} | Software Requirements Specification}}
-\fancyhead[R]{\small\textcolor{darkslate}{SE 331 $\cdot$ Fall 2026}}
 \fancyfoot[L]{\footnotesize\textcolor{darkslate}{Department of Software Engineering, Daffodil International University}}
 \fancyfoot[R]{\thepage}
-\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0.5pt}
 
 \setlist{itemsep=1.5pt, topsep=2pt, parsep=0pt, partopsep=0pt}

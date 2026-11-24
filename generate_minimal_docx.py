@@ -27,13 +27,9 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
         section.right_margin = Inches(0.75)
         section.header.is_linked_to_previous = False
         
-        # Header
+        # Header (Clean - No running header mark)
         hp = section.header.paragraphs[0]
-        hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        hrun = hp.add_run("UniExpert | Software Requirements Specification (Minimal Baseline)")
-        hrun.font.name = "Calibri"
-        hrun.font.size = Pt(8.5)
-        hrun.font.color.rgb = RGBColor(100, 116, 139)
+        hp.text = ""
 
         # Footer
         fp = section.footer.paragraphs[0]
