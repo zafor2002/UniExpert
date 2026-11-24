@@ -19,6 +19,7 @@ TEX_CONTENT = r'''\documentclass[10.5pt,a4paper]{article}
 \usepackage{enumitem}
 \usepackage{amsmath}
 \usepackage{titlesec}
+\usepackage{caption}
 
 % Palette
 \definecolor{primaryblue}{RGB}{30, 58, 138}
@@ -39,9 +40,12 @@ TEX_CONTENT = r'''\documentclass[10.5pt,a4paper]{article}
 \titleformat{\section}{\color{primaryblue}\normalfont\large\bfseries}{\thesection}{0.8em}{}[\color{accentblue}\titlerule]
 \titleformat{\subsection}{\color{darkslate}\normalfont\normalsize\bfseries}{\thesubsection}{0.8em}{}
 \titleformat{\subsubsection}{\color{accentblue}\normalfont\small\bfseries}{\thesubsubsection}{0.6em}{}
-\titlespacing*{\section}{0pt}{9pt}{3pt}
+\titlespacing*{\section}{0pt}{8pt}{3pt}
 \titlespacing*{\subsection}{0pt}{6pt}{2pt}
 \titlespacing*{\subsubsection}{0pt}{4pt}{2pt}
+
+% Captions
+\captionsetup{font=small,labelfont=bf,skip=4pt}
 
 % Headers & Footers
 \pagestyle{fancy}
@@ -117,7 +121,7 @@ Daffodil International University & Daffodil International University\\
 \rowcolor{headergray} \textbf{Ver.} & \textbf{Release Date} & \textbf{Author(s) / Contributors} & \textbf{Scope / Revision Description} \\ \hline
 1.0 & 2026-11-10 & Abu Zafor, Anamul Haque & Initial IEEE 830 SRS Draft \& Scope Specification \\ \hline
 1.5 & 2026-11-18 & Abu Zafor, Anamul Haque & Added Qdrant Vector Engine \& XAI Radar Formulation \\ \hline
-2.0 & 2026-11-24 & Abu Zafor, Anamul Haque & Final Baseline: RBAC Guards, WebRTC Media \& Merkle Tree \\ \hline
+2.0 & 2026-11-24 & Abu Zafor, Anamul Haque & Final Baseline: Architecture, Use Case, ERD \& Sequence Diagrams \\ \hline
 \end{tabularx}
 \caption{Document Control and Specification Baseline}
 \end{table}
@@ -184,7 +188,7 @@ UniExpert governs the capstone lifecycle within the Department of Software Engin
 \clearpage
 
 % ==============================================================================
-% SECTION 2: OVERALL DESCRIPTION (PAGE 4)
+% SECTION 2: OVERALL DESCRIPTION & ARCHITECTURE DIAGRAM (PAGE 4)
 % ==============================================================================
 \section{Overall Description}
 
@@ -198,6 +202,20 @@ UniExpert operates as a cloud-native, decoupled distributed application designed
     \item \textbf{Signaling \& Real-Time Media Tier:} WebSocket channels for bidirectional messaging and WebRTC media stream brokering via standard browser \texttt{MediaDevices} APIs.
 \end{enumerate}
 
+\begin{figure}[h]
+\centering
+\IfFileExists{docs_assets/fig_architecture.png}{
+    \includegraphics[width=0.88\linewidth]{docs_assets/fig_architecture.png}
+    \caption{UniExpert Decoupled Multi-Tier System Architecture}
+    \label{fig:architecture}
+}{}
+\end{figure}
+
+\clearpage
+
+% ==============================================================================
+% SECTION 2 CONT.: USERS, ENVIRONMENT & CONSTRAINTS (PAGE 5)
+% ==============================================================================
 \subsection{User Classes and Role Characteristics}
 UniExpert defines six institutional user roles operating under strict Role-Based Access Control:
 
@@ -225,10 +243,16 @@ UniExpert defines six institutional user roles operating under strict Role-Based
     \item \textbf{Cryptographic Determinism:} The Merkle audit tree guarantees SHA-256 hash reproducibility across cross-platform environments using standardized byte serialization.
 \end{itemize}
 
+\subsection{Design and Implementation Assumptions}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Network Connectivity:} Students and faculty maintain active Internet connectivity ($\ge 512$ kbps) during WebRTC consultation sessions.
+    \item \textbf{Identity Federation:} User registrations require active university-issued institutional email accounts within the \texttt{.edu.bd} domain namespace.
+\end{itemize}
+
 \clearpage
 
 % ==============================================================================
-% SECTION 3: SYSTEM ARCHITECTURE & MODELING (PAGE 5)
+% SECTION 3: SYSTEM MODELING & ERD (PAGE 6)
 % ==============================================================================
 \section{System Architecture \& Modeling}
 
@@ -252,11 +276,20 @@ The advisory allocation workflow is formally modeled as a deterministic Finite S
 \caption{Proposal Finite State Machine Transition Matrix}
 \end{table}
 
-\subsection{Database Schema \& Data Dictionary}
+\subsection{Database Schema \& Entity-Relationship Modeling}
+
+\begin{figure}[h]
+\centering
+\IfFileExists{docs_assets/fig_erd.png}{
+    \includegraphics[width=0.76\linewidth]{docs_assets/fig_erd.png}
+    \caption{UniExpert Relational Entity-Relationship Diagram (ERD)}
+    \label{fig:erd}
+}{}
+\end{figure}
 
 \begin{table}[h]
 \centering
-\small
+\footnotesize
 \begin{tabularx}{\linewidth}{|l|l|X|}
 \hline
 \rowcolor{headergray} \textbf{Table Name} & \textbf{Primary Key / Foreign Keys} & \textbf{Core Columns \& Constraints} \\ \hline
@@ -274,13 +307,22 @@ The advisory allocation workflow is formally modeled as a deterministic Finite S
 \clearpage
 
 % ==============================================================================
-% SECTION 3 CONT.: USE CASES UC-01 TO UC-03 (PAGE 6)
+% SECTION 3 CONT.: USE CASE MODEL & SPECIFICATIONS (PAGE 7)
 % ==============================================================================
-\subsection{Core Use Case Specifications (Part 1)}
+\subsection{Use Case Model \& Actor Interactions}
+
+\begin{figure}[h]
+\centering
+\IfFileExists{docs_assets/fig_use_case.png}{
+    \includegraphics[width=0.74\linewidth]{docs_assets/fig_use_case.png}
+    \caption{UniExpert Role-Based Use Case Model}
+    \label{fig:use_case}
+}{}
+\end{figure}
 
 \begin{table}[h]
 \centering
-\small
+\footnotesize
 \begin{tabularx}{\linewidth}{|l|X|}
 \hline
 \rowcolor{headergray} \textbf{Use Case ID: UC-01} & \textbf{Problem Formulation \& NLP Zero-Shot Entity Extraction} \\ \hline
@@ -297,9 +339,16 @@ The advisory allocation workflow is formally modeled as a deterministic Finite S
 \caption{Use Case UC-01: Entity Extraction}
 \end{table}
 
+\clearpage
+
+% ==============================================================================
+% SECTION 3 CONT.: USE CASES UC-02, UC-03 & SEQUENCE DIAGRAM (PAGE 8)
+% ==============================================================================
+\subsection{Core Use Case Specifications (Part 2) \& Sequence Flow}
+
 \begin{table}[h]
 \centering
-\small
+\footnotesize
 \begin{tabularx}{\linewidth}{|l|X|}
 \hline
 \rowcolor{headergray} \textbf{Use Case ID: UC-02} & \textbf{Semantic Advisor Retrieval \& Explainable AI (XAI) Fit Breakdown} \\ \hline
@@ -318,7 +367,7 @@ The advisory allocation workflow is formally modeled as a deterministic Finite S
 
 \begin{table}[h]
 \centering
-\small
+\footnotesize
 \begin{tabularx}{\linewidth}{|l|X|}
 \hline
 \rowcolor{headergray} \textbf{Use Case ID: UC-03} & \textbf{Proposal Submission, FSM Negotiation \& Quota Decrement} \\ \hline
@@ -335,12 +384,21 @@ The advisory allocation workflow is formally modeled as a deterministic Finite S
 \caption{Use Case UC-03: Proposal Negotiation}
 \end{table}
 
+\begin{figure}[h]
+\centering
+\IfFileExists{docs_assets/fig_sequence_matching.png}{
+    \includegraphics[width=0.74\linewidth]{docs_assets/fig_sequence_matching.png}
+    \caption{Sequence Diagram for AI Entity Extraction, Qdrant Retrieval \& XAI Formulation}
+    \label{fig:sequence_matching}
+}{}
+\end{figure}
+
 \clearpage
 
 % ==============================================================================
-% SECTION 3 CONT.: USE CASES UC-04, UC-05 & ARCHITECTURE (PAGE 7)
+% SECTION 3 CONT.: USE CASES UC-04, UC-05 & SUBSYSTEMS (PAGE 9)
 % ==============================================================================
-\subsection{Core Use Case Specifications (Part 2)}
+\subsection{Core Use Case Specifications (Part 3)}
 
 \begin{table}[h]
 \centering
@@ -391,7 +449,7 @@ The UniExpert architectural components communicate through well-defined, decoupl
 \clearpage
 
 % ==============================================================================
-% SECTION 4: FUNCTIONAL REQUIREMENTS - PART 1 (PAGE 8)
+% SECTION 4: FUNCTIONAL REQUIREMENTS - PART 1 (PAGE 10)
 % ==============================================================================
 \section{Functional Requirements Specification}
 
@@ -427,7 +485,7 @@ where weights $w = [0.40, 0.30, 0.15, 0.15]$ and $\sum w_i = 1.0$. \\ \hline
 \clearpage
 
 % ==============================================================================
-% SECTION 4 CONT.: FUNCTIONAL REQUIREMENTS - PART 2 (PAGE 9)
+% SECTION 4 CONT.: FUNCTIONAL REQUIREMENTS - PART 2 (PAGE 11)
 % ==============================================================================
 \subsection{Part 2: Governance, Collaboration \& Cryptographic Audit (FR10--FR20)}
 
@@ -456,7 +514,7 @@ where weights $w = [0.40, 0.30, 0.15, 0.15]$ and $\sum w_i = 1.0$. \\ \hline
 \clearpage
 
 % ==============================================================================
-% SECTION 5: NON-FUNCTIONAL REQUIREMENTS (PAGE 10)
+% SECTION 5: NON-FUNCTIONAL REQUIREMENTS (PAGE 12)
 % ==============================================================================
 \section{Non-Functional Requirements Specification}
 
@@ -505,7 +563,7 @@ where weights $w = [0.40, 0.30, 0.15, 0.15]$ and $\sum w_i = 1.0$. \\ \hline
 \clearpage
 
 % ==============================================================================
-% SECTION 6: REQUIREMENTS TRACEABILITY MATRIX (PAGE 11)
+% SECTION 6: REQUIREMENTS TRACEABILITY MATRIX (PAGE 13)
 % ==============================================================================
 \section{Requirements Traceability Matrix (RTM)}
 
@@ -545,7 +603,7 @@ The Requirements Traceability Matrix (Table \ref{tab:rtm}) maps each normative f
 \clearpage
 
 % ==============================================================================
-% SECTION 7: BAETE OUTCOMES & SIGN-OFF (PAGE 12)
+% SECTION 7: BAETE OUTCOMES & SIGN-OFF (PAGE 14)
 % ==============================================================================
 \section{BAETE Accreditation Outcomes \& Verification Protocol}
 
@@ -616,15 +674,11 @@ def main():
         print(res2.stdout[-1500:])
         sys.exit(1)
 
-    # Ensure UniExpert_SRS_Minimal.pdf exists or is synced
-    if os.path.exists('uniexpert_srs_minimal.pdf') and 'uniexpert_srs_minimal.pdf'.lower() != 'UniExpert_SRS_Minimal.pdf'.lower():
-        shutil.copyfile('uniexpert_srs_minimal.pdf', 'UniExpert_SRS_Minimal.pdf')
-
     import pypdf
-    reader = pypdf.PdfReader('UniExpert_SRS_Minimal.pdf')
+    reader = pypdf.PdfReader('uniexpert_srs_minimal.pdf')
     page_count = len(reader.pages)
     print(f"\n==========================================")
-    print(f"SUCCESS: Generated UniExpert_SRS_Minimal.pdf")
+    print(f"SUCCESS: Generated uniexpert_srs_minimal.pdf")
     print(f"TOTAL PAGE COUNT: {page_count} pages")
     print(f"TARGET CONSTRAINT (10-15 pages): {'PASSED' if 10 <= page_count <= 15 else 'FAILED'}")
     print(f"==========================================\n")

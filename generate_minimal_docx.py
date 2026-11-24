@@ -193,6 +193,24 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
         r.font.color.rgb = DARK_TEXT
         return p
 
+    def add_image_with_caption(img_path, caption_text, width=Inches(5.8)):
+        if os.path.exists(img_path):
+            p_img = doc.add_paragraph()
+            p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_img.paragraph_format.space_before = Pt(6)
+            p_img.paragraph_format.space_after = Pt(2)
+            p_img.add_run().add_picture(img_path, width=width)
+            
+            p_cap = doc.add_paragraph()
+            p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_cap.paragraph_format.space_before = Pt(2)
+            p_cap.paragraph_format.space_after = Pt(8)
+            r = p_cap.add_run(caption_text)
+            r.font.name = "Calibri"
+            r.font.size = Pt(9)
+            r.font.bold = True
+            r.font.color.rgb = MUTED_TEXT
+
     def format_table_headers(table, headers, col_widths, bg_hex="F1F5F9"):
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
         table.autofit = False
@@ -233,7 +251,7 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     add_table_data(t_rev, [
         ["1.0", "2026-11-10", "Abu Zafor, Anamul Haque", "Initial IEEE 830 SRS Draft & Scope Specification"],
         ["1.5", "2026-11-18", "Abu Zafor, Anamul Haque", "Added Qdrant Vector Engine & XAI Radar Formulation"],
-        ["2.0", "2026-11-24", "Abu Zafor, Anamul Haque", "Final Baseline: RBAC Guards, WebRTC Media & Merkle Tree"]
+        ["2.0", "2026-11-24", "Abu Zafor, Anamul Haque", "Final Baseline: Architecture, Use Case, ERD & Sequence Diagrams"]
     ], [0.6, 1.1, 1.8, 3.5])
 
     add_sec_heading("Executive Summary", level=2)
@@ -245,8 +263,8 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     add_sec_heading("Table of Contents Overview", level=2)
     add_body_p(
         "1. Introduction (Purpose, Scope, Definitions, References)\n"
-        "2. Overall Description (Decoupled System Architecture, 6 User Classes, Operating Environment, Design Constraints)\n"
-        "3. System Architecture & Modeling (Proposal FSM Lifecycle, Consolidated Data Dictionary, Core Use Cases UC-01 to UC-05)\n"
+        "2. Overall Description & Architecture Model (Decoupled Architecture Diagram, 6 User Classes, Technical Boundaries)\n"
+        "3. System Architecture & Modeling (Proposal FSM Lifecycle, ERD Diagram, Consolidated Data Dictionary, Core Use Cases UC-01 to UC-05, Sequence Flow)\n"
         "4. Functional Requirements Specification (FR01 to FR20 across Modules 1 to 7)\n"
         "5. Non-Functional Requirements Specification (Performance, Security, Reliability, Usability Standards)\n"
         "6. Requirements Traceability Matrix (RTM Table covering FR01 to FR20)\n"
@@ -296,7 +314,7 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     doc.add_page_break()
 
     # -------------------------------------------------------------
-    # SECTION 2: OVERALL DESCRIPTION
+    # SECTION 2: OVERALL DESCRIPTION & ARCHITECTURE
     # -------------------------------------------------------------
     add_sec_heading("2. Overall Description", level=1)
     add_sec_heading("2.1 Product Perspective & Decoupled Architecture", level=2)
@@ -306,6 +324,8 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     add_body_p("3. Inference & Semantic Matching Tier: FastEmbed local CPU ONNX runtime deploying BAAI/bge-small-en-v1.5 (384-dimensional dense vectors) integrated with a Qdrant vector database supporting HNSW cosine similarity search.")
     add_body_p("4. Persistence & Cryptographic Storage Tier: Dual-mode relational persistence featuring PostgreSQL in production with automatic fallback to local SQLite (uniexpert.db) for zero-cost operation, plus SHA-256 Merkle audit tree.")
     add_body_p("5. Signaling & Real-Time Media Tier: WebSocket channels for bidirectional messaging and WebRTC media stream brokering via standard browser MediaDevices APIs.")
+
+    add_image_with_caption("docs_assets/fig_architecture.png", "Figure 1: UniExpert Decoupled Multi-Tier System Architecture", width=Inches(5.5))
 
     add_sec_heading("2.2 User Classes and Role Characteristics", level=2)
     t_roles = doc.add_table(rows=1, cols=3)
@@ -346,7 +366,9 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
         ["SUBMITTED", "7-day timer expires", "ESCALATED", "Coordinator alert dispatched; automatic re-allocation queue."]
     ], [1.3, 1.5, 1.3, 2.9])
 
-    add_sec_heading("3.2 Database Schema & Data Dictionary", level=2)
+    add_sec_heading("3.2 Database Schema & Entity-Relationship Modeling", level=2)
+    add_image_with_caption("docs_assets/fig_erd.png", "Figure 2: UniExpert Relational Entity-Relationship Diagram (ERD)", width=Inches(5.0))
+
     t_dd = doc.add_table(rows=1, cols=3)
     format_table_headers(t_dd, ["Table Name", "Primary Key / Foreign Keys", "Core Columns & Constraints"], [1.5, 2.0, 3.5])
     add_table_data(t_dd, [
@@ -362,9 +384,10 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     doc.add_page_break()
 
     # -------------------------------------------------------------
-    # SECTION 3 CONT.: CORE USE CASES
+    # SECTION 3 CONT.: USE CASE MODEL & SPECIFICATIONS
     # -------------------------------------------------------------
-    add_sec_heading("3.3 Core Use Case Specifications", level=2)
+    add_sec_heading("3.3 Use Case Model & Core Specifications", level=2)
+    add_image_with_caption("docs_assets/fig_use_case.png", "Figure 3: UniExpert Role-Based Use Case Model", width=Inches(5.0))
 
     use_cases = [
         ("UC-01", "Problem Formulation & NLP Zero-Shot Entity Extraction", "Student Project Lead",
@@ -392,8 +415,39 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
          "3. Faculty advisor reviews proposal via Incoming Proposals dashboard.\n"
          "4. Advisor accepts proposal; FSM transitions to ACCEPTED.\n"
          "5. System decrements faculty available slots by 1 and provisions Project Workspace and Team Chat.",
-         "Supervisory agreement recorded; workspace initialized; audit event hash-chained."),
+         "Supervisory agreement recorded; workspace initialized; audit event hash-chained.")
+    ]
 
+    for ucid, title, actor, pre, flow, post in use_cases:
+        t_uc = doc.add_table(rows=6, cols=2)
+        t_uc.alignment = WD_TABLE_ALIGNMENT.CENTER
+        t_uc.autofit = False
+        format_table_headers(t_uc, [f"Use Case ID: {ucid}", title], [1.8, 5.2], bg_hex="E2E8F0")
+        labels = [("Primary Actor", actor), ("Preconditions", pre), ("Main Flow", flow), ("Postconditions", post)]
+        for r_idx, (lab, val) in enumerate(labels, start=1):
+            row = t_uc.rows[r_idx]
+            row.cells[0].width = Inches(1.8)
+            row.cells[1].width = Inches(5.2)
+            set_cell_margins(row.cells[0], top=40, bottom=40, left=100, right=100)
+            set_cell_margins(row.cells[1], top=40, bottom=40, left=100, right=100)
+            p0 = row.cells[0].paragraphs[0]
+            r0 = p0.add_run(lab)
+            r0.font.bold = True
+            r0.font.size = Pt(8.5)
+            p1 = row.cells[1].paragraphs[0]
+            r1 = p1.add_run(val)
+            r1.font.size = Pt(8.5)
+        doc.add_paragraph().paragraph_format.space_after = Pt(2)
+
+    doc.add_page_break()
+
+    # -------------------------------------------------------------
+    # SECTION 3 CONT.: SEQUENCE FLOW & USE CASES UC-04, UC-05
+    # -------------------------------------------------------------
+    add_sec_heading("3.4 Sequence Flow & Collaboration Use Cases", level=2)
+    add_image_with_caption("docs_assets/fig_sequence_matching.png", "Figure 4: Sequence Diagram for AI Entity Extraction, Vector Retrieval & XAI Formulation", width=Inches(5.0))
+
+    use_cases_part2 = [
         ("UC-04", "Live WebRTC Consultation & Persistent Text History", "Student Team Lead, Faculty Advisor",
          "Scheduled consultation session reached; browser media permissions granted.",
          "1. Participant clicks 'Launch Consultation Room'.\n"
@@ -413,7 +467,7 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
          "Tamper verification confirmation displayed; official accreditation dossier exported.")
     ]
 
-    for ucid, title, actor, pre, flow, post in use_cases:
+    for ucid, title, actor, pre, flow, post in use_cases_part2:
         t_uc = doc.add_table(rows=6, cols=2)
         t_uc.alignment = WD_TABLE_ALIGNMENT.CENTER
         t_uc.autofit = False
@@ -575,7 +629,7 @@ def create_minimal_docx(output_path="UniExpert_SRS_Minimal.docx"):
     add_body_p("This Software Requirements Specification baseline represents the agreed-upon technical contract for the UniExpert capstone project. All functional and non-functional requirements have been validated through automated test suites, end-to-end integration runs, and faculty review.")
 
     p_sig = doc.add_paragraph()
-    p_sig.paragraph_format.space_before = Pt(20)
+    p_sig.paragraph_format.space_before = Pt(14)
 
     t_sig = doc.add_table(rows=2, cols=2)
     t_sig.alignment = WD_TABLE_ALIGNMENT.CENTER
