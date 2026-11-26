@@ -1,0 +1,565 @@
+<mxfile host="app.diagrams.net" modified="2026-11-26T13:30:00.000Z" agent="UniExpert" version="24.0.0" type="device">
+  <diagram id="page_arch" name="1. System Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="UniExpert System Architecture (Decoupled Cloud-Native 5-Tier)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="250" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Presentation Layer Container -->
+        <mxCell id="pres_layer" value="Presentation Tier (Vercel Edge CDN · React 19 / TypeScript / Vite / Tailwind CSS)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;fontSize=12;rounded=1;arcSize=4;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="50" y="80" width="1100" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pres_student" value="&lt;b&gt;Student Workspace&lt;/b&gt;&lt;br&gt;• Problem Formulation&lt;br&gt;• Skill Vector Review&lt;br&gt;• XAI Match Radar&lt;br&gt;• Meeting &amp;amp; Chat" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontColor=#1E293B;fontSize=11;arcSize=8;" vertex="1" parent="pres_layer">
+          <mxGeometry x="30" y="45" width="230" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pres_faculty" value="&lt;b&gt;Faculty Workspace&lt;/b&gt;&lt;br&gt;• ORCID / Publications&lt;br&gt;• Quota Management&lt;br&gt;• Proposal Review SLA&lt;br&gt;• Milestone Evaluation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontColor=#1E293B;fontSize=11;arcSize=8;" vertex="1" parent="pres_layer">
+          <mxGeometry x="300" y="45" width="230" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pres_coord" value="&lt;b&gt;Coordinator Portal&lt;/b&gt;&lt;br&gt;• Department Overview&lt;br&gt;• Workload Heatmap&lt;br&gt;• Dispute Override&lt;br&gt;• Allocation Freeze" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontColor=#1E293B;fontSize=11;arcSize=8;" vertex="1" parent="pres_layer">
+          <mxGeometry x="570" y="45" width="230" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pres_audit" value="&lt;b&gt;Auditor / BAETE Console&lt;/b&gt;&lt;br&gt;• SHA-256 Merkle Ledger&lt;br&gt;• Criterion 4 &amp;amp; 5 Verifier&lt;br&gt;• Tamper Proof Log&lt;br&gt;• One-Click Dossier PDF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontColor=#1E293B;fontSize=11;arcSize=8;" vertex="1" parent="pres_layer">
+          <mxGeometry x="840" y="45" width="230" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Communication Protocol 1 -->
+        <mxCell id="proto_1" value="HTTPS (TLS 1.3 / OpenAPI REST) &amp;amp; Secure WebSockets (WSS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;fontColor=#0284C7;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="pres_layer" target="app_layer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Application & API Layer -->
+        <mxCell id="app_layer" value="Application &amp;amp; Business Logic Tier (Render Cloud · Python 3.12+ / FastAPI / Uvicorn / Pydantic v2)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;fontColor=#1E293B;fontStyle=1;fontSize=12;rounded=1;arcSize=4;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="50" y="290" width="1100" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_auth" value="&lt;b&gt;Authentication &amp;amp; RBAC&lt;/b&gt;&lt;br&gt;• JWT (HMAC-SHA256)&lt;br&gt;• RFC 6238 TOTP 2FA&lt;br&gt;• DIU Domain Whitelist&lt;br&gt;• bcrypt Cost Factor 12" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="30" y="45" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_nlp" value="&lt;b&gt;Zero-Shot NLP Engine&lt;/b&gt;&lt;br&gt;• FastEmbed ONNX&lt;br&gt;• BAAI/bge-small-en-v1.5&lt;br&gt;• 384-Dim Dense Embeddings&lt;br&gt;• Latency &amp;lt; 300ms (CPU)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="300" y="45" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_qdrant" value="&lt;b&gt;Qdrant Vector Engine&lt;/b&gt;&lt;br&gt;• HNSW Cosine Indexing&lt;br&gt;• 50+ Faculty Corpora&lt;br&gt;• Sub-50ms Search P95&lt;br&gt;• Payload Filtering" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="570" y="45" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_xai" value="&lt;b&gt;Multi-Criteria XAI Engine&lt;/b&gt;&lt;br&gt;• S(u,e) = ∑ w_i · S_i&lt;br&gt;• Weights: 0.4, 0.3, 0.15, 0.15&lt;br&gt;• Anti-Burnout Slot Locking&lt;br&gt;• 4-Axis Radar Breakdown" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="840" y="45" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_fsm" value="&lt;b&gt;Proposal FSM Controller&lt;/b&gt;&lt;br&gt;• DRAFT ➔ SUBMITTED&lt;br&gt;• UNDER_REVIEW ➔ ACCEPTED&lt;br&gt;• 7-Day Auto Escalation SLA&lt;br&gt;• Quota Atomic Decrement" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="30" y="150" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_team" value="&lt;b&gt;Team Gap Optimizer (ΔK)&lt;/b&gt;&lt;br&gt;• Missing Competencies ΔK&lt;br&gt;• Set-Cover Synergy Solver&lt;br&gt;• Multidisciplinary Co-Advisor&lt;br&gt;• Peer Complementarity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="300" y="150" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_rtc" value="&lt;b&gt;WebRTC &amp;amp; Messaging Hub&lt;/b&gt;&lt;br&gt;• RFC 6455 WebSockets&lt;br&gt;• Client-Side Deduplication&lt;br&gt;• MediaStream getUserMedia&lt;br&gt;• Web Audio Chime Synthesis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="570" y="150" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app_audit" value="&lt;b&gt;Merkle Audit &amp;amp; BAETE&lt;/b&gt;&lt;br&gt;• SHA-256 Block Chaining&lt;br&gt;• Merkle Root Verification&lt;br&gt;• Criterion 4 &amp;amp; 5 Mapping&lt;br&gt;• ReportLab PDF Compilation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontColor=#1E293B;fontSize=10.5;arcSize=6;" vertex="1" parent="app_layer">
+          <mxGeometry x="840" y="150" width="230" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Communication Protocol 2 -->
+        <mxCell id="proto_2" value="SQLAlchemy 2.0 Async ORM &amp;amp; Dual-Engine Persistence Driver" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#86198F;strokeWidth=2;fontColor=#86198F;fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="app_layer" target="persist_layer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Persistence & Data Tier -->
+        <mxCell id="persist_layer" value="Persistence &amp;amp; Cryptographic Storage Tier (Dual Mode: PostgreSQL 16 Production / SQLite Local Fallback)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#FDF4FF;strokeColor=#C026D3;fontColor=#86198F;fontStyle=1;fontSize=12;rounded=1;arcSize=4;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="50" y="610" width="1100" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db_relational" value="&lt;b&gt;Relational Database&lt;/b&gt;&lt;br&gt;• users &amp;amp; faculty_profiles&lt;br&gt;• proposals &amp;amp; milestones&lt;br&gt;• chat_messages (dedup)&lt;br&gt;• meeting_rooms &amp;amp; attendance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D946EF;fontColor=#1E293B;fontSize=11;arcSize=8;" vertex="1" parent="persist_layer">
+          <mxGeometry x="50" y="45" width="300" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db_merkle" value="&lt;b&gt;Cryptographic Ledger&lt;/b&gt;&lt;br&gt;• SHA-256 Sequential Blocks&lt;br&gt;• Parent Hash Chaining (H_i)&lt;br&gt;• Tamper-Evident Merkle Root&lt;br&gt;• Immutable Audit History" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D946EF;fontColor=#1E293B;fontSize=11;arcSize=8;" vertex="1" parent="persist_layer">
+          <mxGeometry x="400" y="45" width="300" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db_vector" value="&lt;b&gt;Vector Store &amp;amp; Artifacts&lt;/b&gt;&lt;br&gt;• Qdrant Vector Embeddings&lt;br&gt;• Publication Title/Abstract Cache&lt;br&gt;• Exported BAETE Dossier PDF/CSV&lt;br&gt;• Consultation Notes JSON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D946EF;fontColor=#1E293B;fontSize=11;arcSize=8;" vertex="1" parent="persist_layer">
+          <mxGeometry x="750" y="45" width="300" height="85" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page_uc" name="2. Use Case Model">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="uc_title" value="UniExpert Role-Based Use Case Model" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- System Boundary -->
+        <mxCell id="boundary" value="UniExpert Platform Boundary" style="swimlane;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;fontColor=#334155;fontStyle=1;fontSize=13;rounded=1;arcSize=2;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="220" y="70" width="760" height="780" as="geometry" />
+        </mxCell>
+
+        <!-- Use Cases inside boundary -->
+        <mxCell id="uc1" value="UC-01: Problem Formulation &amp;amp;&#xa;NLP Zero-Shot Extraction" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="50" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc2" value="UC-02: Dense Vector Retrieval &amp;amp;&#xa;4-Axis XAI Match Radar" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="140" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc3" value="UC-03: Proposal Submission &amp;amp;&#xa;Deterministic FSM Negotiation" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="230" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc4" value="UC-04: Live WebRTC Consultation &amp;amp;&#xa;Persistent WebSocket Chat" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="320" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc5" value="UC-05: SHA-256 Merkle Audit &amp;amp;&#xa;One-Click BAETE Dossier Export" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="60" y="410" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc6" value="Manage Supervision Quota &amp;amp;&#xa;Enforce Anti-Burnout Limits" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="140" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc7" value="Review Milestones &amp;amp;&#xa;Grade Student Deliverables" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="240" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc8" value="Monitor Workload Heatmap &amp;amp;&#xa;Resolve Allocation Disputes" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontColor=#5B21B6;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="350" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc9" value="Administer Taxonomies &amp;amp;&#xa;Enforce RBAC Account Security" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FCE7F3;strokeColor=#DB2777;fontColor=#9D174D;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="470" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc10" value="Verify Cryptographic Hash Chains&#xa;&amp;amp; Evaluate BAETE Criteria" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#15803D;fontStyle=1;fontSize=11;" vertex="1" parent="boundary">
+          <mxGeometry x="480" y="580" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Actors Left Side -->
+        <mxCell id="actor_student" value="Student Project Lead" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontColor=#1E293B;strokeColor=#0284C7;fillColor=#E0F2FE;" vertex="1" parent="1">
+          <mxGeometry x="70" y="200" width="50" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor_mentor" value="Industry Mentor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontColor=#1E293B;strokeColor=#0284C7;fillColor=#E0F2FE;" vertex="1" parent="1">
+          <mxGeometry x="70" y="420" width="50" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Actors Right Side -->
+        <mxCell id="actor_faculty" value="Faculty Advisor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontColor=#1E293B;strokeColor=#D97706;fillColor=#FEF3C7;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="150" width="50" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor_coord" value="Department Coordinator" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontColor=#1E293B;strokeColor=#7C3AED;fillColor=#EDE9FE;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="340" width="50" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor_admin" value="System Administrator" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontColor=#1E293B;strokeColor=#DB2777;fillColor=#FCE7F3;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="500" width="50" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor_auditor" value="BAETE Evaluator / Auditor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontColor=#1E293B;strokeColor=#16A34A;fillColor=#DCFCE7;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="660" width="50" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Student Connectors -->
+        <mxCell id="c_s1" style="edgeStyle=none;html=1;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1" source="actor_student" target="uc1" />
+        <mxCell id="c_s2" style="edgeStyle=none;html=1;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1" source="actor_student" target="uc2" />
+        <mxCell id="c_s3" style="edgeStyle=none;html=1;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1" source="actor_student" target="uc3" />
+        <mxCell id="c_s4" style="edgeStyle=none;html=1;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1" source="actor_student" target="uc4" />
+
+        <!-- Mentor Connectors -->
+        <mxCell id="c_m1" style="edgeStyle=none;html=1;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1" source="actor_mentor" target="uc4" />
+
+        <!-- Faculty Connectors -->
+        <mxCell id="c_f1" style="edgeStyle=none;html=1;strokeColor=#D97706;strokeWidth=1.5;" edge="1" parent="1" source="actor_faculty" target="uc3" />
+        <mxCell id="c_f2" style="edgeStyle=none;html=1;strokeColor=#D97706;strokeWidth=1.5;" edge="1" parent="1" source="actor_faculty" target="uc6" />
+        <mxCell id="c_f3" style="edgeStyle=none;html=1;strokeColor=#D97706;strokeWidth=1.5;" edge="1" parent="1" source="actor_faculty" target="uc7" />
+        <mxCell id="c_f4" style="edgeStyle=none;html=1;strokeColor=#D97706;strokeWidth=1.5;" edge="1" parent="1" source="actor_faculty" target="uc4" />
+
+        <!-- Coordinator Connectors -->
+        <mxCell id="c_c1" style="edgeStyle=none;html=1;strokeColor=#7C3AED;strokeWidth=1.5;" edge="1" parent="1" source="actor_coord" target="uc8" />
+        <mxCell id="c_c2" style="edgeStyle=none;html=1;strokeColor=#7C3AED;strokeWidth=1.5;" edge="1" parent="1" source="actor_coord" target="uc5" />
+
+        <!-- Admin Connectors -->
+        <mxCell id="c_a1" style="edgeStyle=none;html=1;strokeColor=#DB2777;strokeWidth=1.5;" edge="1" parent="1" source="actor_admin" target="uc9" />
+
+        <!-- Auditor Connectors -->
+        <mxCell id="c_au1" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1.5;" edge="1" parent="1" source="actor_auditor" target="uc10" />
+        <mxCell id="c_au2" style="edgeStyle=none;html=1;strokeColor=#16A34A;strokeWidth=1.5;" edge="1" parent="1" source="actor_auditor" target="uc5" />
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page_erd" name="3. ERD Data Model">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="erd_title" value="UniExpert Relational Entity-Relationship Diagram (ERD)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="600" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- USERS TABLE -->
+        <mxCell id="tbl_users" value="users&#xa;(Account &amp;amp; Identity)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#1E3A8A;fontColor=#FFFFFF;strokeColor=#1E3A8A;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="220" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="u_col1" value="PK  id : UUID" style="text;strokeColor=none;fillColor=#F1F5F9;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1;" vertex="1" parent="tbl_users">
+          <mxGeometry y="30" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_col2" value="     email : VARCHAR (UNIQUE, DIU)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_users">
+          <mxGeometry y="56" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_col3" value="     password_hash : VARCHAR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_users">
+          <mxGeometry y="82" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_col4" value="     role : VARCHAR (RBAC enum)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_users">
+          <mxGeometry y="108" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_col5" value="     name : VARCHAR, is_verified : BOOL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_users">
+          <mxGeometry y="134" width="220" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- FACULTY PROFILES TABLE -->
+        <mxCell id="tbl_faculty" value="faculty_profiles&#xa;(Supervisory Quotas)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#0284C7;fontColor=#FFFFFF;strokeColor=#0284C7;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="320" width="220" height="196" as="geometry" />
+        </mxCell>
+        <mxCell id="f_col1" value="PK,FK  id : UUID ➔ users.id" style="text;strokeColor=none;fillColor=#F1F5F9;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1;" vertex="1" parent="tbl_faculty">
+          <mxGeometry y="30" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="f_col2" value="       department : VARCHAR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_faculty">
+          <mxGeometry y="56" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="f_col3" value="       title : VARCHAR, tier : INT (1-3)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_faculty">
+          <mxGeometry y="82" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="f_col4" value="       slots_used : INT, slots_total : INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_faculty">
+          <mxGeometry y="108" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="f_col5" value="       h_index : INT, orcid_id : VARCHAR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_faculty">
+          <mxGeometry y="134" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="f_col6" value="       research_keywords_json : TEXT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_faculty">
+          <mxGeometry y="160" width="220" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- PROPOSALS TABLE -->
+        <mxCell id="tbl_proposals" value="proposals&#xa;(FSM Advisory Lifecycle)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#16A34A;fontColor=#FFFFFF;strokeColor=#16A34A;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="80" width="240" height="222" as="geometry" />
+        </mxCell>
+        <mxCell id="p_col1" value="PK  id : UUID" style="text;strokeColor=none;fillColor=#F1F5F9;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1;" vertex="1" parent="tbl_proposals">
+          <mxGeometry y="30" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_col2" value="FK  student_id : UUID ➔ users.id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_proposals">
+          <mxGeometry y="56" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_col3" value="FK  advisor_id : UUID ➔ users.id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_proposals">
+          <mxGeometry y="82" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_col4" value="     title : VARCHAR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_proposals">
+          <mxGeometry y="108" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_col5" value="     problem_statement : TEXT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_proposals">
+          <mxGeometry y="134" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_col6" value="     status : VARCHAR (FSM enum)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_proposals">
+          <mxGeometry y="160" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_col7" value="     fit_score : FLOAT, created_at : TS" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_proposals">
+          <mxGeometry y="186" width="240" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- MILESTONES TABLE -->
+        <mxCell id="tbl_milestones" value="milestones&#xa;(Deliverables Tracking)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#D97706;fontColor=#FFFFFF;strokeColor=#D97706;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="370" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="m_col1" value="PK  id : UUID" style="text;strokeColor=none;fillColor=#F1F5F9;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1;" vertex="1" parent="tbl_milestones">
+          <mxGeometry y="30" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="m_col2" value="FK  proposal_id : UUID ➔ proposals.id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_milestones">
+          <mxGeometry y="56" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="m_col3" value="     title : VARCHAR, due_date : DATE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_milestones">
+          <mxGeometry y="82" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="m_col4" value="     status : VARCHAR (Pending/Done)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_milestones">
+          <mxGeometry y="108" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="m_col5" value="     submission_url : VARCHAR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_milestones">
+          <mxGeometry y="134" width="240" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- CHAT MESSAGES TABLE -->
+        <mxCell id="tbl_chat" value="chat_messages&#xa;(Full-Duplex Messaging)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#7C3AED;fontColor=#FFFFFF;strokeColor=#7C3AED;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="80" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="c_col1" value="PK  id : UUID" style="text;strokeColor=none;fillColor=#F1F5F9;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1;" vertex="1" parent="tbl_chat">
+          <mxGeometry y="30" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c_col2" value="FK  proposal_id : UUID ➔ proposals.id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_chat">
+          <mxGeometry y="56" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c_col3" value="FK  sender_id : UUID ➔ users.id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_chat">
+          <mxGeometry y="82" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c_col4" value="     content : TEXT, timestamp : TS" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_chat">
+          <mxGeometry y="108" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c_col5" value="     client_msg_id : UUID (Deduplication)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_chat">
+          <mxGeometry y="134" width="240" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- MEETING ROOMS TABLE -->
+        <mxCell id="tbl_rooms" value="meeting_rooms&#xa;(WebRTC Consultation)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#DB2777;fontColor=#FFFFFF;strokeColor=#DB2777;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="300" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="r_col1" value="PK  id : UUID" style="text;strokeColor=none;fillColor=#F1F5F9;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1;" vertex="1" parent="tbl_rooms">
+          <mxGeometry y="30" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="r_col2" value="FK  proposal_id : UUID ➔ proposals.id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_rooms">
+          <mxGeometry y="56" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="r_col3" value="     room_code : VARCHAR, scheduled_time : TS" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_rooms">
+          <mxGeometry y="82" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="r_col4" value="     is_active : BOOL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_rooms">
+          <mxGeometry y="108" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="r_col5" value="     chat_history_json : TEXT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_rooms">
+          <mxGeometry y="134" width="240" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- AUDIT LEDGER TABLE -->
+        <mxCell id="tbl_audit" value="audit_ledger&#xa;(SHA-256 Merkle Chain)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#475569;fontColor=#FFFFFF;strokeColor=#475569;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="580" width="300" height="196" as="geometry" />
+        </mxCell>
+        <mxCell id="a_col1" value="PK  id : INTEGER (AUTOINCREMENT)" style="text;strokeColor=none;fillColor=#F1F5F9;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1;" vertex="1" parent="tbl_audit">
+          <mxGeometry y="30" width="300" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="a_col2" value="FK  actor_id : UUID ➔ users.id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_audit">
+          <mxGeometry y="56" width="300" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="a_col3" value="     action_type : VARCHAR, entity_id : UUID" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_audit">
+          <mxGeometry y="82" width="300" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="a_col4" value="     timestamp : TIMESTAMP WITH TIME ZONE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_audit">
+          <mxGeometry y="108" width="300" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="a_col5" value="     prev_hash : VARCHAR(64) (Parent Link)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_audit">
+          <mxGeometry y="134" width="300" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="a_col6" value="     merkle_root : VARCHAR(64) (Cryptographic Proof)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tbl_audit">
+          <mxGeometry y="160" width="300" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- RELATIONSHIP CONNECTORS -->
+        <mxCell id="rel_u_f" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERone;strokeColor=#1E3A8A;strokeWidth=1.5;" edge="1" parent="1" source="u_col1" target="f_col1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_u_p_s" value="1 : N (as Student)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERmany;strokeColor=#16A34A;strokeWidth=1.5;" edge="1" parent="1" source="u_col1" target="p_col2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="93" />
+              <mxPoint x="340" y="149" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_p_m" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERmany;strokeColor=#D97706;strokeWidth=1.5;" edge="1" parent="1" source="p_col1" target="m_col2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="370" y="93" />
+              <mxPoint x="370" y="439" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_p_c" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERmany;strokeColor=#7C3AED;strokeWidth=1.5;" edge="1" parent="1" source="p_col1" target="c_col2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_p_r" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERmany;strokeColor=#DB2777;strokeWidth=1.5;" edge="1" parent="1" source="p_col1" target="r_col2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="93" />
+              <mxPoint x="680" y="369" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_u_a" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERmany;strokeColor=#475569;strokeWidth=1.5;" edge="1" parent="1" source="u_col1" target="a_col2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30" y="93" />
+              <mxPoint x="30" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page_seq" name="4. Matching Sequence Flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="seq_title" value="Sequence Flow: Transformer NLP Extraction, Qdrant Retrieval &amp;amp; XAI Formulation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- LIFELINES -->
+        <mxCell id="ll_student" value="Student Lead&#xa;(Web Browser)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="120" height="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_fe" value="React 19 SPA&#xa;(Frontend UI)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="260" y="80" width="120" height="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_api" value="FastAPI Backend&#xa;(Match Router)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#F8FAFC;strokeColor=#475569;fontColor=#1E293B;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="470" y="80" width="130" height="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_onnx" value="FastEmbed ONNX&#xa;(CPU Inference)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="680" y="80" width="130" height="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_qdrant" value="Qdrant Vector DB&#xa;(HNSW Cosine)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FDF4FF;strokeColor=#C026D3;fontColor=#86198F;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="890" y="80" width="130" height="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_db" value="SQLite / Postgres&#xa;(Relational DB)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#15803D;fontStyle=1;size=40;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="80" width="120" height="650" as="geometry" />
+        </mxCell>
+
+        <!-- MESSAGES -->
+        <mxCell id="m1" value="1: Input Title &amp;amp; Problem Text (&amp;gt;= 50 words)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="150" as="sourcePoint" />
+            <mxPoint x="320" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m2" value="2: POST /api/v1/proposals/extract-entities" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="180" as="sourcePoint" />
+            <mxPoint x="535" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m3" value="3: Generate 384-dim dense vector (BAAI/bge-small-en-v1.5)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#D97706;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="210" as="sourcePoint" />
+            <mxPoint x="745" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m4" value="4: Return project vector embedding [&amp;lt; 300ms]" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#D97706;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="250" as="sourcePoint" />
+            <mxPoint x="535" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m5" value="5: Vector Search Query (HNSW cosine similarity, top_k=15)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#C026D3;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="290" as="sourcePoint" />
+            <mxPoint x="955" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m6" value="6: Return Faculty Match Corpora &amp;amp; Similarity S_sem [&amp;lt; 50ms]" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#C026D3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="955" y="330" as="sourcePoint" />
+            <mxPoint x="535" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m7" value="7: Fetch supervisory quotas &amp;amp; tiers (slots_used, slots_total)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#16A34A;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="370" as="sourcePoint" />
+            <mxPoint x="1140" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m8" value="8: Return quota availability &amp;amp; seniority records" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#16A34A;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1140" y="400" as="sourcePoint" />
+            <mxPoint x="535" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Activation / Self Calculation -->
+        <mxCell id="m9" value="9: Compute XAI S(u,e) = 0.4*S_sem + 0.3*S_skill + 0.15*S_tier + 0.15*S_quota" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#475569;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="440" as="sourcePoint" />
+            <mxPoint x="555" y="470" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="590" y="440" />
+              <mxPoint x="590" y="470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m10" value="10: JSON Response (Ranked Advisors + 4-Axis Radar Metrics)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#0284C7;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="520" as="sourcePoint" />
+            <mxPoint x="320" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m11" value="11: Render Interactive Radar Chart &amp;amp; Explainable Match Cards" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#0284C7;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="560" as="sourcePoint" />
+            <mxPoint x="120" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m12" value="12: Select Advisor &amp;amp; Click &quot;Submit Proposal&quot;" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#16A34A;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="600" as="sourcePoint" />
+            <mxPoint x="320" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m13" value="13: POST /api/v1/proposals (FSM: DRAFT ➔ SUBMITTED + Merkle Audit Log)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#16A34A;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="630" as="sourcePoint" />
+            <mxPoint x="535" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m14" value="14: Append SHA-256 Block &amp;amp; Lock Initial Slot" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#16A34A;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="660" as="sourcePoint" />
+            <mxPoint x="1140" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
