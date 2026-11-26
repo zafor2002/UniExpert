@@ -1,0 +1,95 @@
+<mxfile host="app.diagrams.net" modified="2026-11-26T13:30:00.000Z" agent="UniExpert" version="24.0.0" type="device">
+  <diagram id="5._activity_workflow" name="5. Activity Workflow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="act_title" value="UniExpert Activity Diagram: Capstone Advisor Match &amp;amp; FSM Approval" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="250" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlane Student -->
+        <mxCell id="lane_student" value="Student Project Lead" style="swimlane;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;fontColor=#0369A1;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="340" height="760" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_start" value="" style="ellipse;fillColor=#0F172A;strokeColor=none;" vertex="1" parent="lane_student">
+          <mxGeometry x="155" y="45" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_sub_prob" value="Enter Problem Statement&#xa;(&amp;ge; 50 words narrative)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontStyle=1;" vertex="1" parent="lane_student">
+          <mxGeometry x="80" y="110" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_rev_tags" value="Review Extracted Skills&#xa;&amp;amp; Taxonomy Domains" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontStyle=1;" vertex="1" parent="lane_student">
+          <mxGeometry x="80" y="250" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_view_radar" value="Inspect 4-Axis XAI Radar&#xa;&amp;amp; Compare Advisors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontStyle=1;" vertex="1" parent="lane_student">
+          <mxGeometry x="80" y="380" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_dispatch_prop" value="Dispatch Formal Proposal&#xa;(Initializes 7-Day SLA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#38BDF8;fontStyle=1;" vertex="1" parent="lane_student">
+          <mxGeometry x="80" y="490" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_spawn_workspace" value="Access Team Workspace&#xa;&amp;amp; Launch WebRTC Room" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;" vertex="1" parent="lane_student">
+          <mxGeometry x="80" y="670" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlane System (AI & Matching Engine) -->
+        <mxCell id="lane_sys" value="UniExpert AI &amp;amp; Matching Platform" style="swimlane;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;fontColor=#1E293B;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="400" y="80" width="400" height="760" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_nlp_extract" value="FastEmbed ONNX:&#xa;Extract Skill Vectors (384-D)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontStyle=1;" vertex="1" parent="lane_sys">
+          <mxGeometry x="100" y="180" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_qdrant_search" value="Qdrant Vector Search:&#xa;Cosine Similarity across Faculty" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontStyle=1;" vertex="1" parent="lane_sys">
+          <mxGeometry x="100" y="310" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_fsm_lock" value="FSM: DRAFT ➔ SUBMITTED&#xa;Tentatively Reserve Slot &amp;amp;&#xa;Record SHA-256 Merkle Block" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;fontStyle=1;" vertex="1" parent="lane_sys">
+          <mxGeometry x="100" y="490" width="200" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_check_sla" value="7-Day SLA&#xa;Expired?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="lane_sys">
+          <mxGeometry x="145" y="580" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlane Faculty -->
+        <mxCell id="lane_faculty" value="Faculty Advisor / Coordinator" style="swimlane;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="800" y="80" width="340" height="760" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_review_dossier" value="Review Student Proposal&#xa;&amp;amp; Evaluate Feasibility" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="lane_faculty">
+          <mxGeometry x="80" y="490" width="180" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_decision" value="Accept&#xa;Proposal?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="lane_faculty">
+          <mxGeometry x="120" y="580" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_accept_quota" value="FSM: ACCEPTED&#xa;Decrement Capacity (-1)&#xa;&amp;amp; Initialize Chat Hub" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;" vertex="1" parent="lane_faculty">
+          <mxGeometry x="80" y="670" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Connectors -->
+        <mxCell id="flow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_start" target="act_sub_prob" />
+        <mxCell id="flow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_sub_prob" target="act_nlp_extract" />
+        <mxCell id="flow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_nlp_extract" target="act_rev_tags" />
+        <mxCell id="flow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_rev_tags" target="act_qdrant_search" />
+        <mxCell id="flow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_qdrant_search" target="act_view_radar" />
+        <mxCell id="flow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_view_radar" target="act_dispatch_prop" />
+        <mxCell id="flow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_dispatch_prop" target="act_fsm_lock" />
+        <mxCell id="flow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_fsm_lock" target="act_review_dossier" />
+        <mxCell id="flow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="act_review_dossier" target="act_decision" />
+        <mxCell id="flow10" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;fontColor=#16A34A;fontStyle=1;" edge="1" parent="1" source="act_decision" target="act_accept_quota" />
+        <mxCell id="flow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A34A;" edge="1" parent="1" source="act_accept_quota" target="act_spawn_workspace" />
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
